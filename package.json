@@ -1,0 +1,100 @@
+{
+  "name": "xingine-react",
+  "version": "1.0.6",
+  "description": "A xingine for react",
+  "main": "dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json && tsc-alias",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "typescript",
+    "library",
+    "decoder",
+    "react",
+    "validation"
+  ],
+  "author": "Sushant Pandey <dtsushant@gmail.com>",
+  "license": "GNU",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dtsushant/xingine-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dtsushant/xingine-react/issues"
+  },
+  "homepage": "https://github.com/dtsushant/xingine-react#readme",
+  "peerDependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "@hqoss/monads": "^0.5.0",
+    "antd": "^5.24.5",
+    "axios": "^1.8.4",
+    "decoders": "^2.7.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.4.0",
+    "recharts": "^2.15.3",
+    "use-debounce": "^10.0.4",
+    "xingine": "^1.0.4"
+  },
+  "devDependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "antd": "^5.24.5",
+    "axios": "^1.8.4",
+    "@hqoss/monads": "^0.5.0",
+    "@types/jest": "^29.5.14",
+    "decoders": "^2.7.0",
+    "jest": "^29.7.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.4.0",
+    "ts-jest": "^29.3.0",
+    "tsc-alias": "^1.8.2",
+    "@types/react": "^19.0.10",
+    "typescript": "^5.0.0",
+    "use-debounce": "^10.0.4",
+    "recharts": "^2.15.3",
+    "xingine": "^1.0.4"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testRegex": ".*\\.(e2e-)?spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s",
+      "!**/dist/**"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

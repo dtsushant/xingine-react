@@ -1,22 +1,22 @@
-import { Card } from "antd";
 import { Link } from "react-router-dom";
 import React from "react";
 import { ModuleProperties } from "xingine";
+import {IconRenderer} from "../../group";
 
 export const ModuleHome: React.FC<ModuleProperties> = (module) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-      {module.uiComponent?.map((comp, idx) => (
-        <Link to={comp.path} key={idx}>
-          <Card
-            hoverable
-            className="flex flex-col items-center justify-center text-center shadow"
-          >
-            <div className="text-2xl mb-2">{comp.icon || "🔧"}</div>
-            <div className="text-sm font-semibold">{comp.component}</div>
-          </Card>
-        </Link>
-      ))}
-    </div>
-  );
+  <div className="flex flex-wrap gap-4 p-4 justify-center">
+    {module.uiComponent?.map((comp, idx) => (
+      <Link to={comp.path} key={idx} className="flex-1 min-w-[120px] max-w-[200px] aspect-square">
+        <div className="w-full h-full bg-white shadow-md rounded-xl flex flex-col items-center justify-center text-center hover:shadow-lg transition-shadow">
+          <div className="text-2xl mb-2">
+            <IconRenderer {...comp.expositionRule?.icon}/>
+          </div>
+          <div className="text-sm font-semibold px-2">{comp.component}</div>
+        </div>
+      </Link>
+    ))}
+  </div>
+);
+
 };

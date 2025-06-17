@@ -10,7 +10,7 @@ import {getModuleRegistryService} from "../../xingine-react.registry";
 import {post} from "../../xingine-react.service";
 import {ButtonTypeProperties} from "xingine/dist/core/component/form-meta-map";
 
-const FormRenderer: React.FC<
+export const FormRenderer: React.FC<
   FormMeta & {
     onFinish?: (values: Record<string, unknown>) => void;
     onValuesChange?: (

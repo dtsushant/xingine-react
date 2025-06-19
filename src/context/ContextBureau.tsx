@@ -84,17 +84,6 @@ export const ContextBureau: React.FC<{
           registerModule(config, data!);
         }
 
-        const routePaths = data!.flatMap((module) =>
-          module.uiComponent?.map((comp) => ({
-            path: comp.path,
-            element: getModuleRegistryService()?.get(
-              comp.component,
-              comp.meta?.properties,
-            ),
-          })),
-        );
-        //const r = routePaths.filter((rp) => rp !== undefined);
-        //setRoutes([{ path: "/", element: <LayoutRenderer />, children: r }]);
         setRoutes(mapDynamicRoutes(data, config));
       } catch (err) {
         console.error("Failed to fetch module properties for layout:", err);

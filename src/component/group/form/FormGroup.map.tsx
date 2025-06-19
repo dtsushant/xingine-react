@@ -40,13 +40,15 @@ export const InputField: React.FC<
 > = (props) => {
   const { onChange, placeholder, maxLength, disabled } = props;
   const change = () => {};
+  console.log("the regex here is", props.validationRegex);
   return (
     <Input
-      placeholder={placeholder}
-      maxLength={maxLength}
-      disabled={disabled}
-      onChange={onChange}
-    />
+  placeholder={placeholder}
+  maxLength={maxLength}
+  disabled={disabled}
+  onChange={onChange}
+  pattern={props.validationRegex}
+/>
   );
 };
 

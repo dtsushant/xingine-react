@@ -68,6 +68,13 @@ export function generateRules(
       message: `${field.label} must be ≤ ${properties.max}`,
     });
   }
+  if("validationRegex" in properties && typeof properties.validationRegex === "string") {
+
+    rules.push({
+      pattern: new RegExp(properties.validationRegex),
+      message: properties.regexValidationMessage ?? `${field.label} does not match the required format`,
+    });
+  }
 
   return rules;
 }

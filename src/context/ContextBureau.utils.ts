@@ -13,7 +13,6 @@ export function mapDynamicRoutes(
   const layoutRoutesMap: Record<string, RouteObject[]> = {};
 
   layoutRoutesMap["default"] = [];
-
   for (const module of data) {
     const components = module.uiComponent || [];
 
@@ -56,6 +55,5 @@ export function mapDynamicRoutes(
       };
     },
   );
-  console.log("the routes", routes);
   return routes;
 }

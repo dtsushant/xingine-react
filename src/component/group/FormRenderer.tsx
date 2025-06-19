@@ -10,7 +10,7 @@ import {getModuleRegistryService} from "../../xingine-react.registry";
 import {post} from "../../xingine-react.service";
 import {ButtonTypeProperties} from "xingine/dist/core/component/form-meta-map";
 
-const FormRenderer: React.FC<
+export const FormRenderer: React.FC<
   FormMeta & {
     onFinish?: (values: Record<string, unknown>) => void;
     onValuesChange?: (
@@ -90,7 +90,7 @@ const FormRenderer: React.FC<
         meta.onValuesChange ? meta.onValuesChange : onValuesChange
       }
     >
-      {formGroup(meta.fields, isSubmitting)}
+      {formGroup(meta.fields.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)), isSubmitting)}
       <Form.Item key="submit" name={"submit" as NamePath}>
         {renderField('button', buttonProps)}
       </Form.Item>

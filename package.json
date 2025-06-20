@@ -1,6 +1,6 @@
 {
   "name": "xingine-react",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A xingine for react",
   "main": "dist/index.js",
   "type": "module",

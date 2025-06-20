@@ -97,5 +97,3 @@ export const FormRenderer: React.FC<
     </Form>
   );
 };
-
-export default FormRenderer;

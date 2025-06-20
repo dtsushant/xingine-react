@@ -4,11 +4,11 @@ import {
   initializeModuleRegistry,
 } from "./xingine-react.registry";
 import { XingineConfig } from "./configuration/Configuration";
-import { defaultInternalComponents } from "./component/group";
 import axios from "axios";
 import { Decoder, object } from "decoders";
 import { Err, Ok, Result } from "@hqoss/monads";
 import  { GenericErrors,ModuleProperties,genericErrorsDecoder } from "xingine";
+import {getDefaultInternalComponents} from "./component/group";
 
 const token = localStorage.getItem("token");
 
@@ -23,7 +23,7 @@ export function registerModule(
   modules: ModuleProperties[],
 ) {
   const combinedComponentRegistry = {
-    ...(defaultInternalComponents as Record<string, FC<unknown>>),
+    ...(getDefaultInternalComponents() as Record<string, FC<unknown>>),
     ...(config.component || {}),
   };
   initializeModuleRegistry(combinedComponentRegistry);

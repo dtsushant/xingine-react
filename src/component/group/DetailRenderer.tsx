@@ -34,4 +34,3 @@ export const DetailRenderer: React.FC<DetailMeta> = (meta) => {
   );
 };
 
-export default DetailRenderer;

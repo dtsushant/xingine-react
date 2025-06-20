@@ -3,7 +3,7 @@ import { Card, Collapse, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { ColumnsType } from "antd/es/table";
 
-import FormRenderer from "./FormRenderer";
+import {FormRenderer} from "./FormRenderer";
 
 import {
   ColumnMeta,
@@ -166,4 +166,3 @@ function convertColumnsToAntD<T = unknown>(
   }));
 }
 
-export default TableRenderer;

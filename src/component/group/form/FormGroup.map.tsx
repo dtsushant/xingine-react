@@ -266,6 +266,7 @@ export const fieldTypeRenderMap: {
   checkbox: CheckboxField,
   nestedcheckbox: NestedCheckboxField,
   lookup: LookupField,
+  file: () => <div>File Input Not Implemented Yet</div>,
 }
 
 export type ExtraProps = {

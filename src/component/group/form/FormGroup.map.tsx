@@ -19,6 +19,7 @@ import { NamePath } from "antd/es/form/interface";
 import { LookupField } from "./LookupField";
 import { CheckboxField } from "./CheckboxField";
 import { NestedCheckboxField } from "./NestedCheckBoxField";
+import { FileInputField } from "./FileInputField";
 import {
   ButtonTypeProperties,
   DateTypeProperties,
@@ -266,7 +267,7 @@ export const fieldTypeRenderMap: {
   checkbox: CheckboxField,
   nestedcheckbox: NestedCheckboxField,
   lookup: LookupField,
-  file: () => <div>File Input Not Implemented Yet</div>,
+  file: FileInputField,
 }
 
 export type ExtraProps = {

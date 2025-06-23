@@ -1,5 +1,5 @@
 import React, {Attributes, FC, FunctionComponent, JSX} from "react";
-import {ModuleProperties} from "xingine";
+import {getUIComponentDetails, ModuleProperties} from "xingine";
 import { ComponentMetaMap } from "xingine/dist/core/component/component-meta-map";
 
 type ModuleRegistry = {
@@ -27,7 +27,7 @@ class ModuleRegistryService {
   }
 
   register(moduleProperty: ModuleProperties) {
-    moduleProperty.uiComponent?.forEach((component) => {
+    moduleProperty.uiComponent && getUIComponentDetails(moduleProperty.uiComponent)?.forEach((component) => {
       const key = component.component;
       const Component = this.componentMap[key];
       let fc: React.FC<unknown>;

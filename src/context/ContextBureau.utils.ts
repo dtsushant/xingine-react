@@ -1,6 +1,6 @@
 import React from "react";
 import { RouteObject } from "react-router-dom";
-import {ModuleProperties} from "xingine";
+import {getUIComponentDetails, ModuleProperties} from "xingine";
 import { XingineConfig } from "../configuration/Configuration";
 import { getModuleRegistryService } from "../xingine-react.registry";
 import { LayoutRenderer } from "../component/layout";
@@ -14,7 +14,7 @@ export function mapDynamicRoutes(
 
   layoutRoutesMap["default"] = [];
   for (const module of data) {
-    const components = module.uiComponent || [];
+    const components = module.uiComponent && getUIComponentDetails(module.uiComponent) || [];
 
     layoutRoutesMap["default"].push({
       path: module.name,

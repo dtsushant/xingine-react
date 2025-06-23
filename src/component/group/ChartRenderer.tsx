@@ -18,8 +18,8 @@ import axios from "axios";
 import {
   ChartConfig,
   ChartMeta,
-  Renderer,
 } from "xingine/dist/core/component/component-meta-map";
+import {Renderer} from "xingine";
 
 // Helper function to apply renderer configuration to chart container styles
 const applyRendererStyles = (renderer?: Renderer): React.CSSProperties => {

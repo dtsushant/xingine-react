@@ -1,4 +1,4 @@
-// Import all types from xingine that are already defined there
+// Import and re-export base types from xingine
 export type {
   Renderer,
   UIComponent,
@@ -11,111 +11,38 @@ export type {
   ExpositionRule
 } from 'xingine';
 
-// Since ComponentMetaMap and related types are not exported from the main index,
-// I'll define them based on the xingine structure but only include additional properties if needed
+// Import component meta types from xingine's component meta map
+// These types are defined in xingine but may not be exported in the main index
+// Based on the xingine source structure, importing them directly
+export type {
+  ColumnMeta,
+  FormMeta,
+  DetailMeta,
+  TableMeta,
+  TabMeta,
+  ChartMeta,
+  ComponentMetaMap,
+  ComponentMeta,
+  ChartType,
+  ChartDataset,
+  ChartConfig,
+  FormDispatchProperties,
+  TableDispatchProperties,
+  TabDispatchProperties,
+  DetailDispatchProperties
+} from 'xingine/dist/core/component/component-meta-map';
 
-// Define component meta types based on xingine structure
-export interface ColumnMeta {
-  title?: string;
-  dataIndex?: string;
-  key?: string;
-  render?: string;
-  width?: number | string;
-  sortable?: boolean;
-  filterable?: any;
-}
+// Import the base UIComponent type from xingine for proper reference
+import type { UIComponent, Renderer, UIComponentDetail } from 'xingine';
 
-export interface FormMeta {
-  fields: any[];
-  action: string;
-  dispatch?: any;
-}
-
-export interface DetailMeta {
-  fields: any[];
-  action: string;
-  dispatch?: any;
-}
-
-export interface TableMeta {
-  columns: ColumnMeta[];
-  dataSourceUrl: string;
-  rowKey?: string;
-  dispatch?: any;
-}
-
-export interface TabMeta {
-  tabs: {
-    label: string;
-    component: keyof ComponentMetaMap;
-    meta: ComponentMetaMap[keyof ComponentMetaMap];
-  }[];
-  dispatch?: any;
-}
-
-export type ChartType = "bar" | "line" | "pie" | "scatter";
-
-export interface ChartDataset {
-  label: string;
-  data: number[] | {
-    x: number | string;
-    y: number;
-  }[];
-  backgroundColor?: string;
-  borderColor?: string;
-}
-
-export interface ChartConfig {
-  type: ChartType;
-  title?: string;
-  labels?: string[];
-  datasets?: ChartDataset[];
-  options?: Record<string, unknown>;
-  dataSourceUrl?: string;
-  renderer?: any; // Avoid circular reference
-}
-
-export interface ChartMeta {
-  charts: ChartConfig[];
-  renderer?: any; // Avoid circular reference
-}
-
-export interface ComponentMetaMap {
-  FormRenderer: FormMeta;
-  TableRenderer: TableMeta;
-  TabRenderer: TabMeta;
-  DetailRenderer: DetailMeta;
-  ChartRenderer: ChartMeta;
-}
-
-export interface ComponentMeta<T extends keyof ComponentMetaMap = keyof ComponentMetaMap> {
-  component: T;
-  properties: ComponentMetaMap[T];
-}
-
-// Import the Renderer type from xingine
-import type { Renderer, UIComponent, UIComponentDetail } from 'xingine';
-
-// Custom component detail interface for our extended components (doesn't need to extend xingine UIComponentDetail)
-export interface CustomUIComponentDetail {
+// Minimal custom component extension for layout rendering flexibility
+// This is only used for simple layout components, while proper components should use UIComponentDetail
+export interface CustomComponentDetail {
   type: string;
   props?: Record<string, any>;
-  children?: ExtendedUIComponent[];
+  children?: UIComponent[];
   content?: string;
 }
 
-// Extended UIComponent type that includes both xingine UIComponent and our custom components
-export type ExtendedUIComponent = UIComponent | CustomUIComponentDetail;
-
-// Extended Renderer interface that includes componentDetail for recursive rendering
-export interface ExtendedRenderer extends Omit<Renderer, 'componentDetail'> {
-  /**
-   * Override componentDetail to use our extended type
-   */
-  componentDetail: ExtendedUIComponent;
-  
-  /**
-   * Children components for recursive rendering
-   */
-  children?: ExtendedRenderer[];
-}
+// Extended UIComponent that supports both xingine types and simple custom components
+export type ExtendedUIComponent = UIComponent | CustomComponentDetail;

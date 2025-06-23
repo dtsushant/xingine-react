@@ -1,6 +1,6 @@
 import React from 'react';
 import { LayoutRenderer } from './LayoutRenderer';
-import { ExtendedRenderer, ChartMeta, FormMeta, TableMeta, DetailMeta, ChartConfig } from '../types/renderer.types';
+import { Renderer, ChartMeta, FormMeta, TableMeta, DetailMeta, ChartConfig } from '../types/renderer.types';
 
 /**
  * Example component demonstrating LayoutRenderer usage with xingine components
@@ -258,7 +258,7 @@ export const LayoutRendererExample: React.FC = () => {
   };
 
   // Create the complete layout configuration
-  const layoutConfig: ExtendedRenderer = {
+  const layoutConfig: Renderer = {
     componentDetail: {
       type: 'layout',
       children: [

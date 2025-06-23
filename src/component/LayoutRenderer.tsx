@@ -47,7 +47,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { Renderer, UIComponent, UIComponentDetail } from '../types/renderer.types';
+import { ExtendedRenderer, ExtendedUIComponent, UIComponentDetail, Renderer } from '../types/renderer.types';
 
 const { Header, Sider, Content, Footer } = Layout;
 const { Search } = Input;
@@ -85,7 +85,7 @@ const mockMenuItems = [
 ];
 
 interface LayoutRendererProps {
-  renderer: Renderer;
+  renderer: ExtendedRenderer;
 }
 
 export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
@@ -96,7 +96,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
   const isMobile = !screens.md;
 
   // Helper function to apply renderer styles
-  const applyRendererStyles = (renderer: Renderer): React.CSSProperties => {
+  const applyRendererStyles = (renderer: ExtendedRenderer): React.CSSProperties => {
     const styles: React.CSSProperties = {};
 
     if (renderer.layout) {
@@ -141,15 +141,36 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
   };
 
   // Recursive renderer function
-  const renderComponent = (component: UIComponent, key?: string): React.ReactNode => {
+  const renderComponent = (component: ExtendedUIComponent, key?: string): React.ReactNode => {
     if ('componentDetail' in component) {
       // It's a Renderer object
-      return renderComponent(component.componentDetail, key);
+      const detail = component.componentDetail;
+      if (detail) {
+        return renderComponent(detail as ExtendedUIComponent, key);
+      } else {
+        return <div key={key}>No component detail provided</div>;
+      }
+    }
+
+    // Handle case where component might be a plain object or UIComponentDetail
+    if (!component || typeof component !== 'object') {
+      return <div key={key}>Invalid component</div>;
+    }
+
+    // Check if it's a standard UIComponent with component property
+    if ('component' in component && component.component) {
+      // This is an xingine UIComponent, convert to UIComponentDetail for rendering
+      const detail: UIComponentDetail = {
+        type: component.component,
+        props: component.meta || {},
+        content: component.component
+      };
+      return renderComponent(detail, key);
     }
 
     // It's a UIComponentDetail
     const detail = component as UIComponentDetail;
-    const styles = 'componentDetail' in component ? applyRendererStyles(component as Renderer) : {};
+    const styles = 'componentDetail' in component ? applyRendererStyles(component as ExtendedRenderer) : {};
 
     switch (detail.type) {
       case 'layout':
@@ -483,11 +504,14 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     </Card>
   );
 
-  return renderComponent(renderer);
+  return renderComponent(renderer.componentDetail || {
+    type: 'layout',
+    children: []
+  });
 };
 
 // Helper function to create a default layout configuration
-export const createDefaultLayoutRenderer = (): Renderer => ({
+export const createDefaultLayoutRenderer = (): ExtendedRenderer => ({
   componentDetail: {
     type: 'layout',
     children: [

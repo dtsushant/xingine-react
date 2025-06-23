@@ -1,5 +1,6 @@
 import React from 'react';
-import { LayoutRenderer, createDefaultLayoutRenderer, Renderer } from './LayoutRenderer';
+import { LayoutRenderer, createDefaultLayoutRenderer } from './LayoutRenderer';
+import { ExtendedRenderer } from '../types/renderer.types';
 
 /**
  * Example component demonstrating LayoutRenderer usage
@@ -19,7 +20,7 @@ export const LayoutRendererExample: React.FC = () => {
  * Example with custom configuration
  */
 export const CustomLayoutExample: React.FC = () => {
-  const customLayout: Renderer = {
+  const customLayout: ExtendedRenderer = {
     componentDetail: {
       type: 'layout',
       children: [

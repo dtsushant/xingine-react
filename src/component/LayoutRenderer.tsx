@@ -10,13 +10,10 @@ import {
   Switch,
   Grid,
   Card,
-  Form,
-  Table,
   Row,
   Col,
   Space,
   Typography,
-  Select,
 } from 'antd';
 import {
   MenuFoldOutlined,
@@ -30,60 +27,20 @@ import {
   BulbOutlined,
   DashboardOutlined,
   TeamOutlined,
-  FormOutlined,
 } from '@ant-design/icons';
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
 import { ExtendedRenderer, ExtendedUIComponent, UIComponentDetail, Renderer, ChartMeta, FormMeta, TableMeta, DetailMeta } from '../types/renderer.types';
+import { ChartRenderer } from './group/ChartRenderer';
+import { FormRenderer } from './group/FormRenderer';
+import { TableRenderer } from './group/TableRenderer';
+import { DetailRenderer } from './group/DetailRenderer';
+import { WrapperRenderer } from './group/WrapperRenderer';
 
 const { Header, Sider, Content, Footer } = Layout;
 const { Search } = Input;
 const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
 
-// Mock data
-const mockChartData = [
-  { name: 'Jan', sales: 4000, revenue: 2400, users: 240 },
-  { name: 'Feb', sales: 3000, revenue: 1398, users: 221 },
-  { name: 'Mar', sales: 2000, revenue: 9800, users: 229 },
-  { name: 'Apr', sales: 2780, revenue: 3908, users: 200 },
-  { name: 'May', sales: 1890, revenue: 4800, users: 218 },
-  { name: 'Jun', sales: 2390, revenue: 3800, users: 250 },
-];
-
-const mockPieData = [
-  { name: 'Desktop', value: 400 },
-  { name: 'Mobile', value: 300 },
-  { name: 'Tablet', value: 300 },
-  { name: 'Other', value: 200 },
-];
-
-const mockUsers = [
-  { key: '1', name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'Active' },
-  { key: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'User', status: 'Active' },
-  { key: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor', status: 'Inactive' },
-];
-
-const mockMenuItems = [
-  { key: 'dashboard', label: 'Dashboard', icon: <DashboardOutlined /> },
-  { key: 'users', label: 'Users', icon: <TeamOutlined /> },
-  { key: 'forms', label: 'Forms', icon: <FormOutlined /> },
-  { key: 'settings', label: 'Settings', icon: <SettingOutlined /> },
-];
+// Mock data should be provided from LayoutRendererExample - removed from here
 
 interface LayoutRendererProps {
   renderer: ExtendedRenderer;
@@ -92,7 +49,6 @@ interface LayoutRendererProps {
 export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [form] = Form.useForm();
   const screens = useBreakpoint();
   const isMobile = !screens.md;
 
@@ -149,13 +105,13 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
       if (detail) {
         return renderComponent(detail as ExtendedUIComponent, key);
       } else {
-        return <div key={key}>No component detail provided</div>;
+        return <WrapperRenderer key={key}>No component detail provided</WrapperRenderer>;
       }
     }
 
     // Handle case where component might be a plain object or UIComponentDetail
     if (!component || typeof component !== 'object') {
-      return <div key={key}>Invalid component</div>;
+      return <WrapperRenderer key={key}>Invalid component</WrapperRenderer>;
     }
 
     // Check if it's a standard UIComponent with component property
@@ -231,7 +187,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
         return renderDetailRenderer(detail, styles, key);
       
       default:
-        return <div key={key} style={styles}>{detail.content || 'Unknown component'}</div>;
+        return <WrapperRenderer key={key} style={styles}>{detail.content || 'Unknown component'}</WrapperRenderer>;
     }
   };
 
@@ -320,15 +276,15 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
         ...styles,
       }}
     >
-      <div style={{ padding: '16px 0' }}>
+      <WrapperRenderer style={{ padding: '16px 0' }}>
         <Menu
           theme={darkMode ? 'dark' : 'light'}
           mode="inline"
           defaultSelectedKeys={['dashboard']}
-          items={mockMenuItems}
+          items={detail.props?.menuItems || []}
           style={{ border: 'none' }}
         />
-      </div>
+      </WrapperRenderer>
     </Sider>
   );
 
@@ -365,190 +321,44 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     </Footer>
   );
 
-  const renderCharts = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Row key={key} gutter={[16, 16]} style={{ marginBottom: 24, ...styles }}>
-      <Col xs={24} sm={12} lg={6}>
-        <Card title="Bar Chart" size="small">
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={mockChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="sales" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-      </Col>
-      <Col xs={24} sm={12} lg={6}>
-        <Card title="Pie Chart" size="small">
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={mockPieData}
-                cx="50%"
-                cy="50%"
-                outerRadius={60}
-                fill="#82ca9d"
-                dataKey="value"
-                label
-              />
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
-      </Col>
-      <Col xs={24} sm={12} lg={6}>
-        <Card title="Line Chart" size="small">
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={mockChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="revenue" stroke="#ffc658" />
-            </LineChart>
-          </ResponsiveContainer>
-        </Card>
-      </Col>
-      <Col xs={24} sm={12} lg={6}>
-        <Card title="Area Chart" size="small">
-          <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={mockChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="users" stroke="#ff7300" fill="#ff7300" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </Card>
-      </Col>
-    </Row>
-  );
-
-  const renderForm = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Card key={key} title="User Creation Form" style={{ marginBottom: 24, ...styles }}>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={(values) => {
-          console.log('Form submitted:', values);
-          // Mock form submission
-        }}
-      >
-        <Row gutter={16}>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Full Name"
-              name="name"
-              rules={[{ required: true, message: 'Please enter full name' }]}
-            >
-              <Input placeholder="Enter full name" />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                { required: true, message: 'Please enter email' },
-                { type: 'email', message: 'Please enter valid email' },
-              ]}
-            >
-              <Input placeholder="Enter email address" />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Role"
-              name="role"
-              rules={[{ required: true, message: 'Please select role' }]}
-            >
-              <Input placeholder="Enter role" />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Status"
-              name="status"
-              rules={[{ required: true, message: 'Please select status' }]}
-            >
-              <Input placeholder="Enter status" />
-            </Form.Item>
-          </Col>
-          <Col xs={24}>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Create User
-              </Button>
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-    </Card>
-  );
-
-  const renderTable = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
-    const columns = [
-      { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Email', dataIndex: 'email', key: 'email' },
-      { title: 'Role', dataIndex: 'role', key: 'role' },
-      { title: 'Status', dataIndex: 'status', key: 'status' },
-    ];
-
-    return (
-      <Card key={key} title="Users Table" style={{ marginBottom: 24, ...styles }}>
-        <Table
-          columns={columns}
-          dataSource={mockUsers}
-          size="small"
-          scroll={{ x: true }}
-          pagination={{ pageSize: 5 }}
-        />
-      </Card>
-    );
+  const renderCharts = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const chartMeta = detail.props as ChartMeta;
+    if (!chartMeta?.charts) {
+      return <WrapperRenderer key={key} style={styles}>No chart data provided</WrapperRenderer>;
+    }
+    return <ChartRenderer key={key} {...chartMeta} />;
   };
 
-  const renderDetail = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Card key={key} title="Detailed Renderer Demo" style={{ ...styles }}>
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <Title level={4}>Nested Renderer Example</Title>
-        <Text>
-          This demonstrates the recursive rendering capability of the LayoutRenderer.
-          The entire layout is generated from the Renderer configuration without direct HTML usage.
-        </Text>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Card size="small" title="Configuration">
-              <Text code>Mode: {renderer.mode || 'default'}</Text>
-              <br />
-              <Text code>Layout: {renderer.layout?.display || 'flex'}</Text>
-              <br />
-              <Text code>Responsive: {renderer.responsive ? 'enabled' : 'disabled'}</Text>
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card size="small" title="Features">
-              <ul>
-                <li>Recursive component rendering</li>
-                <li>Responsive design support</li>
-                <li>Antd component integration</li>
-                <li>Mock data handling</li>
-              </ul>
-            </Card>
-          </Col>
-        </Row>
-      </Space>
-    </Card>
-  );
+  const renderForm = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const formMeta = detail.props as FormMeta;
+    if (!formMeta?.fields) {
+      return <WrapperRenderer key={key} style={styles}>No form configuration provided</WrapperRenderer>;
+    }
+    return <FormRenderer key={key} {...formMeta} />;
+  };
+
+  const renderTable = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const tableMeta = detail.props as TableMeta;
+    if (!tableMeta?.columns) {
+      return <WrapperRenderer key={key} style={styles}>No table configuration provided</WrapperRenderer>;
+    }
+    return <TableRenderer key={key} {...tableMeta} />;
+  };
+
+  const renderDetail = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const detailMeta = detail.props as DetailMeta;
+    if (!detailMeta) {
+      return <WrapperRenderer key={key} style={styles}>No detail configuration provided</WrapperRenderer>;
+    }
+    return <DetailRenderer key={key} {...detailMeta} />;
+  };
 
   // Ant Design Component Renderers
   const renderDiv = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <div key={key} style={{ ...detail.props?.style, ...styles }} {...detail.props}>
+    <WrapperRenderer key={key} style={{ ...detail.props?.style, ...styles }} {...detail.props}>
       {detail.content}
       {detail.children?.map((child, index) => renderComponent(child, `${key}-div-${index}`))}
-    </div>
+    </WrapperRenderer>
   );
 
   const renderButton = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
@@ -579,9 +389,9 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
 
   const renderDropdown = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Dropdown key={key} {...detail.props}>
-      <div style={styles}>
+      <WrapperRenderer style={styles}>
         {detail.children?.map((child, index) => renderComponent(child, `${key}-dropdown-${index}`))}
-      </div>
+      </WrapperRenderer>
     </Dropdown>
   );
 
@@ -625,177 +435,30 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
   // Xingine Component Renderers
   const renderChartRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as ChartMeta;
-    if (!meta) return <div key={key}>No chart meta provided</div>;
+    if (!meta) return <WrapperRenderer key={key}>No chart meta provided</WrapperRenderer>;
     
-    return (
-      <div key={key} style={styles}>
-        <Row gutter={[16, 16]}>
-          {meta.charts.map((chart: any, index: number) => (
-            <Col xs={24} sm={12} lg={12} xl={6} key={`chart-${index}`}>
-              <Card title={chart.title} style={{ height: '300px' }}>
-                <div style={{ width: '100%', height: '250px' }}>
-                  {chart.type === 'bar' && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={chart.datasets?.[0]?.data ? 
-                        chart.labels?.map((label: string, i: number) => ({ 
-                          name: label, 
-                          value: Array.isArray(chart.datasets[0].data) ? chart.datasets[0].data[i] : 0 
-                        })) : []}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="value" fill={chart.datasets?.[0]?.backgroundColor || '#1890ff'} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                  {chart.type === 'line' && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chart.datasets?.[0]?.data ? 
-                        chart.labels?.map((label: string, i: number) => ({ 
-                          name: label, 
-                          value: Array.isArray(chart.datasets[0].data) ? chart.datasets[0].data[i] : 0 
-                        })) : []}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="value" stroke={chart.datasets?.[0]?.borderColor || '#52c41a'} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  )}
-                  {chart.type === 'pie' && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={chart.labels?.map((label: string, i: number) => ({
-                            name: label,
-                            value: Array.isArray(chart.datasets?.[0]?.data) ? chart.datasets[0].data[i] : 0
-                          }))}
-                          dataKey="value"
-                          nameKey="name"
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={60}
-                          fill="#1890ff"
-                        />
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
-    );
+    return <ChartRenderer key={key} {...meta} />;
   };
 
   const renderFormRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as FormMeta;
-    if (!meta) return <div key={key}>No form meta provided</div>;
+    if (!meta) return <WrapperRenderer key={key}>No form meta provided</WrapperRenderer>;
     
-    return (
-      <div key={key} style={styles}>
-        <Form layout="vertical" onFinish={(values) => console.log('Form submitted:', values)}>
-          <Row gutter={16}>
-            {meta.fields.map((field: any, index: number) => (
-              <Col xs={24} sm={12} key={field.name}>
-                <Form.Item
-                  label={field.label}
-                  name={field.name}
-                  rules={field.required ? [{ required: true, message: `Please input ${field.label}` }] : []}
-                >
-                  {field.type === 'select' ? (
-                    <select style={{ width: '100%', height: '32px' }}>
-                      <option value="">Select {field.label}</option>
-                      {field.options?.map((option: any) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <Input type={field.type} placeholder={field.placeholder} />
-                  )}
-                </Form.Item>
-              </Col>
-            ))}
-          </Row>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Create User
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    );
+    return <FormRenderer key={key} {...meta} />;
   };
 
   const renderTableRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as TableMeta;
-    if (!meta) return <div key={key}>No table meta provided</div>;
+    if (!meta) return <WrapperRenderer key={key}>No table meta provided</WrapperRenderer>;
     
-    return (
-      <div key={key} style={styles}>
-        <Table
-          columns={meta.columns.map((col: any) => ({
-            title: col.title,
-            dataIndex: col.dataIndex,
-            key: col.key,
-            width: col.width,
-            sorter: col.sortable,
-            render: col.render === 'badge' ? (text: string) => (
-              <Badge status={text === 'Active' ? 'success' : 'default'} text={text} />
-            ) : undefined
-          }))}
-          dataSource={mockUsers}
-          rowKey={meta.rowKey}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: true }}
-        />
-      </div>
-    );
+    return <TableRenderer key={key} {...meta} />;
   };
 
   const renderDetailRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as DetailMeta;
-    if (!meta) return <div key={key}>No detail meta provided</div>;
+    if (!meta) return <WrapperRenderer key={key}>No detail meta provided</WrapperRenderer>;
     
-    const mockUser = {
-      id: '1',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@example.com',
-      role: 'Admin',
-      department: 'Engineering',
-      status: true,
-      createdAt: '2024-01-15',
-      lastLogin: '2024-01-23'
-    };
-    
-    return (
-      <div key={key} style={styles}>
-        <Row gutter={[16, 16]}>
-          {meta.fields.map((field: any, index: number) => (
-            <Col xs={24} sm={12} lg={8} key={field.name}>
-              <div style={{ marginBottom: '16px' }}>
-                <Text strong>{field.label}:</Text>
-                <br />
-                {field.type === 'badge' ? (
-                  <Badge status="success" text={mockUser[field.name as keyof typeof mockUser]} />
-                ) : field.type === 'switch' ? (
-                  <Switch checked={mockUser[field.name as keyof typeof mockUser] as boolean} disabled />
-                ) : (
-                  <Text>{mockUser[field.name as keyof typeof mockUser]}</Text>
-                )}
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </div>
-    );
+    return <DetailRenderer key={key} {...meta} />;
   };
 
   // Helper function to get icon components

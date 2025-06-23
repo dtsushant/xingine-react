@@ -5,6 +5,7 @@ import {TabRenderer} from "./TabRenderer";
 import {ChartRenderer} from "./ChartRenderer";
 import {IconRenderer} from "./IconRenderer";
 import {FileInput} from "./FileInput";
+import {WrapperRenderer} from "./WrapperRenderer";
 
 export function getDefaultInternalComponents() {
   return {
@@ -14,6 +15,7 @@ export function getDefaultInternalComponents() {
     ChartRenderer,
     IconRenderer,
     FormRenderer,
+    WrapperRenderer,
   };
 }
 
@@ -24,3 +26,4 @@ export * from "./TabRenderer";
 export * from "./ChartRenderer";
 export * from "./IconRenderer";
 export * from "./FileInput";
+export * from "./WrapperRenderer";

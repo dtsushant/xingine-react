@@ -376,7 +376,7 @@ export const LayoutRendererExample: React.FC = () => {
           children: [
             // Collapsible Sidebar
             {
-              type: 'sider',
+              type: 'sidebar',
               props: {
                 collapsible: true,
                 breakpoint: 'lg',
@@ -384,44 +384,34 @@ export const LayoutRendererExample: React.FC = () => {
                 style: {
                   background: '#fff',
                   borderRight: '1px solid #f0f0f0'
-                }
-              },
-              children: [
-                {
-                  type: 'menu',
-                  props: {
-                    mode: 'inline',
-                    defaultSelectedKeys: ['dashboard'],
-                    style: { height: '100%', borderRight: 0 },
-                    items: [
-                      {
-                        key: 'dashboard',
-                        icon: 'dashboard',
-                        label: 'Dashboard'
-                      },
-                      {
-                        key: 'users',
-                        icon: 'team',
-                        label: 'Users',
-                        children: [
-                          { key: 'user-list', label: 'User List' },
-                          { key: 'user-create', label: 'Create User' }
-                        ]
-                      },
-                      {
-                        key: 'analytics',
-                        icon: 'bar-chart',
-                        label: 'Analytics'
-                      },
-                      {
-                        key: 'settings',
-                        icon: 'setting',
-                        label: 'Settings'
-                      }
+                },
+                menuItems: [
+                  {
+                    key: 'dashboard',
+                    icon: 'dashboard',
+                    label: 'Dashboard'
+                  },
+                  {
+                    key: 'users',
+                    icon: 'team',
+                    label: 'Users',
+                    children: [
+                      { key: 'user-list', label: 'User List' },
+                      { key: 'user-create', label: 'Create User' }
                     ]
+                  },
+                  {
+                    key: 'analytics',
+                    icon: 'bar-chart',
+                    label: 'Analytics'
+                  },
+                  {
+                    key: 'settings',
+                    icon: 'setting',
+                    label: 'Settings'
                   }
-                }
-              ]
+                ]
+              }
             },
             // Content Area
             {

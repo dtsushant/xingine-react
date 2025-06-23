@@ -35,14 +35,20 @@ export type {
 // Import the base UIComponent type from xingine for proper reference
 import type { UIComponent, Renderer, UIComponentDetail } from 'xingine';
 
-// Minimal custom component extension for layout rendering flexibility
-// This is only used for simple layout components, while proper components should use UIComponentDetail
-export interface CustomComponentDetail {
+// Layout-specific component extension for LayoutRenderer
+// This extends UIComponent to support layout-specific rendering while maintaining xingine compatibility
+export interface LayoutComponentDetail {
   type: string;
   props?: Record<string, any>;
-  children?: UIComponent[];
+  children?: LayoutComponentDetail[];
   content?: string;
+  meta?: any; // For xingine component meta
 }
 
-// Extended UIComponent that supports both xingine types and simple custom components
-export type ExtendedUIComponent = UIComponent | CustomComponentDetail;
+// Extended UIComponent that supports both xingine types and layout components
+export type ExtendedUIComponent = UIComponent | LayoutComponentDetail;
+
+// Extended Renderer for LayoutRenderer that uses LayoutComponentDetail as componentDetail
+export interface LayoutRenderer extends Omit<Renderer, 'componentDetail'> {
+  componentDetail: LayoutComponentDetail;
+}

@@ -28,7 +28,7 @@ import {
   DashboardOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { Renderer, UIComponent, UIComponentDetail, ChartMeta, FormMeta, TableMeta, DetailMeta, ExtendedUIComponent, CustomComponentDetail } from '../types/renderer.types';
+import { Renderer, UIComponent, UIComponentDetail, ChartMeta, FormMeta, TableMeta, DetailMeta, ExtendedUIComponent, LayoutComponentDetail, LayoutRenderer as LayoutRendererType } from '../types/renderer.types';
 import { ChartRenderer } from './group/ChartRenderer';
 import { FormRenderer } from './group/FormRenderer';
 import { TableRenderer } from './group/TableRenderer';
@@ -43,7 +43,7 @@ const { useBreakpoint } = Grid;
 // Mock data should be provided from LayoutRendererExample - removed from here
 
 interface LayoutRendererProps {
-  renderer: Renderer;
+  renderer: LayoutRendererType;
 }
 
 export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
@@ -116,8 +116,8 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
 
     // Check if it's a standard UIComponent with component property
     if ('component' in component && component.component) {
-      // This is an xingine UIComponent, convert to CustomComponentDetail for rendering
-      const detail: CustomComponentDetail = {
+      // This is an xingine UIComponent, convert to LayoutComponentDetail for rendering
+      const detail: LayoutComponentDetail = {
         type: component.component,
         props: component.meta || {},
         content: component.component
@@ -125,8 +125,8 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
       return renderComponent(detail, key);
     }
 
-    // It's a CustomComponentDetail
-    const detail = component as CustomComponentDetail;
+    // It's a LayoutComponentDetail
+    const detail = component as LayoutComponentDetail;
     const styles = 'componentDetail' in component ? applyRendererStyles(component as Renderer) : {};
 
     switch (detail.type) {
@@ -191,13 +191,13 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     }
   };
 
-  const renderLayout = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderLayout = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Layout key={key} style={{ minHeight: '100vh', ...styles }}>
       {detail.children?.map((child, index) => renderComponent(child, `layout-${index}`))}
     </Layout>
   );
 
-  const renderHeader = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderHeader = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const userMenuItems = [
       { key: 'profile', label: 'Profile', icon: <UserOutlined /> },
       { key: 'settings', label: 'Settings', icon: <SettingOutlined /> },
@@ -259,7 +259,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     );
   };
 
-  const renderSidebar = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderSidebar = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Sider
       key={key}
       theme={darkMode ? 'dark' : 'light'}
@@ -288,7 +288,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     </Sider>
   );
 
-  const renderContent = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderContent = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Content
       key={key}
       style={{
@@ -305,7 +305,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     </Content>
   );
 
-  const renderFooter = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderFooter = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Footer
       key={key}
       style={{
@@ -321,7 +321,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     </Footer>
   );
 
-  const renderCharts = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderCharts = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const chartMeta = detail.props as ChartMeta;
     if (!chartMeta?.charts) {
       return <WrapperRenderer key={key} style={styles}>No chart data provided</WrapperRenderer>;
@@ -329,7 +329,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     return <ChartRenderer key={key} {...chartMeta} />;
   };
 
-  const renderForm = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderForm = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const formMeta = detail.props as FormMeta;
     if (!formMeta?.fields) {
       return <WrapperRenderer key={key} style={styles}>No form configuration provided</WrapperRenderer>;
@@ -337,7 +337,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     return <FormRenderer key={key} {...formMeta} />;
   };
 
-  const renderTable = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderTable = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const tableMeta = detail.props as TableMeta;
     if (!tableMeta?.columns) {
       return <WrapperRenderer key={key} style={styles}>No table configuration provided</WrapperRenderer>;
@@ -345,7 +345,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     return <TableRenderer key={key} {...tableMeta} />;
   };
 
-  const renderDetail = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderDetail = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const detailMeta = detail.props as DetailMeta;
     if (!detailMeta) {
       return <WrapperRenderer key={key} style={styles}>No detail configuration provided</WrapperRenderer>;
@@ -354,14 +354,14 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
   };
 
   // Ant Design Component Renderers
-  const renderDiv = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderDiv = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <WrapperRenderer key={key} style={{ ...detail.props?.style, ...styles }} {...detail.props}>
       {detail.content}
       {detail.children?.map((child, index) => renderComponent(child, `${key}-div-${index}`))}
     </WrapperRenderer>
   );
 
-  const renderButton = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderButton = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Button 
       key={key} 
       style={styles} 
@@ -373,21 +373,21 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     </Button>
   );
 
-  const renderSearch = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderSearch = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Search key={key} style={styles} {...detail.props} />
   );
 
-  const renderSwitch = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderSwitch = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Switch key={key} style={styles} {...detail.props} />
   );
 
-  const renderBadge = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderBadge = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Badge key={key} style={styles} {...detail.props}>
       {detail.children?.map((child, index) => renderComponent(child, `${key}-badge-${index}`))}
     </Badge>
   );
 
-  const renderDropdown = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderDropdown = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Dropdown key={key} {...detail.props}>
       <WrapperRenderer style={styles}>
         {detail.children?.map((child, index) => renderComponent(child, `${key}-dropdown-${index}`))}
@@ -395,7 +395,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     </Dropdown>
   );
 
-  const renderAvatar = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderAvatar = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Avatar 
       key={key} 
       style={styles} 
@@ -404,57 +404,57 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     />
   );
 
-  const renderMenu = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderMenu = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Menu key={key} style={styles} {...detail.props} />
   );
 
-  const renderTitle = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderTitle = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Title key={key} style={styles} {...detail.props}>
       {detail.content}
     </Title>
   );
 
-  const renderCard = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderCard = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Card key={key} style={styles} {...detail.props}>
       {detail.children?.map((child, index) => renderComponent(child, `${key}-card-${index}`))}
     </Card>
   );
 
-  const renderText = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderText = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <Text key={key} style={styles} {...detail.props}>
       {detail.content}
     </Text>
   );
 
-  const renderLink = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => (
+  const renderLink = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <a key={key} style={styles} {...detail.props}>
       {detail.content}
     </a>
   );
 
   // Xingine Component Renderers
-  const renderChartRenderer = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderChartRenderer = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as ChartMeta;
     if (!meta) return <WrapperRenderer key={key}>No chart meta provided</WrapperRenderer>;
     
     return <ChartRenderer key={key} {...meta} />;
   };
 
-  const renderFormRenderer = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderFormRenderer = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as FormMeta;
     if (!meta) return <WrapperRenderer key={key}>No form meta provided</WrapperRenderer>;
     
     return <FormRenderer key={key} {...meta} />;
   };
 
-  const renderTableRenderer = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderTableRenderer = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as TableMeta;
     if (!meta) return <WrapperRenderer key={key}>No table meta provided</WrapperRenderer>;
     
     return <TableRenderer key={key} {...meta} />;
   };
 
-  const renderDetailRenderer = (detail: CustomComponentDetail, styles: React.CSSProperties, key?: string) => {
+  const renderDetailRenderer = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as DetailMeta;
     if (!meta) return <WrapperRenderer key={key}>No detail meta provided</WrapperRenderer>;
     
@@ -483,7 +483,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
 };
 
 // Helper function to create a default layout configuration
-export const createDefaultLayoutRenderer = (): Renderer => ({
+export const createDefaultLayoutRenderer = (): LayoutRendererType => ({
   componentDetail: {
     type: 'layout',
     children: [

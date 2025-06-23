@@ -1,6 +1,6 @@
 import React from 'react';
 import { LayoutRenderer } from './LayoutRenderer';
-import { Renderer, ChartMeta, FormMeta, TableMeta, DetailMeta, ChartConfig } from '../types/renderer.types';
+import { LayoutRenderer as LayoutRendererType, ChartMeta, FormMeta, TableMeta, DetailMeta, ChartConfig } from '../types/renderer.types';
 
 /**
  * Example component demonstrating LayoutRenderer usage with xingine components
@@ -25,11 +25,7 @@ export const LayoutRendererExample: React.FC = () => {
           label: 'Sales',
           data: [4000, 3000, 2000, 2780, 1890, 2390],
           backgroundColor: '#1890ff'
-        }],
-        renderer: {
-          layout: { display: 'flex', alignment: 'center' },
-          display: { showBorder: true, showShadow: true }
-        }
+        }]
       },
       {
         type: 'line',
@@ -39,11 +35,7 @@ export const LayoutRendererExample: React.FC = () => {
           label: 'Users',
           data: [240, 221, 229, 200, 218, 250],
           borderColor: '#52c41a'
-        }],
-        renderer: {
-          layout: { display: 'flex', alignment: 'center' },
-          display: { showBorder: true, showShadow: true }
-        }
+        }]
       },
       {
         type: 'pie',
@@ -53,11 +45,7 @@ export const LayoutRendererExample: React.FC = () => {
           data: [400, 300, 300, 200],
           backgroundColor: '#1890ff' // Single color for pie chart
         }],
-        labels: ['Desktop', 'Mobile', 'Tablet', 'Other'],
-        renderer: {
-          layout: { display: 'flex', alignment: 'center' },
-          display: { showBorder: true, showShadow: true }
-        }
+        labels: ['Desktop', 'Mobile', 'Tablet', 'Other']
       },
       {
         type: 'scatter',
@@ -72,23 +60,9 @@ export const LayoutRendererExample: React.FC = () => {
             { x: 4, y: 3908 }
           ],
           backgroundColor: '#722ed1'
-        }],
-        renderer: {
-          layout: { display: 'flex', alignment: 'center' },
-          display: { showBorder: true, showShadow: true }
-        }
+        }]
       }
-    ],
-    renderer: {
-      layout: { display: 'grid', columns: 2, spacing: 16 },
-      responsive: {
-        breakpoints: {
-          mobile: { layout: { columns: 1 } },
-          tablet: { layout: { columns: 2 } },
-          desktop: { layout: { columns: 2 } }
-        }
-      }
-    }
+    ]
   };
 
   // Create form configuration using FormMeta
@@ -98,44 +72,56 @@ export const LayoutRendererExample: React.FC = () => {
       {
         name: 'firstName',
         label: 'First Name',
-        type: 'text',
+        inputType: 'input',
         required: true,
-        placeholder: 'Enter first name'
+        properties: {
+          placeholder: 'Enter first name'
+        }
       },
       {
         name: 'lastName', 
         label: 'Last Name',
-        type: 'text',
+        inputType: 'input',
         required: true,
-        placeholder: 'Enter last name'
+        properties: {
+          placeholder: 'Enter last name'
+        }
       },
       {
         name: 'email',
         label: 'Email',
-        type: 'email', 
+        inputType: 'input', 
         required: true,
-        placeholder: 'Enter email address'
+        properties: {
+          placeholder: 'Enter email address',
+          email: true
+        }
       },
       {
         name: 'role',
         label: 'Role',
-        type: 'select',
+        inputType: 'select',
         required: true,
-        options: [
-          { label: 'Admin', value: 'admin' },
-          { label: 'User', value: 'user' },
-          { label: 'Editor', value: 'editor' }
-        ]
+        properties: {
+          options: [
+            { label: 'Admin', value: 'admin' },
+            { label: 'User', value: 'user' },
+            { label: 'Editor', value: 'editor' }
+          ]
+        }
       },
       {
         name: 'department',
         label: 'Department',
-        type: 'select',
-        options: [
-          { label: 'Engineering', value: 'eng' },
-          { label: 'Marketing', value: 'marketing' },
-          { label: 'Sales', value: 'sales' }
-        ]
+        inputType: 'select',
+        required: false,
+        properties: {
+          options: [
+            { label: 'Engineering', value: 'eng' },
+            { label: 'Marketing', value: 'marketing' },
+            { label: 'Sales', value: 'sales' }
+          ]
+        }
       }
     ]
   };
@@ -152,7 +138,7 @@ export const LayoutRendererExample: React.FC = () => {
         sortable: true,
         filterable: {
           apply: true,
-          inputType: 'text',
+          inputType: 'input',
           searchFieldKey: 'name'
         }
       },
@@ -163,7 +149,7 @@ export const LayoutRendererExample: React.FC = () => {
         sortable: true,
         filterable: {
           apply: true,
-          inputType: 'text',
+          inputType: 'input',
           searchFieldKey: 'email'
         }
       },
@@ -209,56 +195,53 @@ export const LayoutRendererExample: React.FC = () => {
       {
         name: 'id',
         label: 'User ID',
-        type: 'text',
-        readonly: true
+        inputType: 'text',
       },
       {
         name: 'firstName',
         label: 'First Name', 
-        type: 'text'
+        inputType: 'text'
       },
       {
         name: 'lastName',
         label: 'Last Name',
-        type: 'text'
+        inputType: 'text'
       },
       {
         name: 'email',
         label: 'Email',
-        type: 'email'
+        inputType: 'text'
       },
       {
         name: 'role',
         label: 'Role',
-        type: 'badge'
+        inputType: 'badge'
       },
       {
         name: 'department',
         label: 'Department',
-        type: 'text'
+        inputType: 'text'
       },
       {
         name: 'status',
         label: 'Status',
-        type: 'switch'
+        inputType: 'switch'
       },
       {
         name: 'createdAt',
         label: 'Created Date',
-        type: 'date',
-        readonly: true
+        inputType: 'date',
       },
       {
         name: 'lastLogin',
         label: 'Last Login',
-        type: 'date',
-        readonly: true
+        inputType: 'date',
       }
     ]
   };
 
   // Create the complete layout configuration
-  const layoutConfig: Renderer = {
+  const layoutConfig: LayoutRendererType = {
     componentDetail: {
       type: 'layout',
       children: [
@@ -292,7 +275,7 @@ export const LayoutRendererExample: React.FC = () => {
                   type: 'button',
                   props: {
                     icon: 'home',
-                    type: 'text',
+                    inputType: 'text',
                     size: 'large'
                   },
                   content: 'Home'
@@ -331,7 +314,7 @@ export const LayoutRendererExample: React.FC = () => {
                           type: 'button',
                           props: {
                             icon: 'bell',
-                            type: 'text',
+                            inputType: 'text',
                             shape: 'circle'
                           }
                         }

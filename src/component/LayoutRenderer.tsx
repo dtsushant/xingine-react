@@ -1,43 +1,34 @@
 import React, { useState } from 'react';
 import {
-  Layout,
-  Menu,
-  Button,
-  Input,
-  Avatar,
-  Dropdown,
-  Badge,
-  Switch,
   Grid,
-  Card,
-  Row,
-  Col,
-  Space,
-  Typography,
 } from 'antd';
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  SearchOutlined,
-  BellOutlined,
-  HomeOutlined,
-  UserOutlined,
-  SettingOutlined,
-  LogoutOutlined,
-  BulbOutlined,
-  DashboardOutlined,
-  TeamOutlined,
-} from '@ant-design/icons';
 import { Renderer, UIComponent, UIComponentDetail, ChartMeta, FormMeta, TableMeta, DetailMeta, ExtendedUIComponent, LayoutComponentDetail, LayoutRenderer as LayoutRendererType } from '../types/renderer.types';
 import { ChartRenderer } from './group/ChartRenderer';
 import { FormRenderer } from './group/FormRenderer';
 import { TableRenderer } from './group/TableRenderer';
 import { DetailRenderer } from './group/DetailRenderer';
 import { WrapperRenderer } from './group/WrapperRenderer';
+import { 
+  ButtonRenderer,
+  SearchRenderer,
+  SwitchRenderer,
+  BadgeRenderer,
+  DropdownRenderer,
+  AvatarRenderer,
+  MenuRenderer,
+  TitleRenderer,
+  CardRenderer,
+  TextRenderer,
+  LinkRenderer
+} from './group';
+import {
+  LayoutComponent,
+  HeaderComponent,
+  SidebarComponent,
+  ContentComponent,
+  FooterComponent
+} from './layout/exposition';
 
-const { Header, Sider, Content, Footer } = Layout;
-const { Search } = Input;
-const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
 
 // Mock data should be provided from LayoutRendererExample - removed from here
@@ -131,16 +122,49 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
 
     switch (detail.type) {
       case 'layout':
-        return renderLayout(detail, styles, key);
+        return <LayoutComponent key={key} detail={detail} styles={styles} renderComponent={renderComponent} keyPrefix={key} />;
       case 'header':
-        return renderHeader(detail, styles, key);
+        return <HeaderComponent 
+          key={key} 
+          detail={detail} 
+          styles={styles} 
+          collapsed={collapsed}
+          darkMode={darkMode}
+          onToggleCollapsed={() => setCollapsed(!collapsed)}
+          onToggleDarkMode={setDarkMode}
+          keyPrefix={key} 
+        />;
       case 'sidebar':
       case 'sider':
-        return renderSidebar(detail, styles, key);
+        return <SidebarComponent 
+          key={key} 
+          detail={detail} 
+          styles={styles} 
+          collapsed={collapsed}
+          darkMode={darkMode}
+          isMobile={isMobile}
+          onCollapse={setCollapsed}
+          keyPrefix={key} 
+        />;
       case 'content':
-        return renderContent(detail, styles, key);
+        return <ContentComponent 
+          key={key} 
+          detail={detail} 
+          styles={styles} 
+          collapsed={collapsed}
+          darkMode={darkMode}
+          isMobile={isMobile}
+          renderComponent={renderComponent}
+          keyPrefix={key} 
+        />;
       case 'footer':
-        return renderFooter(detail, styles, key);
+        return <FooterComponent 
+          key={key} 
+          detail={detail} 
+          styles={styles} 
+          darkMode={darkMode}
+          keyPrefix={key} 
+        />;
       case 'charts':
         return renderCharts(detail, styles, key);
       case 'form':
@@ -154,27 +178,27 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
       case 'div':
         return renderDiv(detail, styles, key);
       case 'button':
-        return renderButton(detail, styles, key);
+        return <ButtonRenderer key={key} detail={detail} styles={styles} renderComponent={renderComponent} keyPrefix={key} />;
       case 'search':
-        return renderSearch(detail, styles, key);
+        return <SearchRenderer key={key} detail={detail} styles={styles} keyPrefix={key} />;
       case 'switch':
-        return renderSwitch(detail, styles, key);
+        return <SwitchRenderer key={key} detail={detail} styles={styles} keyPrefix={key} />;
       case 'badge':
-        return renderBadge(detail, styles, key);
+        return <BadgeRenderer key={key} detail={detail} styles={styles} renderComponent={renderComponent} keyPrefix={key} />;
       case 'dropdown':
-        return renderDropdown(detail, styles, key);
+        return <DropdownRenderer key={key} detail={detail} styles={styles} renderComponent={renderComponent} keyPrefix={key} />;
       case 'avatar':
-        return renderAvatar(detail, styles, key);
+        return <AvatarRenderer key={key} detail={detail} styles={styles} keyPrefix={key} />;
       case 'menu':
-        return renderMenu(detail, styles, key);
+        return <MenuRenderer key={key} detail={detail} styles={styles} keyPrefix={key} />;
       case 'title':
-        return renderTitle(detail, styles, key);
+        return <TitleRenderer key={key} detail={detail} styles={styles} keyPrefix={key} />;
       case 'card':
-        return renderCard(detail, styles, key);
+        return <CardRenderer key={key} detail={detail} styles={styles} renderComponent={renderComponent} keyPrefix={key} />;
       case 'text':
-        return renderText(detail, styles, key);
+        return <TextRenderer key={key} detail={detail} styles={styles} keyPrefix={key} />;
       case 'link':
-        return renderLink(detail, styles, key);
+        return <LinkRenderer key={key} detail={detail} styles={styles} keyPrefix={key} />;
       
       // Xingine Components
       case 'ChartRenderer':
@@ -190,136 +214,6 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
         return <WrapperRenderer key={key} style={styles}>{detail.content || 'Unknown component'}</WrapperRenderer>;
     }
   };
-
-  const renderLayout = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Layout key={key} style={{ minHeight: '100vh', ...styles }}>
-      {detail.children?.map((child, index) => renderComponent(child, `layout-${index}`))}
-    </Layout>
-  );
-
-  const renderHeader = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
-    const userMenuItems = [
-      { key: 'profile', label: 'Profile', icon: <UserOutlined /> },
-      { key: 'settings', label: 'Settings', icon: <SettingOutlined /> },
-      { type: 'divider' as const },
-      { key: 'logout', label: 'Logout', icon: <LogoutOutlined /> },
-    ];
-
-    return (
-      <Header
-        key={key}
-        style={{
-          padding: '0 16px',
-          background: darkMode ? '#001529' : '#fff',
-          borderBottom: '1px solid #f0f0f0',
-          position: 'fixed',
-          top: 0,
-          width: '100%',
-          zIndex: 1000,
-          ...styles,
-        }}
-      >
-        <Row justify="space-between" align="middle" style={{ height: '100%' }}>
-          <Col>
-            <Space>
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-              />
-              <Button type="text" icon={<HomeOutlined />} />
-            </Space>
-          </Col>
-          <Col flex="auto" style={{ maxWidth: 400, margin: '0 16px' }}>
-            <Search
-              placeholder="Search..."
-              allowClear
-              enterButton={<SearchOutlined />}
-              onSearch={(value) => console.log('Search:', value)}
-            />
-          </Col>
-          <Col>
-            <Space>
-              <Badge count={5}>
-                <Button type="text" icon={<BellOutlined />} />
-              </Badge>
-              <Switch
-                checkedChildren={<BulbOutlined />}
-                unCheckedChildren={<BulbOutlined />}
-                checked={darkMode}
-                onChange={setDarkMode}
-              />
-              <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-                <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
-              </Dropdown>
-            </Space>
-          </Col>
-        </Row>
-      </Header>
-    );
-  };
-
-  const renderSidebar = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Sider
-      key={key}
-      theme={darkMode ? 'dark' : 'light'}
-      collapsed={isMobile ? false : collapsed}
-      onCollapse={setCollapsed}
-      breakpoint="lg"
-      collapsedWidth={isMobile ? 0 : 80}
-      style={{
-        position: 'fixed',
-        left: 0,
-        top: 64,
-        height: 'calc(100vh - 64px)',
-        zIndex: 999,
-        ...styles,
-      }}
-    >
-      <WrapperRenderer style={{ padding: '16px 0' }}>
-        <Menu
-          theme={darkMode ? 'dark' : 'light'}
-          mode="inline"
-          defaultSelectedKeys={['dashboard']}
-          items={detail.props?.menuItems || []}
-          style={{ border: 'none' }}
-        />
-      </WrapperRenderer>
-    </Sider>
-  );
-
-  const renderContent = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Content
-      key={key}
-      style={{
-        marginLeft: isMobile ? 0 : (collapsed ? 80 : 200),
-        marginTop: 64,
-        padding: 24,
-        minHeight: 'calc(100vh - 64px)',
-        background: darkMode ? '#001529' : '#f0f2f5',
-        transition: 'margin-left 0.2s',
-        ...styles,
-      }}
-    >
-      {detail.children?.map((child, index) => renderComponent(child, `content-${index}`))}
-    </Content>
-  );
-
-  const renderFooter = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Footer
-      key={key}
-      style={{
-        textAlign: 'center',
-        background: darkMode ? '#001529' : '#fff',
-        borderTop: '1px solid #f0f0f0',
-        ...styles,
-      }}
-    >
-      <Text type="secondary">
-        {detail.content || 'Xingine React Layout ©2024 Created with LayoutRenderer'}
-      </Text>
-    </Footer>
-  );
 
   const renderCharts = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const chartMeta = detail.props as ChartMeta;
@@ -353,86 +247,13 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     return <DetailRenderer key={key} {...detailMeta} />;
   };
 
-  // Ant Design Component Renderers
+  // Xingine Component Renderers
   const renderDiv = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
     <WrapperRenderer key={key} style={{ ...detail.props?.style, ...styles }} {...detail.props}>
       {detail.content}
       {detail.children?.map((child, index) => renderComponent(child, `${key}-div-${index}`))}
     </WrapperRenderer>
   );
-
-  const renderButton = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Button 
-      key={key} 
-      style={styles} 
-      icon={detail.props?.icon ? React.createElement(getIcon(detail.props.icon)) : undefined}
-      {...detail.props}
-    >
-      {detail.content}
-      {detail.children?.map((child, index) => renderComponent(child, `${key}-button-${index}`))}
-    </Button>
-  );
-
-  const renderSearch = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Search key={key} style={styles} {...detail.props} />
-  );
-
-  const renderSwitch = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Switch key={key} style={styles} {...detail.props} />
-  );
-
-  const renderBadge = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Badge key={key} style={styles} {...detail.props}>
-      {detail.children?.map((child, index) => renderComponent(child, `${key}-badge-${index}`))}
-    </Badge>
-  );
-
-  const renderDropdown = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Dropdown key={key} {...detail.props}>
-      <WrapperRenderer style={styles}>
-        {detail.children?.map((child, index) => renderComponent(child, `${key}-dropdown-${index}`))}
-      </WrapperRenderer>
-    </Dropdown>
-  );
-
-  const renderAvatar = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Avatar 
-      key={key} 
-      style={styles} 
-      icon={detail.props?.icon ? React.createElement(getIcon(detail.props.icon)) : undefined}
-      {...detail.props} 
-    />
-  );
-
-  const renderMenu = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Menu key={key} style={styles} {...detail.props} />
-  );
-
-  const renderTitle = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Title key={key} style={styles} {...detail.props}>
-      {detail.content}
-    </Title>
-  );
-
-  const renderCard = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Card key={key} style={styles} {...detail.props}>
-      {detail.children?.map((child, index) => renderComponent(child, `${key}-card-${index}`))}
-    </Card>
-  );
-
-  const renderText = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <Text key={key} style={styles} {...detail.props}>
-      {detail.content}
-    </Text>
-  );
-
-  const renderLink = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => (
-    <a key={key} style={styles} {...detail.props}>
-      {detail.content}
-    </a>
-  );
-
-  // Xingine Component Renderers
   const renderChartRenderer = (detail: LayoutComponentDetail, styles: React.CSSProperties, key?: string) => {
     const meta = detail.props?.meta as ChartMeta;
     if (!meta) return <WrapperRenderer key={key}>No chart meta provided</WrapperRenderer>;
@@ -459,21 +280,6 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
     if (!meta) return <WrapperRenderer key={key}>No detail meta provided</WrapperRenderer>;
     
     return <DetailRenderer key={key} {...meta} />;
-  };
-
-  // Helper function to get icon components
-  const getIcon = (iconName: string) => {
-    const iconMap: Record<string, any> = {
-      home: HomeOutlined,
-      bell: BellOutlined,
-      user: UserOutlined,
-      setting: SettingOutlined,
-      logout: LogoutOutlined,
-      dashboard: DashboardOutlined,
-      team: TeamOutlined,
-      'bar-chart': DashboardOutlined, // Using dashboard as placeholder
-    };
-    return iconMap[iconName] || UserOutlined;
   };
 
   return renderComponent(renderer.componentDetail || {

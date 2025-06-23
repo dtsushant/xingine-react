@@ -1,57 +1,37 @@
-// Import basic types that are actually exported from xingine
+// Import all types from xingine that are already defined there
 export type {
+  Renderer,
+  UIComponent,
+  UIComponentDetail,
   Comrade,
   Permission,
   GroupedPermission,
-  ModulePropertyOptions
+  ModulePropertyOptions,
+  IconMeta,
+  ExpositionRule
 } from 'xingine';
 
-// Define IconMeta interface as it should be in xingine
-export interface IconMeta {
-  name?: string;
-  color?: string;
-  size?: number | string;
-  spin?: boolean;
-  rotate?: number;
-  twoToneColor?: string;
-  className?: string;
-}
+// Since ComponentMetaMap and related types are not exported from the main index,
+// I'll define them based on the xingine structure but only include additional properties if needed
 
-// Define ExpositionRule interface as it should be in xingine
-export interface ExpositionRule {
-  visible?: boolean | any;
-  disabled?: boolean | any;
-  className?: string;
-  style?: Record<string, string>;
-  icon?: IconMeta;
-  tooltip?: string;
-  order?: number;
-  tag?: string;
-  wrapper?: string;
-  section?: string;
-}
-
-// Define UIComponent interface as it should be in xingine
-export interface UIComponent {
-  component: string;
-  path: string;
-  expositionRule?: ExpositionRule;
-  layout?: string;
-  roles?: string[];
-  permissions?: string[];
-  meta?: any;
-}
-
-// Define types that should be in xingine but may not be exported
-export interface ComponentMetaMap {
-  FormRenderer: FormMeta;
-  TableRenderer: TableMeta;
-  TabRenderer: TabMeta;
-  DetailRenderer: DetailMeta;
-  ChartRenderer: ChartMeta;
+// Define component meta types based on xingine structure
+export interface ColumnMeta {
+  title?: string;
+  dataIndex?: string;
+  key?: string;
+  render?: string;
+  width?: number | string;
+  sortable?: boolean;
+  filterable?: any;
 }
 
 export interface FormMeta {
+  fields: any[];
+  action: string;
+  dispatch?: any;
+}
+
+export interface DetailMeta {
   fields: any[];
   action: string;
   dispatch?: any;
@@ -73,42 +53,6 @@ export interface TabMeta {
   dispatch?: any;
 }
 
-export interface DetailMeta {
-  fields: any[];
-  action: string;
-  dispatch?: any;
-}
-
-export interface ChartMeta {
-  charts: ChartConfig[];
-  renderer?: Renderer;
-}
-
-export interface ChartConfig {
-  type: ChartType;
-  title?: string;
-  labels?: string[];
-  datasets?: ChartDataset[];
-  options?: Record<string, unknown>;
-  dataSourceUrl?: string;
-  renderer?: Renderer;
-}
-
-export interface ColumnMeta {
-  title?: string;
-  dataIndex?: string;
-  key?: string;
-  render?: string;
-  width?: number | string;
-  sortable?: boolean;
-  filterable?: any;
-}
-
-export interface ComponentMeta<T extends keyof ComponentMetaMap = keyof ComponentMetaMap> {
-  component: T;
-  properties: ComponentMetaMap[T];
-}
-
 export type ChartType = "bar" | "line" | "pie" | "scatter";
 
 export interface ChartDataset {
@@ -121,71 +65,54 @@ export interface ChartDataset {
   borderColor?: string;
 }
 
-// Define the Renderer interface as it should be
-export interface Renderer {
-  mode?: string;
-  layout?: {
-    display?: string;
-    columns?: number;
-    spacing?: string | number;
-    alignment?: string;
-  };
-  interaction?: {
-    clickable?: boolean;
-    hoverable?: boolean;
-    draggable?: boolean;
-    keyboardNavigable?: boolean;
-  };
-  display?: {
-    showBorder?: boolean;
-    showShadow?: boolean;
-    backgroundColor?: string;
-    textColor?: string;
-    borderRadius?: string | number;
-    opacity?: number;
-  };
-  responsive?: {
-    breakpoints?: {
-      mobile?: Partial<Renderer>;
-      tablet?: Partial<Renderer>;
-      desktop?: Partial<Renderer>;
-    };
-    hiddenOn?: ('mobile' | 'tablet' | 'desktop')[];
-  };
-  animation?: {
-    type?: string;
-    duration?: number;
-    easing?: string;
-    animateOnMount?: boolean;
-  };
-  cssClasses?: string[];
-  customStyles?: Record<string, string | number>;
-  accessibility?: {
-    role?: string;
-    ariaLabel?: string;
-    ariaDescription?: string;
-    tabIndex?: number;
-  };
+export interface ChartConfig {
+  type: ChartType;
+  title?: string;
+  labels?: string[];
+  datasets?: ChartDataset[];
+  options?: Record<string, unknown>;
+  dataSourceUrl?: string;
+  renderer?: any; // Avoid circular reference
 }
 
-// Extended UIComponent type that includes both xingine UIComponent and custom component details
-export interface UIComponentDetail {
+export interface ChartMeta {
+  charts: ChartConfig[];
+  renderer?: any; // Avoid circular reference
+}
+
+export interface ComponentMetaMap {
+  FormRenderer: FormMeta;
+  TableRenderer: TableMeta;
+  TabRenderer: TabMeta;
+  DetailRenderer: DetailMeta;
+  ChartRenderer: ChartMeta;
+}
+
+export interface ComponentMeta<T extends keyof ComponentMetaMap = keyof ComponentMetaMap> {
+  component: T;
+  properties: ComponentMetaMap[T];
+}
+
+// Import the Renderer type from xingine
+import type { Renderer, UIComponent, UIComponentDetail } from 'xingine';
+
+// Custom component detail interface for our extended components (doesn't need to extend xingine UIComponentDetail)
+export interface CustomUIComponentDetail {
   type: string;
   props?: Record<string, any>;
   children?: ExtendedUIComponent[];
   content?: string;
 }
 
-// Extended type that allows for both xingine UIComponent and custom components  
-export type ExtendedUIComponent = UIComponent | UIComponentDetail;
+// Extended UIComponent type that includes both xingine UIComponent and our custom components
+export type ExtendedUIComponent = UIComponent | CustomUIComponentDetail;
 
 // Extended Renderer interface that includes componentDetail for recursive rendering
-export interface ExtendedRenderer extends Renderer {
+export interface ExtendedRenderer extends Omit<Renderer, 'componentDetail'> {
   /**
-   * Detailed description of the UI component to render or the nested Renderer
-   * This should include the component type from ComponentMetaMap
+   * Override componentDetail to use our extended type
    */
-  componentDetail?: ExtendedUIComponent;
+  componentDetail: ExtendedUIComponent;
   
   /**
    * Children components for recursive rendering

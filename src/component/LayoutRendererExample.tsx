@@ -407,7 +407,7 @@ export const LayoutRendererExample: React.FC = () => {
                 }
               },
               children: [
-                // First row - 4 charts
+                // First row - 4 charts in single row
                 {
                   type: 'div',
                   props: {
@@ -420,66 +420,106 @@ export const LayoutRendererExample: React.FC = () => {
                       content: 'Analytics Dashboard'
                     },
                     {
-                      type: 'ChartRenderer',
+                      type: 'div',
                       props: {
-                        meta: chartMeta
-                      }
-                    }
-                  ]
-                },
-                // Second row - Form builder
-                {
-                  type: 'div',
-                  props: {
-                    style: { marginBottom: '24px' }
-                  },
-                  children: [
-                    {
-                      type: 'title',
-                      props: { level: 3 },
-                      content: 'Create New User'
-                    },
-                    {
-                      type: 'card',
+                        style: { 
+                          display: 'flex', 
+                          gap: '16px', 
+                          flexWrap: 'wrap',
+                          justifyContent: 'space-between'
+                        }
+                      },
                       children: [
                         {
-                          type: 'FormRenderer',
+                          type: 'ChartRenderer',
                           props: {
-                            meta: formMeta
+                            meta: chartMeta,
+                            style: { 
+                              flex: '1',
+                              minWidth: '250px'
+                            }
                           }
                         }
                       ]
                     }
                   ]
                 },
-                // Third row - Table
+                // Second row - Form and Table side by side
                 {
                   type: 'div',
                   props: {
-                    style: { marginBottom: '24px' }
+                    style: { 
+                      marginBottom: '24px',
+                      display: 'flex',
+                      gap: '24px',
+                      flexWrap: 'wrap'
+                    }
                   },
                   children: [
+                    // Left side - Form
                     {
-                      type: 'title',
-                      props: { level: 3 },
-                      content: 'User Management'
-                    },
-                    {
-                      type: 'card',
+                      type: 'div',
+                      props: {
+                        style: { 
+                          flex: '1',
+                          minWidth: '400px'
+                        }
+                      },
                       children: [
                         {
-                          type: 'TableRenderer',
-                          props: {
-                            meta: tableMeta
-                          }
+                          type: 'title',
+                          props: { level: 3 },
+                          content: 'Create New User'
+                        },
+                        {
+                          type: 'card',
+                          children: [
+                            {
+                              type: 'FormRenderer',
+                              props: {
+                                meta: formMeta
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    // Right side - Table
+                    {
+                      type: 'div',
+                      props: {
+                        style: { 
+                          flex: '1',
+                          minWidth: '400px'
+                        }
+                      },
+                      children: [
+                        {
+                          type: 'title',
+                          props: { level: 3 },
+                          content: 'User Management'
+                        },
+                        {
+                          type: 'card',
+                          children: [
+                            {
+                              type: 'TableRenderer',
+                              props: {
+                                meta: tableMeta
+                              }
+                            }
+                          ]
                         }
                       ]
                     }
                   ]
                 },
-                // Fourth row - Detail view
+                // Third row - Detail view in single div
                 {
                   type: 'div',
+                  props: {
+                    style: { marginBottom: '24px' }
+                  },
                   children: [
                     {
                       type: 'title',

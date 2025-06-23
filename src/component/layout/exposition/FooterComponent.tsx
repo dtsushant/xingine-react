@@ -12,24 +12,51 @@ interface FooterComponentProps {
   keyPrefix?: string;
 }
 
+// Hook to detect very small screens (below 508px)
+const useVerySmallScreen = () => {
+  const [isVerySmall, setIsVerySmall] = React.useState(false);
+  
+  React.useEffect(() => {
+    const checkScreenSize = () => {
+      setIsVerySmall(window.innerWidth < 508);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+  
+  return isVerySmall;
+};
+
 export const FooterComponent: React.FC<FooterComponentProps> = ({ 
   detail, 
   styles, 
   darkMode,
   keyPrefix = 'footer' 
-}) => (
-  <Footer
-    style={{
-      textAlign: 'center',
-      background: darkMode ? '#001529' : '#fff',
-      borderTop: '1px solid #f0f0f0',
-      ...styles,
-    }}
-  >
-    <Text type="secondary">
-      {detail.content || 'Xingine React Layout ©2024 Created with LayoutRenderer'}
-    </Text>
-  </Footer>
-);
+}) => {
+  const isVerySmallScreen = useVerySmallScreen();
+  
+  // Hide footer on very small screens
+  if (isVerySmallScreen) {
+    return null;
+  }
+
+  return (
+    <Footer
+      style={{
+        textAlign: 'center',
+        background: darkMode ? '#001529' : '#fff',
+        borderTop: '1px solid #f0f0f0',
+        ...styles,
+      }}
+    >
+      <Text type="secondary">
+        {detail.content || 'Xingine React Layout ©2024 Created with LayoutRenderer'}
+      </Text>
+    </Footer>
+  );
+};
 
 export default FooterComponent;

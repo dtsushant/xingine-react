@@ -22,20 +22,35 @@ export const ContentComponent: React.FC<ContentComponentProps> = ({
   isMobile,
   renderComponent,
   keyPrefix = 'content' 
-}) => (
-  <Content
-    style={{
-      marginLeft: isMobile ? 0 : (collapsed ? 80 : 200),
-      marginTop: 64,
-      padding: 24,
-      minHeight: 'calc(100vh - 64px)',
-      background: darkMode ? '#001529' : '#f0f2f5',
-      transition: 'margin-left 0.2s',
-      ...styles,
-    }}
-  >
-    {detail.children?.map((child, index) => renderComponent(child, `${keyPrefix}-${index}`))}
-  </Content>
-);
+}) => {
+  // Calculate margin based on screen size and sidebar state
+  const getContentMargin = () => {
+    if (isMobile) {
+      return 0; // No margin on mobile as sidebar collapses to 0
+    }
+    
+    // For desktop/tablet, adjust based on collapsed state
+    return collapsed ? 80 : 200;
+  };
+
+  return (
+    <Content
+      style={{
+        marginLeft: getContentMargin(),
+        marginTop: 64,
+        padding: 24,
+        minHeight: 'calc(100vh - 64px)',
+        background: darkMode ? '#001529' : '#f0f2f5',
+        transition: 'margin-left 0.2s ease-in-out',
+        // Ensure content doesn't overflow and can scroll if needed
+        overflow: 'auto',
+        width: `calc(100% - ${getContentMargin()}px)`,
+        ...styles,
+      }}
+    >
+      {detail.children?.map((child, index) => renderComponent(child, `${keyPrefix}-${index}`))}
+    </Content>
+  );
+};
 
 export default ContentComponent;

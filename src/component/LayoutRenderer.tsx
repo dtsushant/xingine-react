@@ -43,6 +43,33 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
   const screens = useBreakpoint();
   const isMobile = !screens.md;
 
+  // Serializable action handler
+  const handleAction = (action: { type: string; target?: string; value?: any }) => {
+    switch (action.type) {
+      case 'toggle':
+        if (action.target === 'sidebar') {
+          setCollapsed(!collapsed);
+        } else if (action.target === 'darkMode') {
+          setDarkMode(action.value);
+        }
+        break;
+      case 'navigate':
+        console.log('Navigate to:', action.target);
+        // Add navigation logic here
+        break;
+      case 'search':
+        console.log('Search:', action.value);
+        // Add search logic here
+        break;
+      case 'menu-action':
+        console.log('Menu action:', action.target);
+        // Add menu action logic here
+        break;
+      default:
+        console.log('Unknown action:', action);
+    }
+  };
+
   // Helper function to apply renderer styles
   const applyRendererStyles = (renderer: Renderer): React.CSSProperties => {
     const styles: React.CSSProperties = {};
@@ -132,6 +159,8 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
           darkMode={darkMode}
           onToggleCollapsed={() => setCollapsed(!collapsed)}
           onToggleDarkMode={setDarkMode}
+          onAction={handleAction}
+          menuItems={detail.props?.menuItems}
           keyPrefix={key} 
         />;
       case 'sidebar':

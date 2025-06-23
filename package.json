@@ -69,7 +69,6 @@
     "tsc-alias": "^1.8.2",
     "typescript": "^5.0.0",
     "use-debounce": "^10.0.4",
-    "recharts": "^2.15.3",
     "xingine": "^1.0.5"
   },
   "jest": {
@@ -101,5 +100,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "dependencies": {}
 }

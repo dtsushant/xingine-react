@@ -16,6 +16,7 @@ import {
   Col,
   Space,
   Typography,
+  Select,
 } from 'antd';
 import {
   MenuFoldOutlined,
@@ -47,7 +48,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { ExtendedRenderer, ExtendedUIComponent, UIComponentDetail, Renderer } from '../types/renderer.types';
+import { ExtendedRenderer, ExtendedUIComponent, UIComponentDetail, Renderer, ChartMeta, FormMeta, TableMeta, DetailMeta } from '../types/renderer.types';
 
 const { Header, Sider, Content, Footer } = Layout;
 const { Search } = Input;
@@ -178,6 +179,7 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
       case 'header':
         return renderHeader(detail, styles, key);
       case 'sidebar':
+      case 'sider':
         return renderSidebar(detail, styles, key);
       case 'content':
         return renderContent(detail, styles, key);
@@ -191,6 +193,43 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
         return renderTable(detail, styles, key);
       case 'detail':
         return renderDetail(detail, styles, key);
+      
+      // Ant Design Components
+      case 'div':
+        return renderDiv(detail, styles, key);
+      case 'button':
+        return renderButton(detail, styles, key);
+      case 'search':
+        return renderSearch(detail, styles, key);
+      case 'switch':
+        return renderSwitch(detail, styles, key);
+      case 'badge':
+        return renderBadge(detail, styles, key);
+      case 'dropdown':
+        return renderDropdown(detail, styles, key);
+      case 'avatar':
+        return renderAvatar(detail, styles, key);
+      case 'menu':
+        return renderMenu(detail, styles, key);
+      case 'title':
+        return renderTitle(detail, styles, key);
+      case 'card':
+        return renderCard(detail, styles, key);
+      case 'text':
+        return renderText(detail, styles, key);
+      case 'link':
+        return renderLink(detail, styles, key);
+      
+      // Xingine Components
+      case 'ChartRenderer':
+        return renderChartRenderer(detail, styles, key);
+      case 'FormRenderer':
+        return renderFormRenderer(detail, styles, key);
+      case 'TableRenderer':
+        return renderTableRenderer(detail, styles, key);
+      case 'DetailRenderer':
+        return renderDetailRenderer(detail, styles, key);
+      
       default:
         return <div key={key} style={styles}>{detail.content || 'Unknown component'}</div>;
     }
@@ -503,6 +542,276 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({ renderer }) => {
       </Space>
     </Card>
   );
+
+  // Ant Design Component Renderers
+  const renderDiv = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <div key={key} style={{ ...detail.props?.style, ...styles }} {...detail.props}>
+      {detail.content}
+      {detail.children?.map((child, index) => renderComponent(child, `${key}-div-${index}`))}
+    </div>
+  );
+
+  const renderButton = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Button 
+      key={key} 
+      style={styles} 
+      icon={detail.props?.icon ? React.createElement(getIcon(detail.props.icon)) : undefined}
+      {...detail.props}
+    >
+      {detail.content}
+      {detail.children?.map((child, index) => renderComponent(child, `${key}-button-${index}`))}
+    </Button>
+  );
+
+  const renderSearch = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Search key={key} style={styles} {...detail.props} />
+  );
+
+  const renderSwitch = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Switch key={key} style={styles} {...detail.props} />
+  );
+
+  const renderBadge = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Badge key={key} style={styles} {...detail.props}>
+      {detail.children?.map((child, index) => renderComponent(child, `${key}-badge-${index}`))}
+    </Badge>
+  );
+
+  const renderDropdown = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Dropdown key={key} {...detail.props}>
+      <div style={styles}>
+        {detail.children?.map((child, index) => renderComponent(child, `${key}-dropdown-${index}`))}
+      </div>
+    </Dropdown>
+  );
+
+  const renderAvatar = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Avatar 
+      key={key} 
+      style={styles} 
+      icon={detail.props?.icon ? React.createElement(getIcon(detail.props.icon)) : undefined}
+      {...detail.props} 
+    />
+  );
+
+  const renderMenu = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Menu key={key} style={styles} {...detail.props} />
+  );
+
+  const renderTitle = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Title key={key} style={styles} {...detail.props}>
+      {detail.content}
+    </Title>
+  );
+
+  const renderCard = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Card key={key} style={styles} {...detail.props}>
+      {detail.children?.map((child, index) => renderComponent(child, `${key}-card-${index}`))}
+    </Card>
+  );
+
+  const renderText = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <Text key={key} style={styles} {...detail.props}>
+      {detail.content}
+    </Text>
+  );
+
+  const renderLink = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => (
+    <a key={key} style={styles} {...detail.props}>
+      {detail.content}
+    </a>
+  );
+
+  // Xingine Component Renderers
+  const renderChartRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const meta = detail.props?.meta as ChartMeta;
+    if (!meta) return <div key={key}>No chart meta provided</div>;
+    
+    return (
+      <div key={key} style={styles}>
+        <Row gutter={[16, 16]}>
+          {meta.charts.map((chart: any, index: number) => (
+            <Col xs={24} sm={12} lg={12} xl={6} key={`chart-${index}`}>
+              <Card title={chart.title} style={{ height: '300px' }}>
+                <div style={{ width: '100%', height: '250px' }}>
+                  {chart.type === 'bar' && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={chart.datasets?.[0]?.data ? 
+                        chart.labels?.map((label: string, i: number) => ({ 
+                          name: label, 
+                          value: Array.isArray(chart.datasets[0].data) ? chart.datasets[0].data[i] : 0 
+                        })) : []}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="value" fill={chart.datasets?.[0]?.backgroundColor || '#1890ff'} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                  {chart.type === 'line' && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={chart.datasets?.[0]?.data ? 
+                        chart.labels?.map((label: string, i: number) => ({ 
+                          name: label, 
+                          value: Array.isArray(chart.datasets[0].data) ? chart.datasets[0].data[i] : 0 
+                        })) : []}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="value" stroke={chart.datasets?.[0]?.borderColor || '#52c41a'} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  )}
+                  {chart.type === 'pie' && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={chart.labels?.map((label: string, i: number) => ({
+                            name: label,
+                            value: Array.isArray(chart.datasets?.[0]?.data) ? chart.datasets[0].data[i] : 0
+                          }))}
+                          dataKey="value"
+                          nameKey="name"
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={60}
+                          fill="#1890ff"
+                        />
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
+    );
+  };
+
+  const renderFormRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const meta = detail.props?.meta as FormMeta;
+    if (!meta) return <div key={key}>No form meta provided</div>;
+    
+    return (
+      <div key={key} style={styles}>
+        <Form layout="vertical" onFinish={(values) => console.log('Form submitted:', values)}>
+          <Row gutter={16}>
+            {meta.fields.map((field: any, index: number) => (
+              <Col xs={24} sm={12} key={field.name}>
+                <Form.Item
+                  label={field.label}
+                  name={field.name}
+                  rules={field.required ? [{ required: true, message: `Please input ${field.label}` }] : []}
+                >
+                  {field.type === 'select' ? (
+                    <select style={{ width: '100%', height: '32px' }}>
+                      <option value="">Select {field.label}</option>
+                      {field.options?.map((option: any) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input type={field.type} placeholder={field.placeholder} />
+                  )}
+                </Form.Item>
+              </Col>
+            ))}
+          </Row>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Create User
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  };
+
+  const renderTableRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const meta = detail.props?.meta as TableMeta;
+    if (!meta) return <div key={key}>No table meta provided</div>;
+    
+    return (
+      <div key={key} style={styles}>
+        <Table
+          columns={meta.columns.map((col: any) => ({
+            title: col.title,
+            dataIndex: col.dataIndex,
+            key: col.key,
+            width: col.width,
+            sorter: col.sortable,
+            render: col.render === 'badge' ? (text: string) => (
+              <Badge status={text === 'Active' ? 'success' : 'default'} text={text} />
+            ) : undefined
+          }))}
+          dataSource={mockUsers}
+          rowKey={meta.rowKey}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: true }}
+        />
+      </div>
+    );
+  };
+
+  const renderDetailRenderer = (detail: UIComponentDetail, styles: React.CSSProperties, key?: string) => {
+    const meta = detail.props?.meta as DetailMeta;
+    if (!meta) return <div key={key}>No detail meta provided</div>;
+    
+    const mockUser = {
+      id: '1',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      role: 'Admin',
+      department: 'Engineering',
+      status: true,
+      createdAt: '2024-01-15',
+      lastLogin: '2024-01-23'
+    };
+    
+    return (
+      <div key={key} style={styles}>
+        <Row gutter={[16, 16]}>
+          {meta.fields.map((field: any, index: number) => (
+            <Col xs={24} sm={12} lg={8} key={field.name}>
+              <div style={{ marginBottom: '16px' }}>
+                <Text strong>{field.label}:</Text>
+                <br />
+                {field.type === 'badge' ? (
+                  <Badge status="success" text={mockUser[field.name as keyof typeof mockUser]} />
+                ) : field.type === 'switch' ? (
+                  <Switch checked={mockUser[field.name as keyof typeof mockUser] as boolean} disabled />
+                ) : (
+                  <Text>{mockUser[field.name as keyof typeof mockUser]}</Text>
+                )}
+              </div>
+            </Col>
+          ))}
+        </Row>
+      </div>
+    );
+  };
+
+  // Helper function to get icon components
+  const getIcon = (iconName: string) => {
+    const iconMap: Record<string, any> = {
+      home: HomeOutlined,
+      bell: BellOutlined,
+      user: UserOutlined,
+      setting: SettingOutlined,
+      logout: LogoutOutlined,
+      dashboard: DashboardOutlined,
+      team: TeamOutlined,
+      'bar-chart': DashboardOutlined, // Using dashboard as placeholder
+    };
+    return iconMap[iconName] || UserOutlined;
+  };
 
   return renderComponent(renderer.componentDetail || {
     type: 'layout',

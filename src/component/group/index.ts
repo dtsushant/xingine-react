@@ -18,8 +18,39 @@ import {CardRenderer} from "./CardRenderer";
 import {TextRenderer} from "./TextRenderer";
 import {LinkRenderer} from "./LinkRenderer";
 
+// Import module components
+import { UserModule } from "./UserModule";
+import { InventoryModule } from "./InventoryModule";
+import { UserAnalytics } from "./UserAnalytics";
+import { UserDashboard } from "./UserDashboard";
+import { InventoryDashboard } from "./InventoryDashboard";
+
+// Import missing components
+import {
+  AddRole,
+  UserCreate,
+  UserList,
+  UserDetail,
+  NewCategory,
+  CreateInventory,
+  UpdateInventory,
+  StockAdjustment,
+  CreatePurchaseOrder,
+  UpdatePurchaseOrder
+} from "./MissingComponents";
+
+// Import layout components
+import { 
+  LayoutComponent, 
+  HeaderComponent, 
+  SidebarComponent, 
+  ContentComponent, 
+  FooterComponent 
+} from "../layout/exposition";
+
 export function getDefaultInternalComponents() {
   return {
+    // Form and data components
     DetailRenderer,
     TableRenderer,
     TabRenderer,
@@ -27,6 +58,46 @@ export function getDefaultInternalComponents() {
     IconRenderer,
     FormRenderer,
     WrapperRenderer,
+    
+    // UI components
+    ButtonRenderer,
+    SearchRenderer,
+    SwitchRenderer,
+    BadgeRenderer,
+    DropdownRenderer,
+    AvatarRenderer,
+    MenuRenderer,
+    TitleRenderer,
+    CardRenderer,
+    TextRenderer,
+    LinkRenderer,
+    FileInput,
+    
+    // Module components
+    UserModule,
+    InventoryModule,
+    UserAnalytics,
+    UserDashboard,
+    InventoryDashboard,
+    
+    // Missing action components
+    AddRole,
+    UserCreate,
+    UserList,
+    UserDetail,
+    NewCategory,
+    CreateInventory,
+    UpdateInventory,
+    StockAdjustment,
+    CreatePurchaseOrder,
+    UpdatePurchaseOrder,
+    
+    // Layout components - using proper names for registry
+    HeaderRenderer: HeaderComponent,
+    SidebarRenderer: SidebarComponent,
+    ContentRenderer: ContentComponent,
+    FooterRenderer: FooterComponent,
+    LayoutRenderer: LayoutComponent,
   };
 }
 
@@ -49,3 +120,9 @@ export * from "./TitleRenderer";
 export * from "./CardRenderer";
 export * from "./TextRenderer";
 export * from "./LinkRenderer";
+export * from "./UserModule";
+export * from "./InventoryModule";
+export * from "./UserAnalytics";
+export * from "./UserDashboard";
+export * from "./InventoryDashboard";
+export * from "./MissingComponents";

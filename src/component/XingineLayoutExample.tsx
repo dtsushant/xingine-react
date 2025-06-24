@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   LayoutComponentDetail, 
   LayoutRenderer, 
@@ -9,6 +9,234 @@ import {
   DetailMeta, 
   ChartMeta 
 } from '../types/renderer.types';
+import { 
+  getLayoutComponentRegistryService, 
+  initializeLayoutComponentRegistry 
+} from '../xingine-layout-registry';
+import { getDefaultInternalComponents } from './group';
+import { 
+  getRegistryData, 
+  getLayoutConfigurations, 
+  getMockUserData, 
+  getMockInventoryData 
+} from './XingineLayoutRegistryExample';
+
+// Component to demonstrate the new registry system
+export const XingineLayoutExample: React.FC = () => {
+  const [isRegistryInitialized, setIsRegistryInitialized] = useState(false);
+  const [registryStats, setRegistryStats] = useState({
+    totalComponents: 0,
+    menuItems: 0,
+    routes: 0
+  });
+
+  useEffect(() => {
+    // Initialize the layout component registry if not already done
+    if (!getLayoutComponentRegistryService()) {
+      const componentMap = getDefaultInternalComponents() as Record<string, React.FC<unknown>>;
+      initializeLayoutComponentRegistry(componentMap);
+    }
+
+    const registry = getLayoutComponentRegistryService();
+    if (registry) {
+      // Register all components from our comprehensive data
+      const registryData = getRegistryData();
+      
+      registryData.forEach(component => {
+        try {
+          registry.register(component);
+        } catch (error) {
+          console.warn(`Failed to register component ${component.component}:`, error);
+        }
+      });
+
+      // Get registry statistics
+      const allData = registry.getAll();
+      const menuItems = registry.getMenuItems();
+      const routes = registry.getRoutes();
+
+      setRegistryStats({
+        totalComponents: Object.keys(allData.component).length,
+        menuItems: menuItems.length,
+        routes: routes.length
+      });
+
+      setIsRegistryInitialized(true);
+    }
+  }, []);
+
+  const renderRegistryContent = () => {
+    const registry = getLayoutComponentRegistryService();
+    if (!registry) return <div>Registry not initialized</div>;
+
+    const menuItems = registry.getMenuItems();
+    const routes = registry.getRoutes();
+    const allComponents = registry.getAll();
+
+    return (
+      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+        <h1>Xingine Layout Registry System</h1>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+          <div style={{ backgroundColor: '#e8f5e8', padding: '15px', borderRadius: '8px' }}>
+            <h3>Registry Statistics</h3>
+            <ul>
+              <li>Total Components: {registryStats.totalComponents}</li>
+              <li>Menu Items: {registryStats.menuItems}</li>
+              <li>Routes: {registryStats.routes}</li>
+            </ul>
+          </div>
+
+          <div style={{ backgroundColor: '#e8f0ff', padding: '15px', borderRadius: '8px' }}>
+            <h3>Layout Types</h3>
+            <ul>
+              <li>Default Layout (Header + Sidebar + Content + Footer)</li>
+              <li>Public Layout (Header + Content + Footer)</li>
+              <li>Custom Layout (Content only)</li>
+            </ul>
+          </div>
+
+          <div style={{ backgroundColor: '#fff8e8', padding: '15px', borderRadius: '8px' }}>
+            <h3>Modules</h3>
+            <ul>
+              <li>User Management (Default Layout)</li>
+              <li>Inventory Management (Custom Layout)</li>
+              <li>Authentication (Public Layout)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h2>Registered Menu Items</h2>
+          <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px' }}>
+            {menuItems.map((item, index) => (
+              <div key={index} style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#fff', borderRadius: '4px' }}>
+                <strong>{item.component}</strong>
+                <br />
+                <span style={{ color: '#666' }}>Path: {item.path || 'No path'}</span>
+                <br />
+                <span style={{ color: '#666' }}>Content: {item.content}</span>
+                {item.children && (
+                  <div style={{ marginLeft: '20px', marginTop: '5px' }}>
+                    <small>Children: {item.children.length} component(s)</small>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h2>Registered Routes</h2>
+          <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px' }}>
+            {routes.map((route, index) => (
+              <div key={index} style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#fff', borderRadius: '4px' }}>
+                <strong>{route.path}</strong>
+                <br />
+                <span style={{ color: '#666' }}>Component: {route.component.component}</span>
+                <br />
+                <span style={{ color: '#666' }}>Description: {route.component.content}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h2>Registry Helper Functions</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px' }}>
+            <div style={{ backgroundColor: '#f0f8ff', padding: '15px', borderRadius: '8px' }}>
+              <h3>Component Lookup Test</h3>
+              <div>
+                <strong>User Module:</strong> {registry.hasComponent('UserModule') ? '✅ Found' : '❌ Not Found'}
+              </div>
+              <div>
+                <strong>FormRenderer:</strong> {registry.hasComponent('FormRenderer') ? '✅ Found' : '❌ Not Found'}
+              </div>
+              <div>
+                <strong>TableRenderer:</strong> {registry.hasComponent('TableRenderer') ? '✅ Found' : '❌ Not Found'}
+              </div>
+            </div>
+
+            <div style={{ backgroundColor: '#fff0f8', padding: '15px', borderRadius: '8px' }}>
+              <h3>Path Lookup Test</h3>
+              <div>
+                <strong>/user/create:</strong> {registry.getComponentByPath('/user/create') ? '✅ Found' : '❌ Not Found'}
+              </div>
+              <div>
+                <strong>/inventory/list:</strong> {registry.getComponentByPath('/inventory/list') ? '✅ Found' : '❌ Not Found'}
+              </div>
+              <div>
+                <strong>/login:</strong> {registry.getComponentByPath('/login') ? '✅ Found' : '❌ Not Found'}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h2>Sample Mock Data</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px' }}>
+            <div style={{ backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '8px' }}>
+              <h3>User Data Sample</h3>
+              <pre style={{ fontSize: '12px', overflow: 'auto', backgroundColor: '#fff', padding: '10px', borderRadius: '4px' }}>
+                {JSON.stringify(getMockUserData().slice(0, 2), null, 2)}
+              </pre>
+            </div>
+
+            <div style={{ backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '8px' }}>
+              <h3>Inventory Data Sample</h3>
+              <pre style={{ fontSize: '12px', overflow: 'auto', backgroundColor: '#fff', padding: '10px', borderRadius: '4px' }}>
+                {JSON.stringify(getMockInventoryData().slice(0, 2), null, 2)}
+              </pre>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px' }}>
+          <h2>Registry Usage Example</h2>
+          <pre style={{ backgroundColor: '#fff', padding: '15px', borderRadius: '4px', overflow: 'auto' }}>
+{`// Initialize registry with component map
+import { initializeLayoutComponentRegistry, getLayoutComponentRegistryService } from './xingine-layout-registry';
+import { getRegistryData } from './XingineLayoutRegistryExample';
+
+// Initialize
+const componentMap = getDefaultInternalComponents();
+initializeLayoutComponentRegistry(componentMap);
+
+// Get registry instance
+const registry = getLayoutComponentRegistryService();
+
+// Register components
+const registryData = getRegistryData();
+registryData.forEach(component => registry.register(component));
+
+// Use helper functions
+const menuItems = registry.getMenuItems();
+const userRoute = registry.getComponentByPath('/user/create');
+const hasComponent = registry.hasComponent('FormRenderer');
+const renderedComponent = registry.renderLayoutComponent(userRoute);
+
+// Render component trees
+const headerComponents = headerLayoutComponent.children;
+const renderedTree = registry.renderComponentTree(headerComponents);`}
+          </pre>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      {isRegistryInitialized ? renderRegistryContent() : (
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+          <h2>Initializing Layout Component Registry...</h2>
+          <p>Loading comprehensive registry data and registering components...</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default XingineLayoutExample;
 
 // Mock data for forms
 const mockUserFormMeta: FormMeta = {

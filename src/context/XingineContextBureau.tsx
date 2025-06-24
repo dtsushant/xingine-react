@@ -1,14 +1,19 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, ReactElement } from "react";
 import { RouteObject } from "react-router-dom";
 import {
   get,
   registerModule,
 } from "../xingine-react.service";
 import { getModuleRegistryService } from "../xingine-react.registry";
+import { 
+  getLayoutComponentRegistryService, 
+  initializeLayoutComponentRegistry 
+} from "../xingine-layout-registry";
 import { XingineConfig } from "../configuration/Configuration";
 import { mapXingineRoutes } from "./XingineContextBureau.utils";
 import { ModuleProperties, modulePropertiesListDecoder } from "xingine";
 import { UIComponent, LayoutComponentDetail, LayoutRenderer } from "../types/renderer.types";
+import { getDefaultInternalComponents } from "../component/group";
 
 export interface ColorPalette {
   [key: string]: string;
@@ -38,6 +43,11 @@ export interface XingineUIMandate {
   routes: RouteObject[];
   layouts: Record<string, LayoutRenderer>;
   menuItems: LayoutComponentDetail[];
+  // Helper functions for rendering
+  renderLayoutComponent: (component: LayoutComponentDetail, props?: any) => ReactElement | undefined;
+  renderComponentTree: (components: LayoutComponentDetail[], props?: any) => ReactElement[];
+  getComponentByPath: (path: string) => LayoutComponentDetail | undefined;
+  hasComponent: (name: string) => boolean;
 }
 
 export const XingineContext = createContext<XingineUIMandate | null>(null);
@@ -102,18 +112,20 @@ export const XingineContextBureau: React.FC<{
     };
 
     const processComponentDetail = (component: LayoutComponentDetail) => {
-      // Register component to module registry if it has a component name
-      if (component.component && component.meta) {
-        // This will be handled by the module registry service
-        console.log(`Registering component: ${component.component}`);
+      // Register component to layout registry
+      const layoutRegistry = getLayoutComponentRegistryService();
+      if (layoutRegistry && component.component) {
+        try {
+          layoutRegistry.register(component);
+          console.log(`Registered layout component: ${component.component}`);
+        } catch (error) {
+          console.warn(`Failed to register layout component ${component.component}:`, error);
+        }
       }
 
       // Register route if it has a path
       if (component.path) {
-        const element = getModuleRegistryService()?.get(
-          component.component,
-          component.meta?.properties
-        );
+        const element = layoutRegistry?.renderLayoutComponent(component);
         
         if (element) {
           routesList.push({
@@ -151,6 +163,16 @@ export const XingineContextBureau: React.FC<{
           "modules",
         );
         setModuleProperties(data);
+        
+        // Initialize layout component registry
+        const combinedComponentRegistry = {
+          ...(getDefaultInternalComponents() as Record<string, React.FC<unknown>>),
+          ...(config.component || {}),
+        };
+        
+        if (!getLayoutComponentRegistryService()) {
+          initializeLayoutComponentRegistry(combinedComponentRegistry);
+        }
         
         if (!getModuleRegistryService() && data) {
           registerModule(config, data!);
@@ -205,12 +227,37 @@ export const XingineContextBureau: React.FC<{
     layoutLoading: isLoadingLayout,
   };
 
+  // Helper functions for rendering
+  const renderLayoutComponent = (component: LayoutComponentDetail, props?: any): ReactElement | undefined => {
+    const layoutRegistry = getLayoutComponentRegistryService();
+    return layoutRegistry?.renderLayoutComponent(component, props);
+  };
+
+  const renderComponentTree = (components: LayoutComponentDetail[], props?: any): ReactElement[] => {
+    const layoutRegistry = getLayoutComponentRegistryService();
+    return layoutRegistry?.renderComponentTree(components, props) || [];
+  };
+
+  const getComponentByPath = (path: string): LayoutComponentDetail | undefined => {
+    const layoutRegistry = getLayoutComponentRegistryService();
+    return layoutRegistry?.getComponentByPath(path);
+  };
+
+  const hasComponent = (name: string): boolean => {
+    const layoutRegistry = getLayoutComponentRegistryService();
+    return layoutRegistry?.hasComponent(name) || false;
+  };
+
   const mandate: XingineUIMandate = {
     panelControl: panelControlBureau,
     moduleProperties: moduleProperties,
     routes: routes,
     layouts: layouts,
     menuItems: menuItems,
+    renderLayoutComponent,
+    renderComponentTree,
+    getComponentByPath,
+    hasComponent,
   };
 
   if (isLoadingLayout) {

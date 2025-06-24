@@ -14,152 +14,134 @@ import {
 const mockUserFormMeta: FormMeta = {
   fields: [
     { 
-      key: 'name', 
+      name: 'name',
       label: 'Full Name', 
-      inputType: 'text', 
+      inputType: 'input', 
       required: true,
-      validation: { required: true, minLength: 2 }
+      properties: { placeholder: 'Enter your full name', minLength: 2 }
     },
     { 
-      key: 'email', 
+      name: 'email',
       label: 'Email', 
-      inputType: 'email', 
+      inputType: 'input', 
       required: true,
-      validation: { required: true, pattern: '^[^@]+@[^@]+\.[^@]+$' }
+      properties: { placeholder: 'Enter your email' }
     },
     { 
-      key: 'age', 
+      name: 'age',
       label: 'Age', 
       inputType: 'number', 
       required: false,
-      validation: { min: 18, max: 100 }
+      properties: { min: 18, max: 100 }
     },
     { 
-      key: 'role', 
+      name: 'role',
       label: 'Role', 
       inputType: 'select', 
       required: true,
-      options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'User', value: 'user' },
-        { label: 'Manager', value: 'manager' }
-      ]
+      properties: { 
+        options: [
+          { label: 'Admin', value: 'admin' },
+          { label: 'User', value: 'user' },
+          { label: 'Manager', value: 'manager' }
+        ]
+      }
     }
   ],
-  submitButton: { label: 'Create User', variant: 'primary' },
-  layout: 'vertical'
+  action: '/api/users'
 };
 
 const mockUserTableMeta: TableMeta = {
   columns: [
-    { key: 'id', title: 'ID', dataType: 'number', sortable: true },
-    { key: 'name', title: 'Name', dataType: 'string', sortable: true },
-    { key: 'email', title: 'Email', dataType: 'string', sortable: false },
-    { key: 'role', title: 'Role', dataType: 'string', sortable: true },
-    { key: 'createdAt', title: 'Created At', dataType: 'date', sortable: true }
+    { key: 'id', title: 'ID', sortable: true },
+    { key: 'name', title: 'Name', sortable: true },
+    { key: 'email', title: 'Email', sortable: false },
+    { key: 'role', title: 'Role', sortable: true },
+    { key: 'createdAt', title: 'Created At', sortable: true }
   ],
-  data: [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin', createdAt: '2024-01-15' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'user', createdAt: '2024-01-16' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'manager', createdAt: '2024-01-17' }
-  ],
-  pagination: { pageSize: 10, showSizeChanger: true },
-  filters: true,
-  search: true
+  dataSourceUrl: '/api/users',
+  rowKey: 'id'
 };
 
 const mockUserDetailMeta: DetailMeta = {
-  sections: [
-    {
-      title: 'Personal Information',
-      fields: [
-        { key: 'name', label: 'Full Name', value: 'John Doe' },
-        { key: 'email', label: 'Email', value: 'john@example.com' },
-        { key: 'age', label: 'Age', value: '30' }
-      ]
-    },
-    {
-      title: 'System Information',
-      fields: [
-        { key: 'role', label: 'Role', value: 'Admin' },
-        { key: 'status', label: 'Status', value: 'Active' },
-        { key: 'lastLogin', label: 'Last Login', value: '2024-01-20 10:30 AM' }
-      ]
-    }
+  fields: [
+    { name: 'name', label: 'Full Name', inputType: 'text', value: 'John Doe' },
+    { name: 'email', label: 'Email', inputType: 'text', value: 'john@example.com' },
+    { name: 'role', label: 'Role', inputType: 'text', value: 'Admin' },
+    { name: 'status', label: 'Status', inputType: 'text', value: 'Active' }
   ],
-  layout: 'horizontal'
+  action: '/api/user-detail'
 };
 
 const mockChartMeta: ChartMeta = {
-  type: 'bar',
-  data: [
-    { name: 'Jan', value: 400, category: 'Sales' },
-    { name: 'Feb', value: 300, category: 'Sales' },
-    { name: 'Mar', value: 600, category: 'Sales' },
-    { name: 'Apr', value: 800, category: 'Sales' }
-  ],
-  config: {
-    xAxis: { dataKey: 'name' },
-    yAxis: { dataKey: 'value' },
-    title: 'Monthly Sales',
-    responsive: true
-  }
+  charts: [
+    {
+      type: 'bar',
+      title: 'Monthly Sales',
+      labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+      datasets: [
+        {
+          label: 'Sales',
+          data: [400, 300, 600, 800],
+          backgroundColor: '#1890ff'
+        }
+      ]
+    }
+  ]
 };
 
 const mockLoginFormMeta: FormMeta = {
   fields: [
     { 
-      key: 'username', 
+      name: 'username',
       label: 'Username', 
-      inputType: 'text', 
+      inputType: 'input', 
       required: true,
-      validation: { required: true, minLength: 3 }
+      properties: { placeholder: 'Enter your username', minLength: 3 }
     },
     { 
-      key: 'password', 
+      name: 'password',
       label: 'Password', 
       inputType: 'password', 
       required: true,
-      validation: { required: true, minLength: 6 }
+      properties: { placeholder: 'Enter your password', minLength: 6 }
     }
   ],
-  submitButton: { label: 'Login', variant: 'primary' },
-  layout: 'vertical'
+  action: '/api/login'
 };
 
 const mockInventoryFormMeta: FormMeta = {
   fields: [
     { 
-      key: 'productName', 
+      name: 'productName',
       label: 'Product Name', 
-      inputType: 'text', 
+      inputType: 'input', 
       required: true,
-      validation: { required: true, minLength: 2 }
+      properties: { placeholder: 'Enter product name', minLength: 2 }
     },
     { 
-      key: 'sku', 
+      name: 'sku',
       label: 'SKU', 
-      inputType: 'text', 
+      inputType: 'input', 
       required: true,
-      validation: { required: true }
+      properties: { placeholder: 'Enter SKU' }
     },
     { 
-      key: 'quantity', 
+      name: 'quantity',
       label: 'Quantity', 
       inputType: 'number', 
       required: true,
-      validation: { required: true, min: 0 }
+      properties: { min: 0 }
     },
     { 
-      key: 'price', 
+      name: 'price',
       label: 'Price', 
       inputType: 'number', 
       required: true,
-      validation: { required: true, min: 0 }
+      properties: { min: 0 }
     }
   ],
-  submitButton: { label: 'Add Inventory', variant: 'primary' },
-  layout: 'vertical'
+  action: '/api/inventory'
 };
 
 // Module configurations following new architecture
@@ -366,18 +348,15 @@ export const createInventoryUIComponents = (): UIComponent[] => {
               meta: {
                 component: "TableRenderer",
                 properties: {
-                  ...mockUserTableMeta,
                   columns: [
-                    { key: 'id', title: 'ID', dataType: 'number', sortable: true },
-                    { key: 'productName', title: 'Product', dataType: 'string', sortable: true },
-                    { key: 'sku', title: 'SKU', dataType: 'string', sortable: false },
-                    { key: 'quantity', title: 'Qty', dataType: 'number', sortable: true },
-                    { key: 'price', title: 'Price', dataType: 'number', sortable: true }
+                    { key: 'id', title: 'ID', sortable: true },
+                    { key: 'productName', title: 'Product', sortable: true },
+                    { key: 'sku', title: 'SKU', sortable: false },
+                    { key: 'quantity', title: 'Qty', sortable: true },
+                    { key: 'price', title: 'Price', sortable: true }
                   ],
-                  data: [
-                    { id: 1, productName: 'Laptop', sku: 'LP001', quantity: 50, price: 999.99 },
-                    { id: 2, productName: 'Mouse', sku: 'MS001', quantity: 200, price: 29.99 }
-                  ]
+                  dataSourceUrl: '/api/inventory',
+                  rowKey: 'id'
                 }
               } as ComponentMeta<"TableRenderer">
             },
@@ -389,25 +368,13 @@ export const createInventoryUIComponents = (): UIComponent[] => {
               meta: {
                 component: "DetailRenderer",
                 properties: {
-                  ...mockUserDetailMeta,
-                  sections: [
-                    {
-                      title: 'Product Information',
-                      fields: [
-                        { key: 'productName', label: 'Product Name', value: 'Laptop' },
-                        { key: 'sku', label: 'SKU', value: 'LP001' },
-                        { key: 'category', label: 'Category', value: 'Electronics' }
-                      ]
-                    },
-                    {
-                      title: 'Stock Information',
-                      fields: [
-                        { key: 'quantity', label: 'Quantity', value: '50' },
-                        { key: 'price', label: 'Price', value: '$999.99' },
-                        { key: 'supplier', label: 'Supplier', value: 'Tech Corp' }
-                      ]
-                    }
-                  ]
+                  fields: [
+                    { name: 'productName', label: 'Product Name', inputType: 'text', value: 'Laptop' },
+                    { name: 'sku', label: 'SKU', inputType: 'text', value: 'LP001' },
+                    { name: 'quantity', label: 'Quantity', inputType: 'text', value: '50' },
+                    { name: 'price', label: 'Price', inputType: 'text', value: '$999.99' }
+                  ],
+                  action: '/api/inventory-detail'
                 }
               } as ComponentMeta<"DetailRenderer">
             }

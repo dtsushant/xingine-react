@@ -74,12 +74,12 @@ export const XingineContextBureau: React.FC<{
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
 
   // Register components and routes based on LayoutComponentDetail
-  const registerComponentsAndRoutes = (components: UIComponent[]): { routes: RouteObject[], menuItems: LayoutComponentDetail[] } => {
+  const registerComponentsAndRoutes = (components: any[]): { routes: RouteObject[], menuItems: LayoutComponentDetail[] } => {
     const routesList: RouteObject[] = [];
     const menuItemsList: LayoutComponentDetail[] = [];
 
-    const processComponent = (component: UIComponent) => {
-      if ('type' in component) {
+    const processComponent = (component: any) => {
+      if (component && typeof component === 'object' && 'type' in component) {
         // This is a LayoutRenderer
         const layoutRenderer = component as LayoutRenderer;
         // Process header, content, sider, footer recursively
@@ -95,8 +95,8 @@ export const XingineContextBureau: React.FC<{
         if (layoutRenderer.footer?.meta) {
           processComponentDetail(layoutRenderer.footer.meta);
         }
-      } else {
-        // This is a LayoutComponentDetail
+      } else if (component && typeof component === 'object') {
+        // This might be a LayoutComponentDetail or other component
         processComponentDetail(component as LayoutComponentDetail);
       }
     };

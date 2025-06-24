@@ -4,16 +4,16 @@ import { LayoutComponentDetail } from '../../types/renderer.types';
 
 interface MenuRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const MenuRenderer: React.FC<MenuRendererProps> = ({ 
   detail, 
-  styles, 
+  styles = {}, 
   keyPrefix = 'menu' 
 }) => (
-  <Menu style={styles} {...detail.props} />
+  <Menu style={styles} items={[]} />
 );
 
 export default MenuRenderer;

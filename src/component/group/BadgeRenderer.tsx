@@ -1,22 +1,24 @@
 import React from 'react';
 import { Badge } from 'antd';
-import { LayoutComponentDetail, ExtendedUIComponent } from '../../types/renderer.types';
+import { LayoutComponentDetail } from '../../types/renderer.types';
 
 interface BadgeRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
-  renderComponent: (component: ExtendedUIComponent, key?: string) => React.ReactNode;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const BadgeRenderer: React.FC<BadgeRendererProps> = ({ 
   detail, 
-  styles, 
-  renderComponent, 
+  styles = {}, 
   keyPrefix = 'badge' 
 }) => (
-  <Badge style={styles} {...detail.props}>
-    {detail.children?.map((child, index) => renderComponent(child, `${keyPrefix}-${index}`))}
+  <Badge style={styles} count={detail.content || 0}>
+    {detail.children?.map((child, index) => (
+      <div key={`${keyPrefix}-${index}`}>
+        {child.content || child.component}
+      </div>
+    ))}
   </Badge>
 );
 

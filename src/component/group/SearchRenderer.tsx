@@ -6,16 +6,16 @@ const { Search } = Input;
 
 interface SearchRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const SearchRenderer: React.FC<SearchRendererProps> = ({ 
   detail, 
-  styles, 
+  styles = {}, 
   keyPrefix = 'search' 
 }) => (
-  <Search style={styles} {...detail.props} />
+  <Search style={styles} placeholder={detail.content || 'Search...'} />
 );
 
 export default SearchRenderer;

@@ -1,11 +1,10 @@
 import React from 'react';
 import { Button } from 'antd';
-import { LayoutComponentDetail, ExtendedUIComponent } from '../../types/renderer.types';
+import { LayoutComponentDetail } from '../../types/renderer.types';
 
 interface ButtonRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
-  renderComponent: (component: ExtendedUIComponent, key?: string) => React.ReactNode;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
@@ -26,17 +25,19 @@ const getIcon = (iconName: string) => {
 
 export const ButtonRenderer: React.FC<ButtonRendererProps> = ({ 
   detail, 
-  styles, 
-  renderComponent, 
+  styles = {}, 
   keyPrefix = 'button' 
 }) => (
   <Button 
     style={styles} 
-    icon={detail.props?.icon ? React.createElement(getIcon(detail.props.icon)) : undefined}
-    {...detail.props}
+    type="default"
   >
-    {detail.content}
-    {detail.children?.map((child, index) => renderComponent(child, `${keyPrefix}-${index}`))}
+    {detail.content || 'Button'}
+    {detail.children?.map((child, index) => (
+      <span key={`${keyPrefix}-${index}`}>
+        {child.content || child.component}
+      </span>
+    ))}
   </Button>
 );
 

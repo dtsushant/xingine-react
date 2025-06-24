@@ -1,22 +1,24 @@
 import React from 'react';
 import { Card } from 'antd';
-import { LayoutComponentDetail, ExtendedUIComponent } from '../../types/renderer.types';
+import { LayoutComponentDetail } from '../../types/renderer.types';
 
 interface CardRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
-  renderComponent: (component: ExtendedUIComponent, key?: string) => React.ReactNode;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const CardRenderer: React.FC<CardRendererProps> = ({ 
   detail, 
-  styles, 
-  renderComponent, 
+  styles = {}, 
   keyPrefix = 'card' 
 }) => (
-  <Card style={styles} {...detail.props}>
-    {detail.children?.map((child, index) => renderComponent(child, `${keyPrefix}-${index}`))}
+  <Card style={styles} title={detail.content}>
+    {detail.children?.map((child, index) => (
+      <div key={`${keyPrefix}-${index}`}>
+        {child.content || child.component}
+      </div>
+    ))}
   </Card>
 );
 

@@ -6,17 +6,17 @@ const { Text } = Typography;
 
 interface TextRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const TextRenderer: React.FC<TextRendererProps> = ({ 
   detail, 
-  styles, 
+  styles = {}, 
   keyPrefix = 'text' 
 }) => (
-  <Text style={styles} {...detail.props}>
-    {detail.content}
+  <Text style={styles}>
+    {detail.content || 'Text'}
   </Text>
 );
 

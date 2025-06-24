@@ -1,24 +1,26 @@
 import React from 'react';
 import { Dropdown } from 'antd';
-import { LayoutComponentDetail, ExtendedUIComponent } from '../../types/renderer.types';
+import { LayoutComponentDetail } from '../../types/renderer.types';
 import { WrapperRenderer } from './WrapperRenderer';
 
 interface DropdownRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
-  renderComponent: (component: ExtendedUIComponent, key?: string) => React.ReactNode;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const DropdownRenderer: React.FC<DropdownRendererProps> = ({ 
   detail, 
-  styles, 
-  renderComponent, 
+  styles = {}, 
   keyPrefix = 'dropdown' 
 }) => (
-  <Dropdown {...detail.props}>
+  <Dropdown menu={{ items: [] }}>
     <WrapperRenderer style={styles}>
-      {detail.children?.map((child, index) => renderComponent(child, `${keyPrefix}-${index}`))}
+      {detail.children?.map((child, index) => (
+        <div key={`${keyPrefix}-${index}`}>
+          {child.content || child.component}
+        </div>
+      ))}
     </WrapperRenderer>
   </Dropdown>
 );

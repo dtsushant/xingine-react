@@ -4,16 +4,16 @@ import { LayoutComponentDetail } from '../../types/renderer.types';
 
 interface SwitchRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const SwitchRenderer: React.FC<SwitchRendererProps> = ({ 
   detail, 
-  styles, 
+  styles = {}, 
   keyPrefix = 'switch' 
 }) => (
-  <Switch style={styles} {...detail.props} />
+  <Switch style={styles} />
 );
 
 export default SwitchRenderer;

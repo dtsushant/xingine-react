@@ -6,17 +6,17 @@ const { Title } = Typography;
 
 interface TitleRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
 export const TitleRenderer: React.FC<TitleRendererProps> = ({ 
   detail, 
-  styles, 
+  styles = {}, 
   keyPrefix = 'title' 
 }) => (
-  <Title style={styles} {...detail.props}>
-    {detail.content}
+  <Title style={styles}>
+    {detail.content || 'Title'}
   </Title>
 );
 

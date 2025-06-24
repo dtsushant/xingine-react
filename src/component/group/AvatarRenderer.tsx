@@ -4,7 +4,7 @@ import { LayoutComponentDetail } from '../../types/renderer.types';
 
 interface AvatarRendererProps {
   detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
   keyPrefix?: string;
 }
 
@@ -25,13 +25,12 @@ const getIcon = (iconName: string) => {
 
 export const AvatarRenderer: React.FC<AvatarRendererProps> = ({ 
   detail, 
-  styles, 
+  styles = {}, 
   keyPrefix = 'avatar' 
 }) => (
   <Avatar 
     style={styles} 
-    icon={detail.props?.icon ? React.createElement(getIcon(detail.props.icon)) : undefined}
-    {...detail.props} 
+    icon={React.createElement(getIcon('user'))}
   />
 );
 

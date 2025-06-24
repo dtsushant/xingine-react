@@ -80,7 +80,7 @@ export function getDefaultInternalComponents() {
     UserDashboard,
     InventoryDashboard,
     
-    // Missing action components
+    // Action components - ensure exact name matches for external module data
     AddRole,
     UserCreate,
     UserList,

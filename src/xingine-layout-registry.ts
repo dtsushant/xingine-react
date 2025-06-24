@@ -26,6 +26,10 @@ class LayoutComponentRegistryService {
 
   constructor(componentMap: Record<string, FunctionComponent<unknown>>) {
     this.componentMap = componentMap;
+    
+    // Debug logging to help troubleshoot component registration issues
+    console.log('LayoutComponentRegistryService initialized with components:', 
+      Object.keys(componentMap).sort());
   }
 
   register(layoutComponent: LayoutComponentDetail) {
@@ -36,17 +40,24 @@ class LayoutComponentRegistryService {
     if (Component) {
       fc = Component;
     } else {
-      console.error(
-        `Component '${key}' not found in component map, checking for meta component.`,
-      );
+      // Check if we have a meta component to use instead
       if (!layoutComponent.meta?.component) {
+        console.error(
+          `Component '${key}' not found in component map and no meta component specified.`,
+        );
         throw Error(`Component '${key}' not found in component map.`);
       }
       const metaComponent = layoutComponent.meta?.component!;
       fc = this.componentMap[metaComponent];
       if (!fc) {
+        console.error(
+          `Neither component '${key}' nor meta component '${metaComponent}' found in component map.`,
+        );
         throw Error(`Meta component '${metaComponent}' not found in component map.`);
       }
+      console.info(
+        `Component '${key}' not found directly, using meta component '${metaComponent}'.`,
+      );
     }
 
     this.layouts.component[key] = {

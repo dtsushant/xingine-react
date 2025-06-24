@@ -1,72 +1,55 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Menu } from 'antd';
 import { LayoutComponentDetail } from '../../../types/renderer.types';
-import { WrapperRenderer } from '../../group/WrapperRenderer';
-
-const { Sider } = Layout;
+import { PanelControlBureau } from '../../../context/XingineContextBureau';
 
 interface SidebarComponentProps {
-  detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
-  collapsed: boolean;
-  darkMode: boolean;
-  isMobile: boolean;
-  onCollapse: (collapsed: boolean) => void;
-  keyPrefix?: string;
+  renderer?: LayoutComponentDetail;
+  panelControl: PanelControlBureau;
+  menuItems?: LayoutComponentDetail[];
 }
 
 export const SidebarComponent: React.FC<SidebarComponentProps> = ({ 
-  detail, 
-  styles, 
-  collapsed,
-  darkMode,
-  isMobile,
-  onCollapse,
-  keyPrefix = 'sidebar' 
+  renderer, 
+  panelControl,
+  menuItems = []
 }) => {
-  // Process menu items to handle collapsed state - remove labels when collapsed
+  const { collapsed, darkMode } = panelControl;
+  
+  // Convert LayoutComponentDetail menuItems to Ant Design menu items
   const processedMenuItems = React.useMemo(() => {
-    const menuItems = detail.props?.menuItems || [];
-    
-    if (!collapsed || isMobile) {
-      return menuItems;
-    }
-    
-    // When collapsed, only show icons, remove labels
-    return menuItems.map((item: any) => ({
-      ...item,
-      label: undefined, // Remove label when collapsed
-      title: item.label // Use title for tooltip on hover
-    }));
-  }, [detail.props?.menuItems, collapsed, isMobile]);
+    return menuItems
+      .filter(item => item.isMenuItem)
+      .map((item) => ({
+        key: item.path || item.component,
+        label: collapsed ? undefined : item.content || item.component,
+        title: item.content || item.component, // Use title for tooltip on hover when collapsed
+        onClick: () => {
+          if (item.path) {
+            // Navigate to the path
+            console.log('Navigate to:', item.path);
+          }
+        }
+      }));
+  }, [menuItems, collapsed]);
 
   return (
-    <Sider
-      theme={darkMode ? 'dark' : 'light'}
-      collapsed={isMobile ? false : collapsed}
-      onCollapse={onCollapse}
-      breakpoint="lg"
-      collapsedWidth={isMobile ? 0 : 80}
-      style={{
-        position: 'fixed',
-        left: 0,
-        top: 64,
-        height: 'calc(100vh - 64px)',
-        zIndex: 999,
-        ...styles,
-      }}
-    >
-      <WrapperRenderer style={{ padding: '16px 0' }}>
-        <Menu
-          theme={darkMode ? 'dark' : 'light'}
-          mode="inline"
-          defaultSelectedKeys={['dashboard']}
-          items={processedMenuItems}
-          style={{ border: 'none' }}
-          inlineCollapsed={collapsed && !isMobile}
-        />
-      </WrapperRenderer>
-    </Sider>
+    <div style={{ 
+      height: '100%', 
+      backgroundColor: darkMode ? '#001529' : '#fff',
+      padding: '16px 0'
+    }}>
+      <Menu
+        theme={darkMode ? 'dark' : 'light'}
+        mode="inline"
+        inlineCollapsed={collapsed}
+        items={processedMenuItems}
+        style={{
+          border: 'none',
+          backgroundColor: 'transparent'
+        }}
+      />
+    </div>
   );
 };
 

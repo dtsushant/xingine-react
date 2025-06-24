@@ -1,16 +1,26 @@
 export * from "./xingine-react.registry"
 export * from "./xingine-react.service"
-export * from "./context/ContextBureau"
+export { ContextBureau, useXingineContext as useContextBureau } from "./context/ContextBureau"
+export { 
+  XingineContextBureau, 
+  useXingineContext,
+  type XingineUIMandate,
+  type ColorPalette,
+  type PartySeal,
+  type PanelControlBureau
+} from "./context/XingineContextBureau"
 export * from "./component/group"
-export { LayoutRenderer, createDefaultLayoutRenderer } from "./component/LayoutRenderer"
+export { LayoutRenderer, createDefaultLayoutRenderer } from "./component/NewLayoutRenderer"
+export * from "./component/layout/default"
+export * from "./component/layout/public"
+export * from "./component/layout/custom"
+export * from "./component/XingineLayoutExample"
 export type {
-  Renderer,
-  UIComponent,
+  XingineUIComponent,
   UIComponentDetail,
   Comrade,
   Permission,
   GroupedPermission,
-  ModulePropertyOptions,
   IconMeta,
   ExpositionRule,
   ColumnMeta,
@@ -19,7 +29,6 @@ export type {
   TableMeta,
   TabMeta,
   ChartMeta,
-  ComponentMetaMap,
   ComponentMeta,
   ChartType,
   ChartDataset,
@@ -29,6 +38,8 @@ export type {
   TabDispatchProperties,
   DetailDispatchProperties,
   LayoutComponentDetail,
-  ExtendedUIComponent,
-  LayoutRenderer as LayoutRendererType
+  UIComponent,
+  LayoutRenderer as LayoutRendererType,
+  ComponentMetaMap,
+  ModulePropertyOptions
 } from "./types/renderer.types"

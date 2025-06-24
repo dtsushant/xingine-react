@@ -1,19 +1,16 @@
 // Import and re-export base types from xingine
 export type {
   Renderer,
-  UIComponent,
+  UIComponent as XingineUIComponent,
   UIComponentDetail,
   Comrade,
   Permission,
   GroupedPermission,
-  ModulePropertyOptions,
   IconMeta,
   ExpositionRule
 } from 'xingine';
 
 // Import component meta types from xingine's component meta map
-// These types are defined in xingine but may not be exported in the main index
-// Based on the xingine source structure, importing them directly
 export type {
   ColumnMeta,
   FormMeta,
@@ -21,7 +18,6 @@ export type {
   TableMeta,
   TabMeta,
   ChartMeta,
-  ComponentMetaMap,
   ComponentMeta,
   ChartType,
   ChartDataset,
@@ -32,23 +28,76 @@ export type {
   DetailDispatchProperties
 } from 'xingine/dist/core/component/component-meta-map';
 
-// Import the base UIComponent type from xingine for proper reference
-import type { UIComponent, Renderer, UIComponentDetail } from 'xingine';
+// Import the original ComponentMetaMap and extend it
+import type { 
+  ComponentMetaMap as XingineComponentMetaMap,
+  FormMeta,
+  TableMeta,
+  TabMeta,
+  DetailMeta,
+  ChartMeta,
+  ComponentMeta
+} from 'xingine/dist/core/component/component-meta-map';
 
-// Layout-specific component extension for LayoutRenderer
-// This extends UIComponent to support layout-specific rendering while maintaining xingine compatibility
+// New architecture interfaces as per requirements
+
 export interface LayoutComponentDetail {
-  type: string;
-  props?: Record<string, any>;
+  path?: string;
+  isMenuItem: boolean; // if true along with having a path will be a menu in sider
+  component: string;
   children?: LayoutComponentDetail[];
   content?: string;
-  meta?: any; // For xingine component meta
+  meta?: ComponentMeta; // For xingine component meta
 }
 
-// Extended UIComponent that supports both xingine types and layout components
-export type ExtendedUIComponent = UIComponent | LayoutComponentDetail;
+export interface LayoutRenderer {
+  type: string;
+  header?: {
+    meta?: LayoutComponentDetail;
+  };
+  content: {
+    meta: LayoutComponentDetail;
+  };
+  sider?: {
+    meta?: LayoutComponentDetail;
+  };
+  footer?: {
+    meta?: LayoutComponentDetail;
+  };
+}
 
-// Extended Renderer for LayoutRenderer that uses LayoutComponentDetail as componentDetail
-export interface LayoutRenderer extends Omit<Renderer, 'componentDetail'> {
-  componentDetail: LayoutComponentDetail;
+// Extended ComponentMetaMap to include all renderers
+export interface ComponentMetaMap extends XingineComponentMetaMap {
+  FormRenderer: FormMeta;
+  TableRenderer: TableMeta;
+  TabRenderer: TabMeta;
+  DetailRenderer: DetailMeta;
+  ChartRenderer: ChartMeta;
+  // Layout components
+  LayoutRenderer: Record<string, any>;
+  HeaderRenderer: Record<string, any>;
+  SidebarRenderer: Record<string, any>;
+  ContentRenderer: Record<string, any>;
+  FooterRenderer: Record<string, any>;
+  // UI components
+  ButtonRenderer: Record<string, any>;
+  SearchRenderer: Record<string, any>;
+  SwitchRenderer: Record<string, any>;
+  BadgeRenderer: Record<string, any>;
+  DropdownRenderer: Record<string, any>;
+  AvatarRenderer: Record<string, any>;
+  MenuRenderer: Record<string, any>;
+  TitleRenderer: Record<string, any>;
+  CardRenderer: Record<string, any>;
+  TextRenderer: Record<string, any>;
+  LinkRenderer: Record<string, any>;
+  WrapperRenderer: Record<string, any>;
+}
+
+// Modified UIComponent type to support LayoutRenderer and LayoutComponentDetail
+export type UIComponent = LayoutRenderer | LayoutComponentDetail;
+
+// Modified ModulePropertyOptions
+export interface ModulePropertyOptions {
+  uiComponent: UIComponent[];
 }

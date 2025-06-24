@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Row, Col, Space, Button, Input, Badge, Switch, Dropdown, Avatar } from 'antd';
+import { Row, Col, Space, Button, Input, Badge, Switch, Dropdown, Avatar, Grid } from 'antd';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -12,9 +12,10 @@ import {
   BulbOutlined,
 } from '@ant-design/icons';
 import { LayoutComponentDetail } from '../../../types/renderer.types';
+import { PanelControlBureau } from '../../../context/XingineContextBureau';
 
-const { Header } = Layout;
 const { Search } = Input;
+const { useBreakpoint } = Grid;
 
 // Serializable onClick actions
 interface SerializableAction {
@@ -24,15 +25,9 @@ interface SerializableAction {
 }
 
 interface HeaderComponentProps {
-  detail: LayoutComponentDetail;
-  styles: React.CSSProperties;
-  collapsed: boolean;
-  darkMode: boolean;
-  onToggleCollapsed: () => void;
-  onToggleDarkMode: (darkMode: boolean) => void;
-  onAction?: (action: SerializableAction) => void; // Serializable action handler
-  menuItems?: any[]; // Menu items passed as props
-  keyPrefix?: string;
+  renderer?: LayoutComponentDetail;
+  panelControl: PanelControlBureau;
+  menuItems?: LayoutComponentDetail[];
 }
 
 // Hook to detect very small screens (below 508px)
@@ -54,16 +49,11 @@ const useVerySmallScreen = () => {
 };
 
 export const HeaderComponent: React.FC<HeaderComponentProps> = ({ 
-  detail, 
-  styles, 
-  collapsed,
-  darkMode,
-  onToggleCollapsed,
-  onToggleDarkMode,
-  onAction = () => {},
-  menuItems = [],
-  keyPrefix = 'header' 
+  renderer, 
+  panelControl,
+  menuItems = []
 }) => {
+  const { collapsed, darkMode, setCollapsed, setDarkMode } = panelControl;
   const isVerySmallScreen = useVerySmallScreen();
   
   const userMenuItems = [
@@ -71,53 +61,71 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
       key: 'profile', 
       label: 'Profile', 
       icon: <UserOutlined />,
-      onClick: () => onAction({ type: 'menu-action', target: 'profile' })
+      onClick: () => handleAction({ type: 'menu-action', target: 'profile' })
     },
     { 
       key: 'settings', 
       label: 'Settings', 
       icon: <SettingOutlined />,
-      onClick: () => onAction({ type: 'menu-action', target: 'settings' })
+      onClick: () => handleAction({ type: 'menu-action', target: 'settings' })
     },
     { type: 'divider' as const },
     { 
       key: 'logout', 
       label: 'Logout', 
       icon: <LogoutOutlined />,
-      onClick: () => onAction({ type: 'menu-action', target: 'logout' })
+      onClick: () => handleAction({ type: 'menu-action', target: 'logout' })
     },
   ];
 
+  const handleAction = (action: SerializableAction) => {
+    switch (action.type) {
+      case 'toggle':
+        if (action.target === 'sidebar') {
+          setCollapsed(!collapsed);
+        }
+        break;
+      case 'navigate':
+        if (action.target === 'home') {
+          // Navigate to home - could use router here
+          console.log('Navigate to home');
+        }
+        break;
+      case 'search':
+        console.log('Search:', action.value);
+        break;
+      case 'menu-action':
+        console.log('Menu action:', action.target);
+        break;
+    }
+  };
+
   const handleSearch = (value: string) => {
-    onAction({ type: 'search', value });
+    handleAction({ type: 'search', value });
   };
 
   const handleHomeClick = () => {
-    onAction({ type: 'navigate', target: 'home' });
+    handleAction({ type: 'navigate', target: 'home' });
   };
 
-  // For very small screens, position header differently
-  const headerStyle: React.CSSProperties = {
-    padding: '0 16px',
-    background: darkMode ? '#001529' : '#fff',
-    borderBottom: '1px solid #f0f0f0',
-    position: isVerySmallScreen ? 'relative' : 'fixed',
-    top: isVerySmallScreen ? 'auto' : 0,
-    bottom: isVerySmallScreen ? 0 : 'auto', // Move to bottom on very small screens
-    width: '100%',
-    zIndex: 1000,
-    ...styles,
+  const handleToggleCollapsed = () => {
+    handleAction({ type: 'toggle', target: 'sidebar' });
   };
 
   return (
-    <Header style={headerStyle}>
-      <Row justify="space-between" align="middle" style={{ height: '100%' }}>
+    <div style={{ 
+      padding: '0 16px', 
+      height: '100%', 
+      display: 'flex', 
+      alignItems: 'center' 
+    }}>
+      <Row justify="space-between" align="middle" style={{ width: '100%' }}>
         <Col>
           <Space>
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={onToggleCollapsed}
+              onClick={handleToggleCollapsed}
             />
             <Button 
               type="text" 
@@ -146,7 +154,7 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
               checkedChildren={<BulbOutlined />}
               unCheckedChildren={<BulbOutlined />}
               checked={darkMode}
-              onChange={onToggleDarkMode}
+              onChange={setDarkMode}
             />
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
               <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
@@ -154,7 +162,7 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
           </Space>
         </Col>
       </Row>
-    </Header>
+    </div>
   );
 };
 

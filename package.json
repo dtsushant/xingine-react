@@ -17,6 +17,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc --project tsconfig.json && tsc-alias",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "prepare": "npm run build",
     "push": "yalc push --changed",
     "yalc:dev": "npm run clean && npm run build && npm run push"
@@ -75,15 +77,18 @@
     "moduleFileExtensions": [
       "js",
       "json",
-      "ts"
+      "ts",
+      "tsx"
     ],
     "rootDir": ".",
-    "testRegex": ".*\\.(e2e-)?spec\\.ts$",
+    "testRegex": ".*\\.(test|spec)\\.(ts|tsx)$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)sx?$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s",
+      "src/**/*.(t|j)s",
+      "src/**/*.(t|j)sx",
+      "!src/**/*.d.ts",
       "!**/dist/**"
     ],
     "modulePathIgnorePatterns": [
@@ -92,8 +97,9 @@
     "testPathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "coverage",
+    "testEnvironment": "node",
+    "preset": "ts-jest"
   },
   "engines": {
     "node": ">=14"

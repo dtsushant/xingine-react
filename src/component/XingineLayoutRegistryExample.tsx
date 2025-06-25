@@ -426,6 +426,226 @@ export const getRegistryData = (): LayoutComponentDetail[] => {
       ]
     },
 
+    // Dashboard - Tailwind Layout
+    {
+      path: '/dashboard',
+      isMenuItem: true,
+      component: 'WrapperRenderer',
+      content: 'Analytics Dashboard',
+      meta: {
+        component: 'WrapperRenderer' as any,
+        properties: {
+          className: 'tailwind-dashboard-container'
+        }
+      },
+      children: [
+        // Charts Row
+        {
+          path: '',
+          isMenuItem: false,
+          component: 'WrapperRenderer',
+          content: 'Charts Section',
+          meta: {
+            component: 'WrapperRenderer',
+            properties: {
+              className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'
+            }
+          },
+          children: [
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'ChartRenderer',
+              content: 'Monthly Sales Chart',
+              meta: {
+                component: 'ChartRenderer',
+                properties: {
+                  title: 'Monthly Sales',
+                  type: 'bar' as const,
+                  data: [
+                    { name: 'Jan', value: 400 },
+                    { name: 'Feb', value: 300 },
+                    { name: 'Mar', value: 600 },
+                    { name: 'Apr', value: 800 },
+                    { name: 'May', value: 700 }
+                  ],
+                  xKey: 'name',
+                  yKey: 'value',
+                  color: '#8884d8'
+                }
+              }
+            },
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'ChartRenderer',
+              content: 'Weekly Growth Chart',
+              meta: {
+                component: 'ChartRenderer',
+                properties: {
+                  title: 'Weekly Growth',
+                  type: 'line' as const,
+                  data: [
+                    { name: 'Week 1', value: 100 },
+                    { name: 'Week 2', value: 200 },
+                    { name: 'Week 3', value: 150 },
+                    { name: 'Week 4', value: 300 }
+                  ],
+                  xKey: 'name',
+                  yKey: 'value',
+                  color: '#82ca9d'
+                }
+              }
+            },
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'ChartRenderer',
+              content: 'Device Usage Chart',
+              meta: {
+                component: 'ChartRenderer',
+                properties: {
+                  title: 'Device Usage',
+                  type: 'pie' as const,
+                  data: [
+                    { name: 'Desktop', value: 400 },
+                    { name: 'Mobile', value: 300 },
+                    { name: 'Tablet', value: 100 }
+                  ],
+                  nameKey: 'name',
+                  dataKey: 'value'
+                }
+              }
+            },
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'ChartRenderer',
+              content: 'Quarterly Revenue Chart',
+              meta: {
+                component: 'ChartRenderer',
+                properties: {
+                  title: 'Quarterly Revenue',
+                  type: 'area' as const,
+                  data: [
+                    { name: 'Q1', value: 1000 },
+                    { name: 'Q2', value: 1200 },
+                    { name: 'Q3', value: 900 },
+                    { name: 'Q4', value: 1500 }
+                  ],
+                  xKey: 'name',
+                  yKey: 'value',
+                  color: '#ffc658'
+                }
+              }
+            }
+          ]
+        },
+        // Form and Table Row
+        {
+          path: '',
+          isMenuItem: false,
+          component: 'WrapperRenderer',
+          content: 'Forms and Tables Section',
+          meta: {
+            component: 'WrapperRenderer',
+            properties: {
+              className: 'grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'
+            }
+          },
+          children: [
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'FormRenderer',
+              content: 'Quick User Form',
+              meta: {
+                component: 'FormRenderer',
+                properties: userCreateFormMeta
+              }
+            },
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'TableRenderer',
+              content: 'Users Table',
+              meta: {
+                component: 'TableRenderer',
+                properties: userTableMeta
+              }
+            }
+          ]
+        },
+        // Detail and Popup Row
+        {
+          path: '',
+          isMenuItem: false,
+          component: 'WrapperRenderer',
+          content: 'Details Section',
+          meta: {
+            component: 'WrapperRenderer',
+            properties: {
+              className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow'
+            }
+          },
+          children: [
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'DetailRenderer',
+              content: 'User Detail View',
+              meta: {
+                component: 'DetailRenderer',
+                properties: userDetailMeta
+              }
+            },
+            {
+              path: '',
+              isMenuItem: false,
+              component: 'PopupRenderer',
+              content: 'Profile Popup',
+              meta: {
+                component: 'PopupRenderer',
+                properties: {
+                  title: 'User Profile Details',
+                  triggerText: 'View Full Profile',
+                  width: 800,
+                  height: 600,
+                  content: `
+                    <div class="space-y-6">
+                      <div class="flex items-center space-x-4">
+                        <img src="https://via.placeholder.com/100" alt="Profile" class="w-20 h-20 rounded-full">
+                        <div>
+                          <h2 class="text-2xl font-bold">John Doe</h2>
+                          <p class="text-gray-600">IT Department</p>
+                        </div>
+                      </div>
+                      <div class="grid grid-cols-2 gap-4">
+                        <div>
+                          <h3 class="font-semibold mb-2">Contact Information</h3>
+                          <p><strong>Email:</strong> john@example.com</p>
+                          <p><strong>Phone:</strong> +1234567890</p>
+                        </div>
+                        <div>
+                          <h3 class="font-semibold mb-2">Role & Permissions</h3>
+                          <p><strong>Role:</strong> Admin</p>
+                          <p><strong>Permissions:</strong> Read, Write, Delete</p>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 class="font-semibold mb-2">Biography</h3>
+                        <p>Experienced administrator with 5+ years in system management.</p>
+                      </div>
+                    </div>
+                  `
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+
     // Login - Public Layout
     {
       path: '/login',
@@ -555,6 +775,37 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
           content: 'Custom layout with full-width content'
         }
       }
+    },
+    tailwind: {
+      type: 'tailwind',
+      header: {
+        meta: {
+          component: 'TailwindHeaderComponent',
+          isMenuItem: false,
+          content: 'Tailwind header with CSS classes'
+        }
+      },
+      content: {
+        meta: {
+          component: 'TailwindContentComponent',
+          isMenuItem: false,
+          content: 'Tailwind-styled content area'
+        }
+      },
+      sider: {
+        meta: {
+          component: 'TailwindSidebarComponent',
+          isMenuItem: false,
+          content: 'Tailwind sidebar navigation'
+        }
+      },
+      footer: {
+        meta: {
+          component: 'TailwindFooterComponent',
+          isMenuItem: false,
+          content: 'Tailwind footer'
+        }
+      }
     }
   };
 };
@@ -594,6 +845,18 @@ export const XingineLayoutExample: React.FC = () => {
           </ul>
         </div>
 
+        <div style={{ backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '5px', margin: '10px 0' }}>
+          <h3>Dashboard (Tailwind Layout)</h3>
+          <ul>
+            <li><strong>Analytics Dashboard:</strong> /dashboard</li>
+            <li><strong>4 Charts:</strong> Bar, Line, Pie, Area charts with sample data</li>
+            <li><strong>User Form:</strong> Create user form with validation</li>
+            <li><strong>Users Table:</strong> Table with pagination and sorting</li>
+            <li><strong>User Details:</strong> Detailed user information display</li>
+            <li><strong>Popup Modal:</strong> Profile popup with detailed information</li>
+          </ul>
+        </div>
+
         <div style={{ backgroundColor: '#f0f8ff', padding: '15px', borderRadius: '5px', margin: '10px 0' }}>
           <h3>Inventory Module (Custom Layout)</h3>
           <ul>
@@ -615,9 +878,10 @@ export const XingineLayoutExample: React.FC = () => {
       <div style={{ marginBottom: '20px' }}>
         <h2>Layout Types</h2>
         <ul>
-          <li><strong>Default Layout:</strong> Header + Sidebar + Content + Footer</li>
+          <li><strong>Default Layout:</strong> Header + Sidebar + Content + Footer (Ant Design components)</li>
           <li><strong>Public Layout:</strong> Header + Content + Footer (no sidebar)</li>
           <li><strong>Custom Layout:</strong> Content only (full-width)</li>
+          <li><strong>Tailwind Layout:</strong> Header + Sidebar + Content + Footer (Tailwind CSS classes)</li>
         </ul>
       </div>
 

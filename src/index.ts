@@ -14,6 +14,9 @@ export { LayoutRenderer, createDefaultLayoutRenderer } from "./component/NewLayo
 export * from "./component/layout/default"
 export * from "./component/layout/public"
 export * from "./component/layout/custom"
+export * from "./component/layout/tailwind"
+export { TailwindDashboardExample, createTailwindDashboardLayout } from "./component/TailwindDashboardExample"
+export * from "./types/renderer.decoders"
 export * from "./component/XingineLayoutExample"
 export type {
   XingineUIComponent,

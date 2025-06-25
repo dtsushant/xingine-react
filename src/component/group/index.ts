@@ -18,6 +18,7 @@ import {TitleRenderer} from "./TitleRenderer";
 import {CardRenderer} from "./CardRenderer";
 import {TextRenderer} from "./TextRenderer";
 import {LinkRenderer} from "./LinkRenderer";
+import {PopupRenderer} from "./PopupRenderer";
 
 // Import module components
 import { UserModule } from "./UserModule";
@@ -72,6 +73,7 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
     CardRenderer,
     TextRenderer,
     LinkRenderer,
+    PopupRenderer,
     FileInput,
     
     // Module components
@@ -121,6 +123,7 @@ export * from "./TitleRenderer";
 export * from "./CardRenderer";
 export * from "./TextRenderer";
 export * from "./LinkRenderer";
+export * from "./PopupRenderer";
 export * from "./UserModule";
 export * from "./InventoryModule";
 export * from "./UserAnalytics";

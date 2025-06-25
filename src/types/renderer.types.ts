@@ -47,7 +47,7 @@ export interface LayoutComponentDetail {
   component: string;
   children?: LayoutComponentDetail[];
   content?: string;
-  meta?: ComponentMeta; // For xingine component meta
+  meta?: any; // For xingine component meta - more flexible typing
 }
 
 export interface LayoutRenderer {
@@ -92,6 +92,7 @@ export interface ComponentMetaMap extends XingineComponentMetaMap {
   TextRenderer: Record<string, any>;
   LinkRenderer: Record<string, any>;
   WrapperRenderer: Record<string, any>;
+  PopupRenderer: Record<string, any>;
 }
 
 // Modified UIComponent type to support LayoutRenderer and LayoutComponentDetail

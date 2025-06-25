@@ -1,3 +1,4 @@
+import React from 'react';
 import {FormRenderer} from "./FormRenderer";
 import {DetailRenderer} from "./DetailRenderer";
 import {TableRenderer} from "./TableRenderer";
@@ -48,7 +49,7 @@ import {
   FooterComponent 
 } from "../layout/exposition";
 
-export function getDefaultInternalComponents() {
+export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
   return {
     // Form and data components
     DetailRenderer,

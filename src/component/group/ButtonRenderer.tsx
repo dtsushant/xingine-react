@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
-interface ButtonRendererProps {
+export interface ButtonRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;
@@ -33,11 +33,12 @@ export const ButtonRenderer: React.FC<ButtonRendererProps> = ({
     type="default"
   >
     {detail.content || 'Button'}
-    {detail.children?.map((child, index) => (
+    {/*{detail.children?.map((child, index) => (
       <span key={`${keyPrefix}-${index}`}>
         {child.content || child.component}
       </span>
-    ))}
+    ))}*/}
+
   </Button>
 );
 

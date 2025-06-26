@@ -1,8 +1,8 @@
 import React from 'react';
 import { Avatar } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
-interface AvatarRendererProps {
+export interface AvatarRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;

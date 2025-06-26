@@ -1,5 +1,5 @@
 import React, { FunctionComponent, ReactElement } from "react";
-import { LayoutComponentDetail, ComponentMetaMap } from "./types/renderer.types";
+import {ComponentMetaMap, LayoutComponentDetail} from "xingine";
 
 type LayoutComponentRegistry = {
   layoutComponents: LayoutComponentDetail[];
@@ -8,7 +8,7 @@ type LayoutComponentRegistry = {
     {
       name: string;
       path?: string;
-      isMenuItem: boolean;
+      isMenuItem?: boolean;
       content?: string;
       children?: LayoutComponentDetail[];
       meta?: any;
@@ -62,18 +62,15 @@ class LayoutComponentRegistryService {
 
     this.layouts.component[key] = {
       name: key,
-      path: layoutComponent.path,
-      isMenuItem: layoutComponent.isMenuItem,
       content: layoutComponent.content,
-      children: layoutComponent.children,
       meta: layoutComponent.meta,
       fc: fc,
     };
 
     // Register children recursively
-    if (layoutComponent.children) {
+   /* if (layoutComponent.children) {
       layoutComponent.children.forEach(child => this.register(child));
-    }
+    }*/
 
     this.layouts.layoutComponents.push(layoutComponent);
   }
@@ -109,19 +106,19 @@ class LayoutComponentRegistryService {
 
   // Helper function to get all menu items
   getMenuItems(): LayoutComponentDetail[] {
-    return this.layouts.layoutComponents.filter(comp => comp.isMenuItem);
+    return [];//this.layouts.layoutComponents.filter(comp => comp.isMenuItem);
   }
 
   // Helper function to get component by path
   getComponentByPath(path: string): LayoutComponentDetail | undefined {
-    return this.layouts.layoutComponents.find(comp => comp.path === path);
+    return undefined //this.layouts.layoutComponents.find(comp => comp.path === path);
   }
 
   // Helper function to get all routes
   getRoutes(): Array<{ path: string; component: LayoutComponentDetail }> {
-    return this.layouts.layoutComponents
+    return [];/*this.layouts.layoutComponents
       .filter(comp => comp.path)
-      .map(comp => ({ path: comp.path!, component: comp }));
+      .map(comp => ({ path: comp.path!, component: comp }));*/
   }
 
   getAll(): LayoutComponentRegistry {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ComponentMeta } from '../../types/renderer.types';
 
 interface PopupRendererProps {
   title?: string;

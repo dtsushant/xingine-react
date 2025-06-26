@@ -1,8 +1,8 @@
 import React from 'react';
 import { Badge } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
-interface BadgeRendererProps {
+export interface BadgeRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;
@@ -14,11 +14,12 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({
   keyPrefix = 'badge' 
 }) => (
   <Badge style={styles} count={detail.content || 0}>
-    {detail.children?.map((child, index) => (
+    {/*{detail.children?.map((child, index) => (
       <div key={`${keyPrefix}-${index}`}>
         {child.content || child.component}
       </div>
-    ))}
+    ))}*/}
+    <div>Redering badge complement implementation</div>
   </Badge>
 );
 

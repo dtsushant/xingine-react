@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
 interface TailwindFooterComponentProps {
   renderer?: LayoutComponentDetail;

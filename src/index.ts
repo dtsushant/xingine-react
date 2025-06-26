@@ -18,6 +18,9 @@ export * from "./component/layout/tailwind"
 export { TailwindDashboardExample, createTailwindDashboardLayout } from "./component/TailwindDashboardExample"
 export * from "./types/renderer.decoders"
 export * from "./component/XingineLayoutExample"
+export * from "./configuration/Configuration"
+export * from "./component/layout/exposition"
+export {initializeLayoutComponentRegistry,getLayoutComponentRegistryService,resetLayoutComponentRegistry} from "./xingine-layout-registry"
 export type {
   XingineUIComponent,
   UIComponentDetail,
@@ -30,9 +33,7 @@ export type {
   FormMeta,
   DetailMeta,
   TableMeta,
-  TabMeta,
   ChartMeta,
-  ComponentMeta,
   ChartType,
   ChartDataset,
   ChartConfig,
@@ -40,9 +41,5 @@ export type {
   TableDispatchProperties,
   TabDispatchProperties,
   DetailDispatchProperties,
-  LayoutComponentDetail,
-  UIComponent,
-  LayoutRenderer as LayoutRendererType,
-  ComponentMetaMap,
-  ModulePropertyOptions
+  XingineComponentMetaMap,
 } from "./types/renderer.types"

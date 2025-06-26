@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
 const { Text } = Typography;
 
-interface TextRendererProps {
+export interface TextRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;

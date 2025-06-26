@@ -1,6 +1,6 @@
 import React from 'react';
-import { LayoutRenderer, LayoutComponentDetail } from '../types/renderer.types';
 import { TailwindLayout } from './layout/tailwind/TailwindLayout';
+import {LayoutComponentDetail, LayoutRenderer} from "xingine";
 
 // Sample data for dashboard components
 const chartData = {
@@ -89,186 +89,182 @@ const userDetailData = {
 
 export const createTailwindDashboardLayout = (): LayoutRenderer => {
   const dashboardContent: LayoutComponentDetail = {
-    isMenuItem: false,
     component: 'WrapperRenderer',
-    children: [
-      // Charts Row
-      {
-        isMenuItem: false,
+    meta:{
         component: 'WrapperRenderer',
-        meta: {
-          component: 'WrapperRenderer',
-          properties: {
-            className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'
-          }
-        },
-        children: [
-          {
-            isMenuItem: false,
-            component: 'ChartRenderer',
-            meta: {
-              component: 'ChartRenderer',
-              properties: {
-                title: 'Monthly Sales',
-                type: 'bar',
-                data: chartData.barChart,
-                xKey: 'name',
-                yKey: 'value',
-                color: '#8884d8'
-              }
-            }
-          },
-          {
-            isMenuItem: false,
-            component: 'ChartRenderer',
-            meta: {
-              component: 'ChartRenderer',
-              properties: {
-                title: 'Weekly Growth',
-                type: 'line',
-                data: chartData.lineChart,
-                xKey: 'name',
-                yKey: 'value',
-                color: '#82ca9d'
-              }
-            }
-          },
-          {
-            isMenuItem: false,
-            component: 'ChartRenderer',
-            meta: {
-              component: 'ChartRenderer',
-              properties: {
-                title: 'Device Usage',
-                type: 'pie',
-                data: chartData.pieChart,
-                nameKey: 'name',
-                dataKey: 'value'
-              }
-            }
-          },
-          {
-            isMenuItem: false,
-            component: 'ChartRenderer',
-            meta: {
-              component: 'ChartRenderer',
-              properties: {
-                title: 'Quarterly Revenue',
-                type: 'area',
-                data: chartData.areaChart,
-                xKey: 'name',
-                yKey: 'value',
-                color: '#ffc658'
-              }
-            }
-          }
-        ]
-      },
-      
-      // Form and Table Row
-      {
-        isMenuItem: false,
-        component: 'WrapperRenderer',
-        meta: {
-          component: 'WrapperRenderer',
-          properties: {
-            className: 'grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'
-          }
-        },
-        children: [
-          // User Creation Form
-          {
-            isMenuItem: false,
-            component: 'FormRenderer',
-            meta: {
-              component: 'FormRenderer',
-              properties: {
-                title: 'Create User',
-                fields: userFormFields,
-                onSubmit: 'handleUserCreate',
-                submitText: 'Create User',
-                className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow'
-              }
-            }
-          },
-          
-          // User Table
-          {
-            isMenuItem: false,
-            component: 'TableRenderer',
-            meta: {
-              component: 'TableRenderer',
-              properties: {
-                title: 'Users',
-                data: userTableData,
-                columns: [
-                  { key: 'name', title: 'Name', sortable: true },
-                  { key: 'email', title: 'Email', sortable: true },
-                  { key: 'role', title: 'Role', sortable: true },
-                  { key: 'active', title: 'Status', type: 'badge' },
-                  { key: 'createdAt', title: 'Created', type: 'date' }
-                ],
-                pagination: true,
-                pageSize: 10,
-                className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow'
-              }
-            }
-          }
-        ]
-      },
-      
-      // Detail and Popup Row
-      {
-        isMenuItem: false,
-        component: 'WrapperRenderer',
-        meta: {
-          component: 'WrapperRenderer',
-          properties: {
-            className: 'grid grid-cols-1 gap-6'
-          }
-        },
-        children: [
-          // User Detail with Popup
-          {
-            isMenuItem: false,
-            component: 'WrapperRenderer',
-            meta: {
+        properties: {
+          children: [
+            // Charts Row
+            {
               component: 'WrapperRenderer',
-              properties: {
-                className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow'
+              meta: {
+                component: 'WrapperRenderer',
+                properties: {
+                  className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8',
+                  children: [
+                    {
+                      component: 'ChartRenderer',
+                      meta: {
+                        component: 'ChartRenderer',
+                        properties: {
+                          charts:[{
+                            title: 'Monthly Sales',
+                            type: 'bar',
+                            data: chartData.barChart,
+                            xKey: 'name',
+                            yKey: 'value',
+                            color: '#8884d8'
+                          }]
+                        }
+                      }
+                    },
+                    {
+                      component: 'ChartRenderer',
+                      meta: {
+                        component: 'ChartRenderer',
+                        properties: {
+                          charts:[{
+                            title: 'Weekly Growth',
+                            type: 'line',
+                            data: chartData.lineChart,
+                            xKey: 'name',
+                            yKey: 'value',
+                            color: '#82ca9d'
+                          }]
+                        }
+                      }
+                    },
+                    {
+                      component: 'ChartRenderer',
+                      meta: {
+                        component: 'ChartRenderer',
+                        properties: {
+                          charts:[{
+                            title: 'Device Usage',
+                            type: 'pie',
+                            data: chartData.pieChart,
+                            nameKey: 'name',
+                            dataKey: 'value'
+                          }]
+                        }
+                      }
+                    },
+                    {
+                      component: 'ChartRenderer',
+                      meta: {
+                        component: 'ChartRenderer',
+                        properties: {
+                          charts:[{
+                            title: 'Quarterly Revenue',
+                            type: 'area',
+                            data: chartData.areaChart,
+                            xKey: 'name',
+                            yKey: 'value',
+                            color: '#ffc658'
+                          }]
+                        }
+                      }
+                    }
+                  ]
+                }
               }
+
             },
-            children: [
-              {
-                isMenuItem: false,
-                component: 'DetailRenderer',
-                meta: {
-                  component: 'DetailRenderer',
-                  properties: {
-                    title: 'User Details',
-                    data: userDetailData,
-                    fields: [
-                      { key: 'name', label: 'Name', type: 'text' },
-                      { key: 'email', label: 'Email', type: 'text' },
-                      { key: 'role', label: 'Role', type: 'badge' },
-                      { key: 'active', label: 'Status', type: 'switch' },
-                      { key: 'createdAt', label: 'Created', type: 'date' },
-                      { key: 'lastLogin', label: 'Last Login', type: 'datetime' }
-                    ]
-                  }
+
+            // Form and Table Row
+            {
+              component: 'WrapperRenderer',
+              meta: {
+                component: 'WrapperRenderer',
+                properties: {
+                  className: 'grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8',
+                  children: [
+                    // User Creation Form
+                    {
+                      component: 'FormRenderer',
+                      meta: {
+                        component: 'FormRenderer',
+                        properties: {
+                          title: 'Create User',
+                          fields: userFormFields,
+                          onSubmit: 'handleUserCreate',
+                          submitText: 'Create User',
+                          className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow'
+                        }
+                      }
+                    },
+
+                    // User Table
+                    {
+                      component: 'TableRenderer',
+                      meta: {
+                        component: 'TableRenderer',
+                        properties: {
+                          title: 'Users',
+                          data: userTableData,
+                          columns: [
+                            { key: 'name', title: 'Name', sortable: true },
+                            { key: 'email', title: 'Email', sortable: true },
+                            { key: 'role', title: 'Role', sortable: true },
+                            { key: 'active', title: 'Status', type: 'badge' },
+                            { key: 'createdAt', title: 'Created', type: 'date' }
+                          ],
+                          pagination: true,
+                          pageSize: 10,
+                          className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow'
+                        }
+                      }
+                    }
+                  ]
                 }
               },
-              {
-                isMenuItem: false,
-                component: 'PopupRenderer',
-                meta: {
-                  component: 'PopupRenderer',
-                  properties: {
-                    title: 'User Profile Details',
-                    triggerText: 'View Full Profile',
-                    width: 800,
-                    height: 600,
-                    content: `
+
+            },
+
+            // Detail and Popup Row
+            {
+              component: 'WrapperRenderer',
+              meta: {
+                component: 'WrapperRenderer',
+                properties: {
+                  className: 'grid grid-cols-1 gap-6',
+                  children: [
+                    // User Detail with Popup
+                    {
+                      component: 'WrapperRenderer',
+                      meta: {
+                        component: 'WrapperRenderer',
+                        properties: {
+                          className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow',
+                          children: [
+                            {
+                              component: 'DetailRenderer',
+                              meta: {
+                                component: 'DetailRenderer',
+                                properties: {
+                                  title: 'User Details',
+                                  data: userDetailData,
+                                  fields: [
+                                    { key: 'name', label: 'Name', type: 'text' },
+                                    { key: 'email', label: 'Email', type: 'text' },
+                                    { key: 'role', label: 'Role', type: 'badge' },
+                                    { key: 'active', label: 'Status', type: 'switch' },
+                                    { key: 'createdAt', label: 'Created', type: 'date' },
+                                    { key: 'lastLogin', label: 'Last Login', type: 'datetime' }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              component: 'PopupRenderer',
+                              meta: {
+                                component: 'PopupRenderer',
+                                properties: {
+                                  title: 'User Profile Details',
+                                  triggerText: 'View Full Profile',
+                                  width: 800,
+                                  height: 600,
+                                  content: `
                       <div class="space-y-6">
                         <div class="flex items-center space-x-4">
                           <img src="${userDetailData.profile.avatar}" alt="Profile" class="w-20 h-20 rounded-full">
@@ -295,21 +291,29 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                         </div>
                       </div>
                     `
-                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+
+                    }
+                  ]
                 }
-              }
-            ]
-          }
-        ]
-      }
-    ]
+              },
+
+            }
+          ]
+        }
+    }
+
   };
 
   return {
     type: 'tailwind',
     header: {
       meta: {
-        isMenuItem: false,
         component: 'HeaderRenderer'
       }
     },
@@ -318,13 +322,11 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
     },
     sider: {
       meta: {
-        isMenuItem: false,
         component: 'SidebarRenderer'
       }
     },
     footer: {
       meta: {
-        isMenuItem: false,
         component: 'FooterRenderer'
       }
     }

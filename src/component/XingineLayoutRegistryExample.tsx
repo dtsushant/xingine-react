@@ -1,14 +1,12 @@
 import React from 'react';
 import { 
-  LayoutComponentDetail, 
-  LayoutRenderer, 
-  UIComponent, 
-  ComponentMeta, 
+
   FormMeta, 
   TableMeta, 
   DetailMeta, 
   ChartMeta 
 } from '../types/renderer.types';
+import {LayoutComponentDetail, LayoutRenderer} from "xingine";
 
 // Complete registry data that can be passed to the LayoutComponentRegistryService
 
@@ -249,7 +247,7 @@ const inventoryChartMeta: ChartMeta = {
 
 // Complete Layout Component Registry Data
 export const getRegistryData = (): LayoutComponentDetail[] => {
-  return [
+  return [/*
     // User Module - Default Layout
     {
       path: '/user',
@@ -704,7 +702,7 @@ export const getRegistryData = (): LayoutComponentDetail[] => {
       isMenuItem: false,
       component: 'FooterRenderer',
       content: 'Application Footer'
-    }
+    }*/
   ];
 };
 
@@ -716,28 +714,24 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
       header: {
         meta: {
           component: 'HeaderRenderer',
-          isMenuItem: false,
           content: 'Default Header with full navigation'
         }
       },
       sider: {
         meta: {
           component: 'SidebarRenderer',
-          isMenuItem: false,
           content: 'Collapsible sidebar with menu'
         }
       },
       content: {
         meta: {
           component: 'ContentRenderer',
-          isMenuItem: false,
           content: 'Main content area with charts, forms, and tables'
         }
       },
       footer: {
         meta: {
           component: 'FooterRenderer',
-          isMenuItem: false,
           content: 'Standard footer'
         }
       }
@@ -747,21 +741,18 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
       header: {
         meta: {
           component: 'HeaderRenderer',
-          isMenuItem: false,
           content: 'Public header with minimal navigation'
         }
       },
       content: {
         meta: {
           component: 'ContentRenderer',
-          isMenuItem: false,
           content: 'Public content area'
         }
       },
       footer: {
         meta: {
           component: 'FooterRenderer',
-          isMenuItem: false,
           content: 'Public footer'
         }
       }
@@ -771,7 +762,6 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
       content: {
         meta: {
           component: 'ContentRenderer',
-          isMenuItem: false,
           content: 'Custom layout with full-width content'
         }
       }
@@ -781,28 +771,24 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
       header: {
         meta: {
           component: 'TailwindHeaderComponent',
-          isMenuItem: false,
           content: 'Tailwind header with CSS classes'
         }
       },
       content: {
         meta: {
           component: 'TailwindContentComponent',
-          isMenuItem: false,
           content: 'Tailwind-styled content area'
         }
       },
       sider: {
         meta: {
           component: 'TailwindSidebarComponent',
-          isMenuItem: false,
           content: 'Tailwind sidebar navigation'
         }
       },
       footer: {
         meta: {
           component: 'TailwindFooterComponent',
-          isMenuItem: false,
           content: 'Tailwind footer'
         }
       }

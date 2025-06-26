@@ -11,8 +11,7 @@ import {
 } from "../xingine-layout-registry";
 import { XingineConfig } from "../configuration/Configuration";
 import { mapXingineRoutes } from "./XingineContextBureau.utils";
-import { ModuleProperties, modulePropertiesListDecoder } from "xingine";
-import { UIComponent, LayoutComponentDetail, LayoutRenderer } from "../types/renderer.types";
+import {LayoutComponentDetail, LayoutRenderer, ModuleProperties, modulePropertiesListDecoder} from "xingine";
 import { getDefaultInternalComponents } from "../component/group";
 
 export interface ColorPalette {
@@ -124,7 +123,7 @@ export const XingineContextBureau: React.FC<{
       }
 
       // Register route if it has a path
-      if (component.path) {
+      /*if (component.path) {
         const element = layoutRegistry?.renderLayoutComponent(component);
         
         if (element) {
@@ -133,17 +132,17 @@ export const XingineContextBureau: React.FC<{
             element,
           });
         }
-      }
+      }*/
 
       // Add to menu items if isMenuItem is true
-      if (component.isMenuItem) {
+      /*if (component.isMenuItem) {
         menuItemsList.push(component);
-      }
+      }*/
 
       // Process children recursively
-      if (component.children) {
+     /* if (component.children) {
         component.children.forEach(processComponentDetail);
-      }
+      }*/
     };
 
     components.forEach(processComponent);
@@ -289,29 +288,21 @@ const createDefaultLayout = (): LayoutRenderer => ({
   header: {
     meta: {
       component: "HeaderRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
   sider: {
     meta: {
       component: "SidebarRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
   content: {
     meta: {
       component: "ContentRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
   footer: {
     meta: {
       component: "FooterRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
 });
@@ -321,22 +312,16 @@ const createPublicLayout = (): LayoutRenderer => ({
   header: {
     meta: {
       component: "HeaderRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
   content: {
     meta: {
       component: "ContentRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
   footer: {
     meta: {
       component: "FooterRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
 });
@@ -346,8 +331,6 @@ const createCustomLayout = (): LayoutRenderer => ({
   content: {
     meta: {
       component: "ContentRenderer",
-      isMenuItem: false,
-      children: [],
     },
   },
 });

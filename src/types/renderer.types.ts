@@ -1,4 +1,7 @@
 // Import and re-export base types from xingine
+
+import {ComponentMetaMap, WrapperMeta} from "xingine";
+
 export type {
   Renderer,
   UIComponent as XingineUIComponent,
@@ -7,7 +10,7 @@ export type {
   Permission,
   GroupedPermission,
   IconMeta,
-  ExpositionRule
+  ExpositionRule,
 } from 'xingine';
 
 // Import component meta types from xingine's component meta map
@@ -16,9 +19,7 @@ export type {
   FormMeta,
   DetailMeta,
   TableMeta,
-  TabMeta,
   ChartMeta,
-  ComponentMeta,
   ChartType,
   ChartDataset,
   ChartConfig,
@@ -30,17 +31,15 @@ export type {
 
 // Import the original ComponentMetaMap and extend it
 import type { 
-  ComponentMetaMap as XingineComponentMetaMap,
   FormMeta,
   TableMeta,
-  TabMeta,
   DetailMeta,
   ChartMeta,
-  ComponentMeta
 } from 'xingine/dist/core/component/component-meta-map';
+import {TabMeta} from "../../.yalc/xingine";
 
 // New architecture interfaces as per requirements
-
+/*
 export interface LayoutComponentDetail {
   path?: string;
   isMenuItem: boolean; // if true along with having a path will be a menu in sider
@@ -64,10 +63,11 @@ export interface LayoutRenderer {
   footer?: {
     meta?: LayoutComponentDetail;
   };
-}
+}*/
+export type XingineComponentMetaMap = ComponentMetaMap;
 
 // Extended ComponentMetaMap to include all renderers
-export interface ComponentMetaMap extends XingineComponentMetaMap {
+/*export interface XingineComponentMetaMap {
   FormRenderer: FormMeta;
   TableRenderer: TableMeta;
   TabRenderer: TabMeta;
@@ -91,14 +91,15 @@ export interface ComponentMetaMap extends XingineComponentMetaMap {
   CardRenderer: Record<string, any>;
   TextRenderer: Record<string, any>;
   LinkRenderer: Record<string, any>;
-  WrapperRenderer: Record<string, any>;
+  WrapperRenderer: WrapperMeta;
   PopupRenderer: Record<string, any>;
-}
+}*/
 
+/*
 // Modified UIComponent type to support LayoutRenderer and LayoutComponentDetail
 export type UIComponent = LayoutRenderer | LayoutComponentDetail;
 
 // Modified ModulePropertyOptions
 export interface ModulePropertyOptions {
   uiComponent: UIComponent[];
-}
+}*/

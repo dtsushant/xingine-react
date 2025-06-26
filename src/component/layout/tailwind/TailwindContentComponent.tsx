@@ -1,6 +1,6 @@
 import React from 'react';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
 import { getLayoutComponentRegistryService } from '../../../xingine-layout-registry';
+import {LayoutComponentDetail} from "xingine";
 
 interface TailwindContentComponentProps {
   renderer?: LayoutComponentDetail;
@@ -24,7 +24,7 @@ export const TailwindContentComponent: React.FC<TailwindContentComponentProps> =
     }
 
     // If no component found, render children or content
-    if (component.children && component.children.length > 0) {
+    /*if (component.children && component.children.length > 0) {
       return (
         <div className="space-y-4">
           {component.children.map((child, index) => (
@@ -34,7 +34,7 @@ export const TailwindContentComponent: React.FC<TailwindContentComponentProps> =
           ))}
         </div>
       );
-    }
+    }*/
 
     if (component.content) {
       return (

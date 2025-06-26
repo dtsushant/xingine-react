@@ -11,8 +11,8 @@ import {
   LogoutOutlined,
   BulbOutlined,
 } from '@ant-design/icons';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
 import { PanelControlBureau } from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail} from "xingine";
 
 const { Search } = Input;
 const { useBreakpoint } = Grid;
@@ -24,7 +24,7 @@ interface SerializableAction {
   value?: any;
 }
 
-interface HeaderComponentProps {
+export interface HeaderComponentProps {
   renderer?: LayoutComponentDetail;
   panelControl: PanelControlBureau;
   menuItems?: LayoutComponentDetail[];

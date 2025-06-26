@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
 interface TailwindSidebarComponentProps {
   renderer?: LayoutComponentDetail;

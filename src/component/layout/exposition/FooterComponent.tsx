@@ -1,11 +1,11 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
 import { PanelControlBureau } from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail} from "xingine";
 
 const { Text } = Typography;
 
-interface FooterComponentProps {
+export interface FooterComponentProps {
   renderer?: LayoutComponentDetail;
   panelControl: PanelControlBureau;
 }

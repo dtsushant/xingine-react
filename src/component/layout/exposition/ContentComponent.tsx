@@ -1,8 +1,8 @@
 import React from 'react';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
 import { PanelControlBureau } from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail} from "xingine";
 
-interface ContentComponentProps {
+export interface ContentComponentProps {
   renderer?: LayoutComponentDetail;
   panelControl: PanelControlBureau;
 }
@@ -15,15 +15,7 @@ export const ContentComponent: React.FC<ContentComponentProps> = ({
 
   // If renderer has children, render them based on meta
   const renderChildren = () => {
-    if (!renderer?.children) {
-      return <div>Content will be rendered here based on ComponentMeta properties</div>;
-    }
-
-    return renderer.children.map((child, index) => (
-      <div key={`content-child-${index}`}>
-        {child.content || `Component: ${child.component}`}
-      </div>
-    ));
+    return <div>TODO:- compelete implementation rendered from ContenteComponent in exposition</div>
   };
 
   return (

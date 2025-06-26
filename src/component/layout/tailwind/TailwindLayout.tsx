@@ -1,13 +1,13 @@
 import React from 'react';
-import { LayoutRenderer as LayoutRendererType } from '../../../types/renderer.types';
 import { TailwindHeaderComponent } from './TailwindHeaderComponent';
 import { TailwindSidebarComponent } from './TailwindSidebarComponent';
 import { TailwindContentComponent } from './TailwindContentComponent';
 import { TailwindFooterComponent } from './TailwindFooterComponent';
 import { useXingineContext } from '../../../context/XingineContextBureau';
+import {LayoutRenderer} from "xingine";
 
 interface TailwindLayoutProps {
-  layout: LayoutRendererType;
+  layout: LayoutRenderer;
 }
 
 export const TailwindLayout: React.FC<TailwindLayoutProps> = ({ layout }) => {
@@ -44,7 +44,7 @@ export const TailwindLayout: React.FC<TailwindLayoutProps> = ({ layout }) => {
               : 'bg-white border-r border-gray-200'
           }`}>
             <TailwindSidebarComponent 
-              renderer={layout.sider.meta} 
+              renderer={layout.sider.meta}
               panelControl={panelControl}
               menuItems={menuItems}
             />

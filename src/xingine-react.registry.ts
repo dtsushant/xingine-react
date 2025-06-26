@@ -1,6 +1,6 @@
 import React, {Attributes, FC, FunctionComponent, JSX} from "react";
 import {getUIComponentDetails, ModuleProperties} from "xingine";
-import { ComponentMetaMap } from "xingine/dist/core/component/component-meta-map";
+import {XingineComponentMetaMap} from "./types/renderer.types";
 
 type ModuleRegistry = {
   moduleProperties: ModuleProperties[];
@@ -9,7 +9,7 @@ type ModuleRegistry = {
     {
       name: string;
       path: string;
-      props?: ComponentMetaMap[keyof ComponentMetaMap];
+      props?: XingineComponentMetaMap[keyof XingineComponentMetaMap];
       fc: React.FC<unknown>;
     }
   >;
@@ -58,11 +58,11 @@ class ModuleRegistryService {
 
   get(
     name: string,
-    props?: ComponentMetaMap[keyof ComponentMetaMap],
+    props?: XingineComponentMetaMap[keyof XingineComponentMetaMap],
   ): JSX.Element | undefined {
     const Component = this.modules.component[name];
     if (!Component) return undefined;
-    return React.createElement<ComponentMetaMap[keyof ComponentMetaMap]>(Component.fc, props);
+    return React.createElement<XingineComponentMetaMap[keyof XingineComponentMetaMap]>(Component.fc, props);
   }
 
 

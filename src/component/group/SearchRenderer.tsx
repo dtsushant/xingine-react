@@ -1,10 +1,10 @@
 import React from 'react';
 import { Input } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
 const { Search } = Input;
 
-interface SearchRendererProps {
+export interface SearchRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
 import { useXingineContext } from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail} from "xingine";
 
 interface TailwindHeaderComponentProps {
   renderer?: LayoutComponentDetail;

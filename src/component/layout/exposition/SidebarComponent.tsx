@@ -1,9 +1,10 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { LayoutComponentDetail } from '../../../types/renderer.types';
 import { PanelControlBureau } from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail} from "xingine";
+import {MenuItemType} from "antd/es/menu/interface";
 
-interface SidebarComponentProps {
+export interface SidebarComponentProps {
   renderer?: LayoutComponentDetail;
   panelControl: PanelControlBureau;
   menuItems?: LayoutComponentDetail[];
@@ -17,7 +18,7 @@ export const SidebarComponent: React.FC<SidebarComponentProps> = ({
   const { collapsed, darkMode } = panelControl;
   
   // Convert LayoutComponentDetail menuItems to Ant Design menu items
-  const processedMenuItems = React.useMemo(() => {
+  const processedMenuItems :MenuItemType[] =[];/* React.useMemo(() => {
     return menuItems
       .filter(item => item.isMenuItem)
       .map((item) => ({
@@ -31,7 +32,7 @@ export const SidebarComponent: React.FC<SidebarComponentProps> = ({
           }
         }
       }));
-  }, [menuItems, collapsed]);
+  }, [menuItems, collapsed]);*/
 
   return (
     <div style={{ 

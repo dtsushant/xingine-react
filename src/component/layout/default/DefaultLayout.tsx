@@ -1,16 +1,16 @@
 import React from 'react';
 import { Layout } from 'antd';
-import { LayoutRenderer as LayoutRendererType } from '../../../types/renderer.types';
 import { HeaderComponent } from '../exposition/HeaderComponent';
 import { SidebarComponent } from '../exposition/SidebarComponent';
 import { ContentComponent } from '../exposition/ContentComponent';
 import { FooterComponent } from '../exposition/FooterComponent';
 import { useXingineContext } from '../../../context/XingineContextBureau';
+import {LayoutRenderer} from "xingine";
 
 const { Header, Sider, Content, Footer } = Layout;
 
 interface DefaultLayoutProps {
-  layout: LayoutRendererType;
+  layout: LayoutRenderer;
 }
 
 export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ layout }) => {

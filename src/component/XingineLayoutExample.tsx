@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  LayoutComponentDetail, 
-  LayoutRenderer, 
-  UIComponent, 
-  ComponentMeta, 
+import {
   FormMeta, 
   TableMeta, 
   DetailMeta, 
@@ -20,6 +16,7 @@ import {
   getMockUserData, 
   getMockInventoryData 
 } from './XingineLayoutRegistryExample';
+import {ComponentMeta, LayoutComponentDetail, UIComponent} from "xingine";
 
 // Component to demonstrate the new registry system
 export const XingineLayoutExample: React.FC = () => {
@@ -113,14 +110,14 @@ export const XingineLayoutExample: React.FC = () => {
               <div key={index} style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#fff', borderRadius: '4px' }}>
                 <strong>{item.component}</strong>
                 <br />
-                <span style={{ color: '#666' }}>Path: {item.path || 'No path'}</span>
                 <br />
                 <span style={{ color: '#666' }}>Content: {item.content}</span>
-                {item.children && (
+                {/*{item.children && (
                   <div style={{ marginLeft: '20px', marginTop: '5px' }}>
                     <small>Children: {item.children.length} component(s)</small>
                   </div>
-                )}
+                )}*/}
+                <div>TODO:- complete or remove implementation</div>
               </div>
             ))}
           </div>
@@ -376,7 +373,7 @@ const mockInventoryFormMeta: FormMeta = {
 export const createUserModuleUIComponents = (): UIComponent[] => {
   return [
     // User module main layout (default)
-    {
+    /*{
       type: "default",
       header: {
         meta: {
@@ -484,14 +481,14 @@ export const createUserModuleUIComponents = (): UIComponent[] => {
         component: "DetailRenderer",
         properties: mockUserDetailMeta
       } as ComponentMeta<"DetailRenderer">
-    } as LayoutComponentDetail
+    } as LayoutComponentDetail*/
   ];
 };
 
 export const createUserLoginUIComponents = (): UIComponent[] => {
   return [
     // User Login (public layout)
-    {
+    /*{
       type: "public",
       header: {
         meta: {
@@ -537,14 +534,14 @@ export const createUserLoginUIComponents = (): UIComponent[] => {
         component: "FormRenderer",
         properties: mockLoginFormMeta
       } as ComponentMeta<"FormRenderer">
-    } as LayoutComponentDetail
+    } as LayoutComponentDetail*/
   ];
 };
 
 export const createInventoryUIComponents = (): UIComponent[] => {
   return [
     // Inventory module (custom layout)
-    {
+    /*{
       type: "custom",
       header: {
         meta: {
@@ -623,7 +620,7 @@ export const createInventoryUIComponents = (): UIComponent[] => {
           content: "Inventory Module Footer"
         }
       }
-    } as LayoutRenderer
+    } as LayoutRenderer*/
   ];
 };
 

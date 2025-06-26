@@ -1,14 +1,11 @@
 import { exact, string, boolean, optional, array, mixed, either } from 'decoders';
 import type { Decoder } from 'decoders';
-import { 
-  componentMetaDecoder,
-  rendererDecoder as xingineRendererDecoder 
+import {
+  componentMetaDecoder, LayoutComponentDetail, LayoutRenderer,
+  rendererDecoder as xingineRendererDecoder
 } from 'xingine';
 import type { 
-  LayoutComponentDetail, 
-  LayoutRenderer, 
-  ComponentMetaMap,
-  UIComponent 
+  XingineComponentMetaMap,
 } from './renderer.types';
 
 /**

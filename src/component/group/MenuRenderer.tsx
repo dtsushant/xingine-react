@@ -1,8 +1,8 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
-interface MenuRendererProps {
+export interface MenuRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;

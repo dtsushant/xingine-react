@@ -1,7 +1,7 @@
 import React from 'react';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
-interface LinkRendererProps {
+export interface LinkRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;

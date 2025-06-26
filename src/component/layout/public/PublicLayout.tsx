@@ -1,15 +1,15 @@
 import React from 'react';
 import { Layout } from 'antd';
-import { LayoutRenderer as LayoutRendererType } from '../../../types/renderer.types';
 import { HeaderComponent } from '../exposition/HeaderComponent';
 import { ContentComponent } from '../exposition/ContentComponent';
 import { FooterComponent } from '../exposition/FooterComponent';
 import { useXingineContext } from '../../../context/XingineContextBureau';
+import {LayoutRenderer} from "xingine";
 
 const { Header, Content, Footer } = Layout;
 
 interface PublicLayoutProps {
-  layout: LayoutRendererType;
+  layout: LayoutRenderer;
 }
 
 export const PublicLayout: React.FC<PublicLayoutProps> = ({ layout }) => {

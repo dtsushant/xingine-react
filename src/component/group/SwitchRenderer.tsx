@@ -1,8 +1,8 @@
 import React from 'react';
 import { Switch } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
+import {LayoutComponentDetail} from "xingine";
 
-interface SwitchRendererProps {
+export interface SwitchRendererProps {
   detail: LayoutComponentDetail;
   styles?: React.CSSProperties;
   keyPrefix?: string;

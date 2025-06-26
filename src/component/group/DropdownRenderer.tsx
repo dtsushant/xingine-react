@@ -1,11 +1,11 @@
 import React from 'react';
 import { Dropdown } from 'antd';
-import { LayoutComponentDetail } from '../../types/renderer.types';
 import { WrapperRenderer } from './WrapperRenderer';
+import {LayoutComponentDetail} from "xingine";
 
-interface DropdownRendererProps {
+export interface DropdownRendererProps {
   detail: LayoutComponentDetail;
-  styles?: React.CSSProperties;
+  styles?: Record<string,unknown>;
   keyPrefix?: string;
 }
 
@@ -15,13 +15,14 @@ export const DropdownRenderer: React.FC<DropdownRendererProps> = ({
   keyPrefix = 'dropdown' 
 }) => (
   <Dropdown menu={{ items: [] }}>
-    <WrapperRenderer style={styles}>
+    {/*<WrapperRenderer style={styles}>
       {detail.children?.map((child, index) => (
         <div key={`${keyPrefix}-${index}`}>
           {child.content || child.component}
         </div>
       ))}
-    </WrapperRenderer>
+    </WrapperRenderer>*/}
+      <div>TODO:- complete dropdown render implementaiotn</div>
   </Dropdown>
 );
 

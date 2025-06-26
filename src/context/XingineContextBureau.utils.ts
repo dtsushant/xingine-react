@@ -1,9 +1,8 @@
 import React from "react";
 import { RouteObject } from "react-router-dom";
-import { getUIComponentDetails, ModuleProperties } from "xingine";
+import {getUIComponentDetails, LayoutRenderer, ModuleProperties} from "xingine";
 import { XingineConfig } from "../configuration/Configuration";
 import { getModuleRegistryService } from "../xingine-react.registry";
-import { LayoutRenderer } from "../types/renderer.types";
 import { ModuleHome } from "../component/layout/panel/ModuleHome";
 
 export function mapXingineRoutes(

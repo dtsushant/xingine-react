@@ -4,8 +4,7 @@ import { lazyLoadComponent } from "../utils/Component.utils";
 import { AccessGuard } from "../ComponentAccessGuard";
 import { DefaultLayout } from "../ComponentDefaultLayout";
 import { NotFound } from "../group/NotFound";
-import { UIComponentDetail} from "xingine";
-import {ComponentMeta, ComponentMetaMap} from "xingine/dist/core/component/component-meta-map";
+import {ComponentMetaMap, UIComponentDetail} from "xingine";
 
 export const DynamicRouter = (modules: UIComponentDetail[]) => {
   console.log("the modules", modules);

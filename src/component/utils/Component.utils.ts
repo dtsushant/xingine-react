@@ -1,5 +1,5 @@
-import React, {ComponentType, lazy, LazyExoticComponent} from "react";
-import {ComponentMetaMap} from "xingine/dist/core/component/component-meta-map";
+import React, {ComponentType, CSSProperties, lazy, LazyExoticComponent} from "react";
+import {ComponentMetaMap} from "xingine";
 
 
 export function lazyLoadComponent<K extends keyof ComponentMetaMap>(
@@ -56,5 +56,32 @@ export function nestParamsSluggedParams(
   }
 
   return nested;
+}
+
+export function toCSSProperties(style?: Record<string, unknown>): CSSProperties {
+  if (!style || typeof style !== 'object') return {};
+
+  const result: CSSProperties = {};
+
+  for (const [key, value] of Object.entries(style)) {
+    // only keep keys that exist in React.CSSProperties
+    if (key in ({} as CSSProperties)) {
+      // Basic check: allow string, number, null, or undefined
+      if (
+          typeof value === 'string' ||
+          typeof value === 'number' ||
+          value === null ||
+          value === undefined
+      ) {
+        result[key as keyof CSSProperties] = value as any;
+      } else {
+        console.warn(`Discarded style property "${key}" with unsafe value:`, value);
+      }
+    } else {
+      console.warn(`Discarded unknown CSS property: "${key}"`);
+    }
+  }
+
+  return result;
 }
 

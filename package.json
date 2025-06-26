@@ -17,6 +17,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc --project tsconfig.json && tsc-alias",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "prepare": "npm run build",
     "push": "yalc push --changed",
     "yalc:dev": "npm run clean && npm run build && npm run push"
@@ -49,7 +51,7 @@
     "react-router-dom": "^7.4.0",
     "recharts": "^2.15.3",
     "use-debounce": "^10.0.4",
-    "xingine": "^1.0.4"
+    "xingine": "^1.0.7"
   },
   "devDependencies": {
     "@ant-design/icons": "^6.0.0",
@@ -69,21 +71,24 @@
     "tsc-alias": "^1.8.2",
     "typescript": "^5.0.0",
     "use-debounce": "^10.0.4",
-    "xingine": "^1.0.5"
+    "xingine": "^1.0.7"
   },
   "jest": {
     "moduleFileExtensions": [
       "js",
       "json",
-      "ts"
+      "ts",
+      "tsx"
     ],
     "rootDir": ".",
-    "testRegex": ".*\\.(e2e-)?spec\\.ts$",
+    "testRegex": ".*\\.(test|spec)\\.(ts|tsx)$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)sx?$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s",
+      "src/**/*.(t|j)s",
+      "src/**/*.(t|j)sx",
+      "!src/**/*.d.ts",
       "!**/dist/**"
     ],
     "modulePathIgnorePatterns": [
@@ -92,14 +97,14 @@
     "testPathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "coverage",
+    "testEnvironment": "node",
+    "preset": "ts-jest"
   },
   "engines": {
     "node": ">=14"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {}
+  }
 }

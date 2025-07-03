@@ -1,14 +1,14 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { PanelControlBureau } from '../../../context/XingineContextBureau';
-import {LayoutComponentDetail} from "xingine";
+import {PanelControlBureau, usePanelControlContext} from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail, WrapperMeta} from "xingine";
 
 const { Text } = Typography;
 
-export interface FooterComponentProps {
+/*export interface FooterComponentProps {
   renderer?: LayoutComponentDetail;
   panelControl: PanelControlBureau;
-}
+}*/
 
 // Hook to detect very small screens (below 508px)
 const useVerySmallScreen = () => {
@@ -28,11 +28,10 @@ const useVerySmallScreen = () => {
   return isVerySmall;
 };
 
-export const FooterComponent: React.FC<FooterComponentProps> = ({ 
-  renderer, 
-  panelControl
+export const FooterComponent: React.FC<WrapperMeta> = ({
+  children
 }) => {
-  const { darkMode } = panelControl;
+  const { darkMode } = usePanelControlContext();
   const isVerySmallScreen = useVerySmallScreen();
   
   // Hide footer on very small screens
@@ -49,7 +48,7 @@ export const FooterComponent: React.FC<FooterComponentProps> = ({
       color: darkMode ? '#fff' : '#000'
     }}>
       <Text type="secondary">
-        {renderer?.content || 'Xingine React Layout ©2024 Created with LayoutRenderer'}
+        {'Xingine React Layout ©2024 Created with LayoutRenderer'}
       </Text>
     </div>
   );

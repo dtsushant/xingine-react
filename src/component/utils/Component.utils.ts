@@ -1,5 +1,13 @@
 import React, {ComponentType, CSSProperties, lazy, LazyExoticComponent} from "react";
-import {ComponentMetaMap} from "xingine";
+import {
+  ComponentMetaMap,
+  EventBindings,
+  extrapolate,
+  getActionRef,
+  getTypedValue,
+  LayoutComponentDetail
+} from "xingine";
+import {usePanelControlContext} from "../../context/XingineContextBureau";
 
 
 export function lazyLoadComponent<K extends keyof ComponentMetaMap>(
@@ -79,6 +87,41 @@ export function toCSSProperties(style?: Record<string, unknown>): CSSProperties 
       }
     } else {
       console.warn(`Discarded unknown CSS property: "${key}"`);
+    }
+  }
+
+  return result;
+}
+
+export function toCSSClassName(classes?: string): string {
+  const { panelProps, darkMode } = usePanelControlContext();
+
+  const baseClass = classes ? extrapolate(classes, panelProps) : "";
+
+  const modeClass = darkMode
+      ? getTypedValue<string>(panelProps, "darkMode") ?? ""
+      : getTypedValue<string>(panelProps, "lightMode") ?? "";
+
+  return `${baseClass} ${modeClass}`.trim();
+}
+
+export function bindMultipleEvents(
+    bindings?: EventBindings,
+    scope?: Record<string, unknown>
+): Record<string, (...args: unknown[]) => void> {
+  const result: Record<string, (...args: unknown[]) => void> = {};
+  if(!bindings)
+    return result;
+
+  const {headerActionContext} = usePanelControlContext();
+
+  for (const [event, action] of Object.entries(bindings)) {
+    const fn = getActionRef(action, {headerActionContext, ...scope});
+
+    if (typeof fn === 'function') {
+      result[event] = fn;
+    }else {
+      console.warn(`Event binding for "${event}" is not a function:`, action);
     }
   }
 

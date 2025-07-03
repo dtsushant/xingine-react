@@ -1,45 +1,34 @@
 import React from 'react';
 import { Button } from 'antd';
-import {LayoutComponentDetail} from "xingine";
+import {ButtonMeta} from "../../../.yalc/xingine";
+import {bindMultipleEvents, toCSSClassName, toCSSProperties} from "../utils/Component.utils";
+import {IconRenderer} from "./IconRenderer";
+import {DangerousRenderer} from "./DangerousContentRenderer";
 
-export interface ButtonRendererProps {
-  detail: LayoutComponentDetail;
-  styles?: React.CSSProperties;
-  keyPrefix?: string;
+export interface ButtonMetaExtended extends  ButtonMeta{
+  scope:Record<string,unknown>;
 }
 
-// Helper function to get icon components
-const getIcon = (iconName: string) => {
-  const iconMap: Record<string, any> = {
-    home: require('@ant-design/icons').HomeOutlined,
-    bell: require('@ant-design/icons').BellOutlined,
-    user: require('@ant-design/icons').UserOutlined,
-    setting: require('@ant-design/icons').SettingOutlined,
-    logout: require('@ant-design/icons').LogoutOutlined,
-    dashboard: require('@ant-design/icons').DashboardOutlined,
-    team: require('@ant-design/icons').TeamOutlined,
-    'bar-chart': require('@ant-design/icons').DashboardOutlined, // Using dashboard as placeholder
-  };
-  return iconMap[iconName] || require('@ant-design/icons').UserOutlined;
+
+export const ButtonRenderer: React.FC<ButtonMetaExtended> = (meta) => {
+const { style, event, name, content, scope, ...props } = meta;
+const { style: innerStyle, className } = style || {};
+  return (
+      <Button
+          name={name}
+          style={toCSSProperties(innerStyle)}
+          className={toCSSClassName(className)} {...bindMultipleEvents(event, scope)} {...props}
+      >
+          {typeof content === 'string' && content ? (
+              <DangerousRenderer content={content} />
+          ) : content && typeof content === 'object' ? (
+              <IconRenderer {...content} />
+          ) : (
+              'Default Button'
+          )}
+
+      </Button>
+  );
 };
-
-export const ButtonRenderer: React.FC<ButtonRendererProps> = ({ 
-  detail, 
-  styles = {}, 
-  keyPrefix = 'button' 
-}) => (
-  <Button 
-    style={styles} 
-    type="default"
-  >
-    {detail.content || 'Button'}
-    {/*{detail.children?.map((child, index) => (
-      <span key={`${keyPrefix}-${index}`}>
-        {child.content || child.component}
-      </span>
-    ))}*/}
-
-  </Button>
-);
 
 export default ButtonRenderer;

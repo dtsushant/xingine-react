@@ -81,7 +81,7 @@ const applyRendererStyles = (renderer?: Renderer): React.CSSProperties => {
 const getChartDimensions = (renderer?: Renderer, defaultWidth = 600, defaultHeight = 300) => {
   let width = defaultWidth;
   let height = defaultHeight;
-
+  console.debug("rendering the charg with height width", height,width);
   if (renderer?.customStyles) {
     if (renderer.customStyles.width) {
       width = typeof renderer.customStyles.width === 'number' 
@@ -99,7 +99,7 @@ const getChartDimensions = (renderer?: Renderer, defaultWidth = 600, defaultHeig
 };
 
 const renderChart = (chart: ChartConfig, index: number, globalRenderer?: Renderer) => {
-  const { type, title, labels = [], datasets = [], renderer: chartRenderer } = chart;
+  const { type,height:h, width:w, title, labels = [], datasets = [], renderer: chartRenderer } = chart;
   
   // Merge global and chart-specific renderer configurations
   // Chart-specific configuration takes precedence
@@ -125,7 +125,7 @@ const renderChart = (chart: ChartConfig, index: number, globalRenderer?: Rendere
   };
   
   // Get chart dimensions from renderer
-  const { width, height } = getChartDimensions(effectiveRenderer);
+  const { width, height } = getChartDimensions(effectiveRenderer,w,h);
   
   // Apply interaction styles
   const interactionProps: React.HTMLAttributes<HTMLDivElement> = {};

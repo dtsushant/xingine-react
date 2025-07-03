@@ -1,21 +1,16 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { PanelControlBureau } from '../../../context/XingineContextBureau';
-import {LayoutComponentDetail} from "xingine";
+import { usePanelControlContext} from '../../../context/XingineContextBureau';
+import { WrapperMeta} from "xingine";
 import {MenuItemType} from "antd/es/menu/interface";
 
-export interface SidebarComponentProps {
-  renderer?: LayoutComponentDetail;
-  panelControl: PanelControlBureau;
-  menuItems?: LayoutComponentDetail[];
-}
 
-export const SidebarComponent: React.FC<SidebarComponentProps> = ({ 
-  renderer, 
-  panelControl,
-  menuItems = []
+
+export const SidebarComponent: React.FC<WrapperMeta> = ({
+  children,
+
 }) => {
-  const { collapsed, darkMode } = panelControl;
+  const { collapsed, darkMode } = usePanelControlContext();
   
   // Convert LayoutComponentDetail menuItems to Ant Design menu items
   const processedMenuItems :MenuItemType[] =[];/* React.useMemo(() => {

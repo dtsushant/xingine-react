@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Row, Col, Space, Button, Input, Badge, Switch, Dropdown, Avatar, Grid } from 'antd';
 import {
   MenuFoldOutlined,
@@ -11,8 +11,8 @@ import {
   LogoutOutlined,
   BulbOutlined,
 } from '@ant-design/icons';
-import { PanelControlBureau } from '../../../context/XingineContextBureau';
-import {LayoutComponentDetail} from "xingine";
+import { usePanelControlContext} from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail, WrapperMeta} from "xingine";
 
 const { Search } = Input;
 const { useBreakpoint } = Grid;
@@ -22,12 +22,6 @@ interface SerializableAction {
   type: 'toggle' | 'navigate' | 'search' | 'menu-action';
   target?: string;
   value?: any;
-}
-
-export interface HeaderComponentProps {
-  renderer?: LayoutComponentDetail;
-  panelControl: PanelControlBureau;
-  menuItems?: LayoutComponentDetail[];
 }
 
 // Hook to detect very small screens (below 508px)
@@ -48,13 +42,13 @@ const useVerySmallScreen = () => {
   return isVerySmall;
 };
 
-export const HeaderComponent: React.FC<HeaderComponentProps> = ({ 
-  renderer, 
-  panelControl,
-  menuItems = []
+export const HeaderComponent: React.FC<WrapperMeta> = ({
+  children
 }) => {
-  const { collapsed, darkMode, setCollapsed, setDarkMode } = panelControl;
+  const { collapsed, darkMode, setCollapsed, setDarkMode,setHeaderActionContext } = usePanelControlContext();
   const isVerySmallScreen = useVerySmallScreen();
+
+
   
   const userMenuItems = [
     { 
@@ -112,7 +106,17 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
     handleAction({ type: 'toggle', target: 'sidebar' });
   };
 
+  const scope= {
+    handleSearch,handleHomeClick,handleToggleCollapsed
+  }
+
+  useEffect(() => {
+    setHeaderActionContext(scope);
+  }, []);
+
   return (
+    <>
+
     <div style={{ 
       padding: '0 16px', 
       height: '100%', 
@@ -163,6 +167,7 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
         </Col>
       </Row>
     </div>
+    </>
   );
 };
 

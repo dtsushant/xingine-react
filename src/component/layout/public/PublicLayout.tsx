@@ -30,7 +30,6 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({ layout }) => {
         }}>
           <HeaderComponent 
             renderer={layout.header.meta} 
-            panelControl={panelControl}
             menuItems={menuItems}
           />
         </Header>

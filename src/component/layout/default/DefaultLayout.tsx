@@ -31,7 +31,6 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ layout }) => {
         }}>
           <HeaderComponent 
             renderer={layout.header.meta} 
-            panelControl={panelControl}
             menuItems={menuItems}
           />
         </Header>

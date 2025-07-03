@@ -5,11 +5,10 @@ export {
   XingineContextBureau, 
   useXingineContext,
   type XingineUIMandate,
-  type ColorPalette,
-  type PartySeal,
   type PanelControlBureau
 } from "./context/XingineContextBureau"
 export * from "./component/group"
+export * from "./component/layout/utils/Layout.utils"
 export { LayoutRenderer, createDefaultLayoutRenderer } from "./component/NewLayoutRenderer"
 export * from "./component/layout/default"
 export * from "./component/layout/public"
@@ -20,6 +19,7 @@ export * from "./types/renderer.decoders"
 export * from "./component/XingineLayoutExample"
 export * from "./configuration/Configuration"
 export * from "./component/layout/exposition"
+export * from './component/utils/Component.utils'
 export {initializeLayoutComponentRegistry,getLayoutComponentRegistryService,resetLayoutComponentRegistry} from "./xingine-layout-registry"
 export type {
   XingineUIComponent,

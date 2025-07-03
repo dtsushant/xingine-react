@@ -37,7 +37,6 @@ export const CustomLayout: React.FC<CustomLayoutProps> = ({ layout }) => {
         }}>
           <HeaderComponent 
             renderer={layout?.header?.meta}
-            panelControl={panelControl}
             menuItems={menuItems}
           />
         </Header>

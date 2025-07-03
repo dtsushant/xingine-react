@@ -1,17 +1,13 @@
 import React from 'react';
-import { PanelControlBureau } from '../../../context/XingineContextBureau';
-import {LayoutComponentDetail} from "xingine";
+import {PanelControlBureau, usePanelControlContext} from '../../../context/XingineContextBureau';
+import {LayoutComponentDetail, WrapperMeta} from "xingine";
 
-export interface ContentComponentProps {
-  renderer?: LayoutComponentDetail;
-  panelControl: PanelControlBureau;
-}
 
-export const ContentComponent: React.FC<ContentComponentProps> = ({ 
-  renderer, 
-  panelControl
+
+export const ContentComponent: React.FC<WrapperMeta> = ({
+  children
 }) => {
-  const { darkMode } = panelControl;
+  const { darkMode } = usePanelControlContext();
 
   // If renderer has children, render them based on meta
   const renderChildren = () => {
@@ -24,7 +20,7 @@ export const ContentComponent: React.FC<ContentComponentProps> = ({
       backgroundColor: darkMode ? '#141414' : '#fff',
       color: darkMode ? '#fff' : '#000'
     }}>
-      {renderer?.content && <div>{renderer.content}</div>}
+      {/*{renderer?.content && <div>{renderer.content}</div>}*/}
       {renderChildren()}
     </div>
   );

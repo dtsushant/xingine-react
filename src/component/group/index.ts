@@ -49,6 +49,9 @@ import {
   ContentComponent, 
   FooterComponent 
 } from "../layout/exposition";
+import {DangerousRenderer} from "./DangerousContentRenderer";
+import InputRenderer from "./InputRenderer";
+import {SvgRenderer} from "./SvgRenderer";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
   return {
@@ -58,12 +61,13 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
     TabRenderer,
     ChartRenderer,
     IconRenderer,
+    SvgRenderer,
     FormRenderer,
     WrapperRenderer,
-    
+
     // UI components
     ButtonRenderer,
-    SearchRenderer,
+    InputRenderer,
     SwitchRenderer,
     BadgeRenderer,
     DropdownRenderer,
@@ -75,26 +79,8 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
     LinkRenderer,
     PopupRenderer,
     FileInput,
-    
-    // Module components
-    UserModule,
-    InventoryModule,
-    UserAnalytics,
-    UserDashboard,
-    InventoryDashboard,
-    
-    // Action components - ensure exact name matches for external module data
-    AddRole,
-    UserCreate,
-    UserList,
-    UserDetail,
-    NewCategory,
-    CreateInventory,
-    UpdateInventory,
-    StockAdjustment,
-    CreatePurchaseOrder,
-    UpdatePurchaseOrder,
-    
+    DangerousRenderer,
+
     // Layout components - using proper names for registry
     HeaderRenderer: HeaderComponent,
     SidebarRenderer: SidebarComponent,
@@ -130,3 +116,6 @@ export * from "./UserAnalytics";
 export * from "./UserDashboard";
 export * from "./InventoryDashboard";
 export * from "./MissingComponents";
+export * from "./DangerousContentRenderer";
+export * from "./InputRenderer"
+export * from "./SvgRenderer"

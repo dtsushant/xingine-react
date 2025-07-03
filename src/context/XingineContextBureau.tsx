@@ -11,10 +11,18 @@ import {
 } from "../xingine-layout-registry";
 import { XingineConfig } from "../configuration/Configuration";
 import { mapXingineRoutes } from "./XingineContextBureau.utils";
-import {LayoutComponentDetail, LayoutRenderer, ModuleProperties, modulePropertiesListDecoder} from "xingine";
+import {
+  LayoutComponentDetail,
+  LayoutRenderer,
+  ModuleProperties,
+  modulePropertiesListDecoder,
+  PanelControlContext,
+  PartySeal
+} from "xingine";
 import { getDefaultInternalComponents } from "../component/group";
+import {ColorPalette} from "./ContextBureau";
 
-export interface ColorPalette {
+/*export interface ColorPalette {
   [key: string]: string;
 }
 
@@ -34,10 +42,13 @@ export interface PanelControlBureau {
   setMobileMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
   partySeal: PartySeal;
   layoutLoading: boolean;
-}
+  panelProps: Record<string,unknown>;
+}*/
+
+export type PanelControlBureau = PanelControlContext;
 
 export interface XingineUIMandate {
-  panelControl: PanelControlBureau;
+  panelControl: PanelControlContext;
   moduleProperties?: ModuleProperties[];
   routes: RouteObject[];
   layouts: Record<string, LayoutRenderer>;
@@ -81,6 +92,9 @@ export const XingineContextBureau: React.FC<{
   const [collapsed, setCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  const[panelControlProps, setPanelControlProps] = useState<Record<string, unknown>>({});
+  const[headerActionContext,setHeaderActionContext] = useState<Record<string, unknown>>({});
+
 
   // Register components and routes based on LayoutComponentDetail
   const registerComponentsAndRoutes = (components: any[]): { routes: RouteObject[], menuItems: LayoutComponentDetail[] } => {
@@ -213,9 +227,10 @@ export const XingineContextBureau: React.FC<{
     };
 
     fetchModuleData();
-  }, []);
+  }, [])
 
-  const panelControlBureau: PanelControlBureau = {
+
+  const panelControlBureau: PanelControlContext = {
     collapsed: collapsed,
     setCollapsed,
     darkMode,
@@ -224,6 +239,13 @@ export const XingineContextBureau: React.FC<{
     setMobileMenuVisible,
     partySeal: defaultPartySeal,
     layoutLoading: isLoadingLayout,
+    panelProps: {
+        'darkMode':'bg-gray-700 border-gray-600 text-white placeholder-gray-400',
+        'lightMode': 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500',
+        ...panelControlProps,
+    },
+    headerActionContext:headerActionContext,
+    setHeaderActionContext: setHeaderActionContext,
   };
 
   // Helper functions for rendering
@@ -280,6 +302,15 @@ export const useXingineContext = (): XingineUIMandate => {
     throw new Error("useXingineContext must be used within a XingineContext");
   }
   return context;
+};
+
+export const usePanelControlContext = (): PanelControlContext => {
+  const context = useContext(XingineContext);
+  if (!context) {
+    throw new Error("useXingineContext must be used within a XingineContext");
+  }
+  const {panelControl} = context;
+  return panelControl;
 };
 
 // Default layout factory functions

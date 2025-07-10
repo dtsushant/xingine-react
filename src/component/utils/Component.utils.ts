@@ -1,4 +1,4 @@
-import React, {ComponentType, CSSProperties, lazy, LazyExoticComponent} from "react";
+import React, {ComponentType, CSSProperties, lazy, LazyExoticComponent, useMemo} from "react";
 import {
   ComponentMetaMap,
   EventBindings,
@@ -7,7 +7,7 @@ import {
   getTypedValue,
   LayoutComponentDetail
 } from "xingine";
-import {usePanelControlContext} from "../../context/XingineContextBureau";
+import {usePanelControlContext, useXingineContext} from "../../context/XingineContextBureau";
 
 
 export function lazyLoadComponent<K extends keyof ComponentMetaMap>(
@@ -73,7 +73,7 @@ export function toCSSProperties(style?: Record<string, unknown>): CSSProperties 
 
   for (const [key, value] of Object.entries(style)) {
     // only keep keys that exist in React.CSSProperties
-    if (key in ({} as CSSProperties)) {
+   // if (key in ({} as CSSProperties)) {
       // Basic check: allow string, number, null, or undefined
       if (
           typeof value === 'string' ||
@@ -85,24 +85,34 @@ export function toCSSProperties(style?: Record<string, unknown>): CSSProperties 
       } else {
         console.warn(`Discarded style property "${key}" with unsafe value:`, value);
       }
-    } else {
+    /*} else {
       console.warn(`Discarded unknown CSS property: "${key}"`);
-    }
+    }*/
   }
 
   return result;
 }
 
-export function toCSSClassName(classes?: string): string {
+/*export function toCSSClassName(classes?: string): string {
   const { panelProps, darkMode } = usePanelControlContext();
 
   const baseClass = classes ? extrapolate(classes, panelProps) : "";
 
-  const modeClass = darkMode
-      ? getTypedValue<string>(panelProps, "darkMode") ?? ""
-      : getTypedValue<string>(panelProps, "lightMode") ?? "";
 
-  return `${baseClass} ${modeClass}`.trim();
+  return baseClass;
+}*/
+
+export function toCSSClassName(classes?: string): string {
+  const { headerActionContext } = usePanelControlContext();
+
+  return useMemo(() => {
+    return classes ? extrapolate(classes, headerActionContext) : '';
+  }, [classes, headerActionContext]);
+}
+
+export function getAllComponentMap():Record<string, ComponentType<any>>{
+    const { allMappedComponents } = useXingineContext();
+    return allMappedComponents;
 }
 
 export function bindMultipleEvents(

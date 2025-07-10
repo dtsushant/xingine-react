@@ -1,46 +1,47 @@
-import React from 'react';
-import {getTypedValue, StyleMeta, WrapperMeta} from "xingine";
-import {bindMultipleEvents, toCSSClassName, toCSSProperties} from "../utils/Component.utils";
-import {DangerousRenderer, getDefaultInternalComponents} from "./index";
-import {usePanelControlContext} from "../../context/XingineContextBureau";
+import React, {useMemo} from 'react';
+import {extrapolate, getTypedValue, StyleMeta, WrapperMeta} from "xingine";
+import {bindMultipleEvents, getAllComponentMap, toCSSClassName, toCSSProperties} from "../utils/Component.utils";
+import {DangerousRenderer} from "./index";
 
 
 interface WrapperMetaExtended extends WrapperMeta {
-  showMeta?: boolean
-  scope?:Record<string, unknown>
+  showMeta?: boolean;
+  debug?:boolean;
+  scope?:Record<string, unknown>;
 }
 
 export const WrapperRenderer: React.FC<WrapperMetaExtended> = (meta) => {
   const {
   children,
   style,
-  className,
   content,
   event,
   scope,
+  debug,
   showMeta,
   ...props
   } = meta;
-  const compMap = getDefaultInternalComponents();
+  const compMap = getAllComponentMap();
 
+ /* const {  headerActionContext} = usePanelControlContext();
 
-  console.debug("the passed event bindings", event);
-
+  const evaluatedClassName = useMemo(() => {
+    return style?.className ? extrapolate(style.className, headerActionContext) : '';
+  }, [style?.className, headerActionContext]);*/
 
   return (
-      <div style={toCSSProperties(style)} className={toCSSClassName(className)} {...bindMultipleEvents(event, scope)} {...props}>
+      <div style={toCSSProperties(style?.style)} className={toCSSClassName(style?.className)} {...bindMultipleEvents(event, scope)} {...props}>
         <ShowMetaContent meta={meta} showMeta={showMeta} />
         {content && <DangerousRenderer content={content}/>}
 
         {children?.filter((child) => !!child.meta).map((child, index) => {
+          if(debug){
+            console.info("Rendering child", child.meta?.component, "with properties", child.meta?.properties);
+          }
 
           const Comp = compMap[child.meta!.component];
-          console.debug("rendering the component", Comp, child.meta!.component, child.meta!.properties);
-
           return (
-              <div key={index}>
-                <Comp {...child.meta!.properties} />
-              </div>
+                <Comp {...child.meta!.properties} key={index}/>
           );
         })}
 

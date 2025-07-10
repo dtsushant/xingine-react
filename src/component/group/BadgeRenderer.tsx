@@ -13,7 +13,7 @@ export const BadgeRenderer: React.FC<BadgeRendererProps> = ({
   styles = {}, 
   keyPrefix = 'badge' 
 }) => (
-  <Badge style={styles} count={detail.content || 0}>
+  <Badge style={styles} >
     {/*{detail.children?.map((child, index) => (
       <div key={`${keyPrefix}-${index}`}>
         {child.content || child.component}

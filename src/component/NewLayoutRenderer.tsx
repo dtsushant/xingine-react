@@ -27,26 +27,27 @@ export const createDefaultLayoutRenderer = (): LayoutRenderer => ({
   type: "default",
   header: {
     meta: {
-      component: "HeaderRenderer",
-      content: "Default Header"
+      /*component: "HeaderRenderer",
+      content: "Default Header"*/
     }
   },
   sider: {
     meta: {
-      component: "SidebarRenderer", 
-      content: "Default Sidebar"
+      /*component: "SidebarRenderer",
+      content: "Default Sidebar"*/
     }
   },
   content: {
     meta: {
-      component: "ContentRenderer",
-      content: "Default Content"
+      /*component: "ContentRenderer",
+      content: "Default Content"*/
+
     }
   },
   footer: {
     meta: {
-      component: "FooterRenderer",
-      content: "Default Footer"
+      /*component: "FooterRenderer",
+      content: "Default Footer"*/
     }
   }
 });

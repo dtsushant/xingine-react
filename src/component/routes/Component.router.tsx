@@ -14,7 +14,7 @@ export const DynamicRouter = (modules: UIComponentDetail[]) => {
       {modules.length > 0 &&
         modules.map((mod) => {
             const componentName = mod.meta?.component!;
-          const Component = lazyLoadComponent(mod.meta?.component!);
+          const Component = lazyLoadComponent(mod.meta?.component! as string);
 
           return (
             <Route

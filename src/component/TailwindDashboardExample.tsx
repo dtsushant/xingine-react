@@ -89,21 +89,17 @@ const userDetailData = {
 
 export const createTailwindDashboardLayout = (): LayoutRenderer => {
   const dashboardContent: LayoutComponentDetail = {
-    component: 'WrapperRenderer',
     meta:{
         component: 'WrapperRenderer',
         properties: {
           children: [
-            // Charts Row
             {
-              component: 'WrapperRenderer',
               meta: {
                 component: 'WrapperRenderer',
                 properties: {
                   className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8',
                   children: [
                     {
-                      component: 'ChartRenderer',
                       meta: {
                         component: 'ChartRenderer',
                         properties: {
@@ -119,7 +115,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                       }
                     },
                     {
-                      component: 'ChartRenderer',
                       meta: {
                         component: 'ChartRenderer',
                         properties: {
@@ -135,7 +130,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                       }
                     },
                     {
-                      component: 'ChartRenderer',
                       meta: {
                         component: 'ChartRenderer',
                         properties: {
@@ -150,7 +144,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                       }
                     },
                     {
-                      component: 'ChartRenderer',
                       meta: {
                         component: 'ChartRenderer',
                         properties: {
@@ -173,7 +166,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
 
             // Form and Table Row
             {
-              component: 'WrapperRenderer',
               meta: {
                 component: 'WrapperRenderer',
                 properties: {
@@ -181,7 +173,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                   children: [
                     // User Creation Form
                     {
-                      component: 'FormRenderer',
                       meta: {
                         component: 'FormRenderer',
                         properties: {
@@ -196,7 +187,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
 
                     // User Table
                     {
-                      component: 'TableRenderer',
                       meta: {
                         component: 'TableRenderer',
                         properties: {
@@ -223,7 +213,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
 
             // Detail and Popup Row
             {
-              component: 'WrapperRenderer',
               meta: {
                 component: 'WrapperRenderer',
                 properties: {
@@ -231,14 +220,12 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                   children: [
                     // User Detail with Popup
                     {
-                      component: 'WrapperRenderer',
                       meta: {
                         component: 'WrapperRenderer',
                         properties: {
                           className: 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow',
                           children: [
                             {
-                              component: 'DetailRenderer',
                               meta: {
                                 component: 'DetailRenderer',
                                 properties: {
@@ -256,7 +243,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                               }
                             },
                             {
-                              component: 'PopupRenderer',
                               meta: {
                                 component: 'PopupRenderer',
                                 properties: {
@@ -313,22 +299,16 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
   return {
     type: 'tailwind',
     header: {
-      meta: {
-        component: 'HeaderRenderer'
-      }
+
     },
     content: {
       meta: dashboardContent
     },
-    sider: {
-      meta: {
-        component: 'SidebarRenderer'
-      }
+    sider:{
+
     },
-    footer: {
-      meta: {
-        component: 'FooterRenderer'
-      }
+    footer:{
+
     }
   };
 };

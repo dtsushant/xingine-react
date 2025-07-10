@@ -1,23 +1,21 @@
 import React from 'react';
 
 import {LayoutComponentDetail} from "xingine";
-import {DangerousRenderer, getDefaultInternalComponents} from "../../group";
+import {getAllComponentMap} from "../../utils/Component.utils";
 
 export const RenderComponent: React.FC<LayoutComponentDetail> = (component) => {
+    const {meta} = component;
     if (!component) return null;
-    const compMap = getDefaultInternalComponents();
 
-    const Comp = compMap[component.component];
+    if(!meta) return null;
+
+    const compMap = getAllComponentMap();
+
+    const Comp = compMap[meta.component];
 
     return (
         <>
-            {component.content && (
-                <DangerousRenderer
-                    style={component.contentStyle}
-                    content={component.content}
-                />
-            )}
-            {Comp && <Comp {...component.meta?.properties} />}
+            {Comp && <Comp {...meta?.properties} />}
         </>
     );
 };

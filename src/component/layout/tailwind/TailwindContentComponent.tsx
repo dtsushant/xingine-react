@@ -36,7 +36,7 @@ export const TailwindContentComponent: React.FC<TailwindContentComponentProps> =
       );
     }*/
 
-    if (component.content) {
+    /*if (component.content) {
       return (
         <div className={`p-4 rounded-lg ${
           darkMode ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900'
@@ -44,14 +44,14 @@ export const TailwindContentComponent: React.FC<TailwindContentComponentProps> =
           <div dangerouslySetInnerHTML={{ __html: component.content }} />
         </div>
       );
-    }
+    }*/
 
     // Default fallback
     return (
       <div className={`p-4 rounded-lg border-2 border-dashed ${
         darkMode ? 'border-gray-600 text-gray-400' : 'border-gray-300 text-gray-500'
       }`}>
-        <p>Component: {component.component}</p>
+        <p>Component: {component.meta?.component}</p>
         {component.meta && (
           <pre className="mt-2 text-xs">
             {JSON.stringify(component.meta, null, 2)}

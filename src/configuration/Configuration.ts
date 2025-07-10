@@ -1,6 +1,6 @@
-import { FC } from "react";
+import {ComponentType, FC} from "react";
 
 export interface XingineConfig {
-  component?: Record<string, FC<unknown>>;
+  component?: Record<string, ComponentType<unknown>>;
   layout?: Record<string, FC<unknown>>;
 }

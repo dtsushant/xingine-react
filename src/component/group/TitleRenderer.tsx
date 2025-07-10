@@ -16,7 +16,7 @@ export const TitleRenderer: React.FC<TitleRendererProps> = ({
   keyPrefix = 'title' 
 }) => (
   <Title style={styles}>
-    {detail.content || 'Title'}
+    'Title'
   </Title>
 );
 

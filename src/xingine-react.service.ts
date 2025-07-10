@@ -1,4 +1,4 @@
-import { FC } from "react";
+import {ComponentType, FC} from "react";
 import {
   getModuleRegistryService,
   initializeModuleRegistry,
@@ -23,7 +23,7 @@ export function registerModule(
   modules: ModuleProperties[],
 ) {
   const combinedComponentRegistry = {
-    ...(getDefaultInternalComponents() as Record<string, FC<unknown>>),
+    ...(getDefaultInternalComponents() as Record<string, ComponentType<unknown>>),
     ...(config.component || {}),
   };
   initializeModuleRegistry(combinedComponentRegistry);

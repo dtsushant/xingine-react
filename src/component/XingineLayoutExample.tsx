@@ -9,14 +9,14 @@ import {
   getLayoutComponentRegistryService, 
   initializeLayoutComponentRegistry 
 } from '../xingine-layout-registry';
-import { getDefaultInternalComponents } from './group';
-import { 
+import {
   getRegistryData, 
   getLayoutConfigurations, 
   getMockUserData, 
   getMockInventoryData 
 } from './XingineLayoutRegistryExample';
 import {ComponentMeta, LayoutComponentDetail, UIComponent} from "xingine";
+import {getAllComponentMap} from "./utils/Component.utils";
 
 // Component to demonstrate the new registry system
 export const XingineLayoutExample: React.FC = () => {
@@ -30,7 +30,7 @@ export const XingineLayoutExample: React.FC = () => {
   useEffect(() => {
     // Initialize the layout component registry if not already done
     if (!getLayoutComponentRegistryService()) {
-      const componentMap = getDefaultInternalComponents() as Record<string, React.FC<unknown>>;
+      const componentMap = getAllComponentMap() as Record<string, React.FC<unknown>>;
       initializeLayoutComponentRegistry(componentMap);
     }
 
@@ -43,7 +43,7 @@ export const XingineLayoutExample: React.FC = () => {
         try {
           registry.register(component);
         } catch (error) {
-          console.warn(`Failed to register component ${component.component}:`, error);
+          console.warn(`Failed to register component ${component.meta?.component}:`, error);
         }
       });
 
@@ -108,10 +108,10 @@ export const XingineLayoutExample: React.FC = () => {
           <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px' }}>
             {menuItems.map((item, index) => (
               <div key={index} style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#fff', borderRadius: '4px' }}>
-                <strong>{item.component}</strong>
+                <strong>{item.meta?.component}</strong>
                 <br />
                 <br />
-                <span style={{ color: '#666' }}>Content: {item.content}</span>
+                {/*<span style={{ color: '#666' }}>Content: {item.content}</span>*/}
                 {/*{item.children && (
                   <div style={{ marginLeft: '20px', marginTop: '5px' }}>
                     <small>Children: {item.children.length} component(s)</small>
@@ -130,9 +130,11 @@ export const XingineLayoutExample: React.FC = () => {
               <div key={index} style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#fff', borderRadius: '4px' }}>
                 <strong>{route.path}</strong>
                 <br />
-                <span style={{ color: '#666' }}>Component: {route.component.component}</span>
+                <span style={{ color: '#666' }}>Component: {route.component.meta?.component}</span>
                 <br />
+{/*
                 <span style={{ color: '#666' }}>Description: {route.component.content}</span>
+*/}
               </div>
             ))}
           </div>

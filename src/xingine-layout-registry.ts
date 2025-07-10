@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactElement } from "react";
+import React, {ComponentType, FunctionComponent, ReactElement} from "react";
 import {ComponentMetaMap, LayoutComponentDetail} from "xingine";
 
 type LayoutComponentRegistry = {
@@ -12,7 +12,7 @@ type LayoutComponentRegistry = {
       content?: string;
       children?: LayoutComponentDetail[];
       meta?: any;
-      fc: React.FC<unknown>;
+      fc: React.ComponentType<unknown>;
     }
   >;
 };
@@ -22,9 +22,9 @@ class LayoutComponentRegistryService {
     layoutComponents: [],
     component: {},
   };
-  private readonly componentMap: Record<string, FunctionComponent<unknown>>;
+  private readonly componentMap: Record<string, ComponentType<unknown>>;
 
-  constructor(componentMap: Record<string, FunctionComponent<unknown>>) {
+  constructor(componentMap: Record<string, ComponentType<unknown>>) {
     this.componentMap = componentMap;
     
     // Debug logging to help troubleshoot component registration issues
@@ -33,9 +33,11 @@ class LayoutComponentRegistryService {
   }
 
   register(layoutComponent: LayoutComponentDetail) {
-    const key = layoutComponent.component;
+    if(!layoutComponent.meta?.component)
+      return ;
+    const key = layoutComponent.meta?.component;
     const Component = this.componentMap[key];
-    let fc: React.FC<unknown>;
+    let fc: React.ComponentType<unknown>;
     
     if (Component) {
       fc = Component;
@@ -61,8 +63,7 @@ class LayoutComponentRegistryService {
     }
 
     this.layouts.component[key] = {
-      name: key,
-      content: layoutComponent.content,
+      name: key as string,
       meta: layoutComponent.meta,
       fc: fc,
     };
@@ -89,9 +90,9 @@ class LayoutComponentRegistryService {
     layoutComponent: LayoutComponentDetail,
     additionalProps?: any
   ): ReactElement | undefined {
-    const Component = this.layouts.component[layoutComponent.component];
+    const Component = this.layouts.component[layoutComponent.meta?.component!];
     if (!Component) {
-      console.warn(`Component '${layoutComponent.component}' not found in registry`);
+      console.warn(`Component '${layoutComponent.meta?.component}' not found in registry`);
       return undefined;
     }
 
@@ -154,7 +155,7 @@ class LayoutComponentRegistryService {
 let layoutInstance: LayoutComponentRegistryService | null = null;
 
 export function initializeLayoutComponentRegistry(
-  componentMap: Record<string, FunctionComponent<unknown>>,
+  componentMap: Record<string, ComponentType<unknown>>,
 ) {
   if (layoutInstance) {
     throw new Error("LayoutComponentRegistryService is already initialized");

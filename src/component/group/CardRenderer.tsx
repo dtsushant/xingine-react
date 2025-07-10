@@ -13,7 +13,7 @@ export const CardRenderer: React.FC<CardRendererProps> = ({
   styles = {}, 
   keyPrefix = 'card' 
 }) => (
-  <Card style={styles} title={detail.content}>
+  <Card style={styles} >
     {/*{detail.children?.map((child, index) => (
       <div key={`${keyPrefix}-${index}`}>
         {child.content || child.component}

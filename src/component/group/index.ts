@@ -52,42 +52,45 @@ import {
 import {DangerousRenderer} from "./DangerousContentRenderer";
 import InputRenderer from "./InputRenderer";
 import {SvgRenderer} from "./SvgRenderer";
+import {ConditionalRenderer} from "./ConditionalRenderer";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
+
   return {
-    // Form and data components
-    DetailRenderer,
-    TableRenderer,
-    TabRenderer,
-    ChartRenderer,
-    IconRenderer,
-    SvgRenderer,
-    FormRenderer,
-    WrapperRenderer,
+      // Form and data components
+      DetailRenderer,
+      TableRenderer,
+      TabRenderer,
+      ChartRenderer,
+      IconRenderer,
+      SvgRenderer,
+      FormRenderer,
+      WrapperRenderer,
+      ConditionalRenderer,
 
-    // UI components
-    ButtonRenderer,
-    InputRenderer,
-    SwitchRenderer,
-    BadgeRenderer,
-    DropdownRenderer,
-    AvatarRenderer,
-    MenuRenderer,
-    TitleRenderer,
-    CardRenderer,
-    TextRenderer,
-    LinkRenderer,
-    PopupRenderer,
-    FileInput,
-    DangerousRenderer,
+      // UI components
+      ButtonRenderer,
+      InputRenderer,
+      SwitchRenderer,
+      BadgeRenderer,
+      DropdownRenderer,
+      AvatarRenderer,
+      MenuRenderer,
+      TitleRenderer,
+      CardRenderer,
+      TextRenderer,
+      LinkRenderer,
+      PopupRenderer,
+      FileInput,
+      DangerousRenderer,
 
-    // Layout components - using proper names for registry
-    HeaderRenderer: HeaderComponent,
-    SidebarRenderer: SidebarComponent,
-    ContentRenderer: ContentComponent,
-    FooterRenderer: FooterComponent,
-    LayoutRenderer: LayoutComponent,
-  };
+      // Layout components - using proper names for registry
+      HeaderRenderer: HeaderComponent,
+      SidebarRenderer: SidebarComponent,
+      ContentRenderer: ContentComponent,
+      FooterRenderer: FooterComponent,
+      LayoutRenderer: LayoutComponent,
+    };
 }
 
 export * from "./FormRenderer";
@@ -105,6 +108,7 @@ export * from "./BadgeRenderer";
 export * from "./DropdownRenderer";
 export * from "./AvatarRenderer";
 export * from "./MenuRenderer";
+export * from "./ConditionalRenderer"
 export * from "./TitleRenderer";
 export * from "./CardRenderer";
 export * from "./TextRenderer";

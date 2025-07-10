@@ -13,7 +13,7 @@ export const LinkRenderer: React.FC<LinkRendererProps> = ({
   keyPrefix = 'link' 
 }) => (
   <a style={styles} href="#" onClick={(e) => e.preventDefault()}>
-    {detail.content || 'Link'}
+    {'Link'}
   </a>
 );
 

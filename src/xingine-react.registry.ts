@@ -1,4 +1,4 @@
-import React, {Attributes, FC, FunctionComponent, JSX} from "react";
+import React, {Attributes, ComponentType, FC, FunctionComponent, JSX} from "react";
 import {getUIComponentDetails, ModuleProperties} from "xingine";
 import {XingineComponentMetaMap} from "./types/renderer.types";
 
@@ -10,7 +10,7 @@ type ModuleRegistry = {
       name: string;
       path: string;
       props?: XingineComponentMetaMap[keyof XingineComponentMetaMap];
-      fc: React.FC<unknown>;
+      fc: React.ComponentType<unknown>;
     }
   >;
 };
@@ -20,9 +20,9 @@ class ModuleRegistryService {
     moduleProperties: [],
     component: {},
   };
-  private readonly componentMap: Record<string, FunctionComponent<unknown>>;
+  private readonly componentMap: Record<string, ComponentType<unknown>>;
 
-  constructor(componentMap: Record<string, FunctionComponent<unknown>>) {
+  constructor(componentMap: Record<string, ComponentType<unknown>>) {
     this.componentMap = componentMap;
   }
 
@@ -30,7 +30,7 @@ class ModuleRegistryService {
     moduleProperty.uiComponent && getUIComponentDetails(moduleProperty.uiComponent)?.forEach((component) => {
       const key = component.component;
       const Component = this.componentMap[key];
-      let fc: React.FC<unknown>;
+      let fc: React.ComponentType<unknown>;
       if (Component) {
         fc = Component;
       } else {
@@ -79,7 +79,7 @@ class ModuleRegistryService {
 let instance: ModuleRegistryService | null = null;
 
 export function initializeModuleRegistry(
-  componentMap: Record<string, FunctionComponent<unknown>>,
+  componentMap: Record<string, ComponentType<unknown>>,
 ) {
   if (instance) {
     throw new Error("ModuleRegistryService is already initialized");

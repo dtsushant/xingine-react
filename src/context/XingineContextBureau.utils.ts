@@ -4,6 +4,26 @@ import {getUIComponentDetails, LayoutRenderer, ModuleProperties} from "xingine";
 import { XingineConfig } from "../configuration/Configuration";
 import { getModuleRegistryService } from "../xingine-react.registry";
 import { ModuleHome } from "../component/layout/panel/ModuleHome";
+import {
+  AvatarRenderer,
+  BadgeRenderer,
+  ButtonRenderer, CardRenderer,
+  ChartRenderer, ConditionalRenderer, DangerousRenderer,
+  DetailRenderer, DropdownRenderer, FileInput,
+  FormRenderer, getDefaultInternalComponents,
+  IconRenderer, LinkRenderer, MenuRenderer, PopupRenderer,
+  SvgRenderer, SwitchRenderer,
+  TableRenderer,
+  TabRenderer, TextRenderer, TitleRenderer, WrapperRenderer
+} from "../component/group";
+import InputRenderer from "../component/group/InputRenderer";
+import {
+  ContentComponent,
+  FooterComponent,
+  HeaderComponent,
+  LayoutComponent,
+  SidebarComponent
+} from "../component/layout/exposition";
 
 export function mapXingineRoutes(
   data: ModuleProperties[],
@@ -87,4 +107,9 @@ export function mapXingineRoutes(
   );
   
   return routes;
+}
+
+export function getAllMappedComponents(args?:Record<string, React.ComponentType<unknown>>):Record<string, React.ComponentType<unknown>>{
+  return getDefaultInternalComponents();
+
 }

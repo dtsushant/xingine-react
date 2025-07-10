@@ -15,7 +15,7 @@ export const SearchRenderer: React.FC<SearchRendererProps> = ({
   styles = {}, 
   keyPrefix = 'search' 
 }) => (
-  <Search style={styles} placeholder={detail.content || 'Search...'} />
+  <Search style={styles} placeholder= 'Search...' />
 );
 
 export default SearchRenderer;

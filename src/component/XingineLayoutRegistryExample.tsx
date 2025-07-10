@@ -712,85 +712,57 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
     default: {
       type: 'default',
       header: {
-        meta: {
-          component: 'HeaderRenderer',
-          content: 'Default Header with full navigation'
-        }
+
       },
       sider: {
-        meta: {
-          component: 'SidebarRenderer',
-          content: 'Collapsible sidebar with menu'
-        }
+
       },
       content: {
         meta: {
-          component: 'ContentRenderer',
-          content: 'Main content area with charts, forms, and tables'
+
         }
       },
       footer: {
-        meta: {
-          component: 'FooterRenderer',
-          content: 'Standard footer'
-        }
+
       }
     },
     public: {
       type: 'public',
       header: {
-        meta: {
-          component: 'HeaderRenderer',
-          content: 'Public header with minimal navigation'
-        }
+
       },
       content: {
         meta: {
-          component: 'ContentRenderer',
-          content: 'Public content area'
+
         }
       },
       footer: {
-        meta: {
-          component: 'FooterRenderer',
-          content: 'Public footer'
-        }
+
       }
     },
     custom: {
       type: 'custom',
       content: {
         meta: {
-          component: 'ContentRenderer',
-          content: 'Custom layout with full-width content'
+
         }
       }
     },
     tailwind: {
       type: 'tailwind',
       header: {
-        meta: {
-          component: 'TailwindHeaderComponent',
-          content: 'Tailwind header with CSS classes'
-        }
+
       },
       content: {
         meta: {
-          component: 'TailwindContentComponent',
-          content: 'Tailwind-styled content area'
+
         }
       },
       sider: {
-        meta: {
-          component: 'TailwindSidebarComponent',
-          content: 'Tailwind sidebar navigation'
-        }
+
       },
       footer: {
-        meta: {
-          component: 'TailwindFooterComponent',
-          content: 'Tailwind footer'
-        }
+
       }
     }
   };

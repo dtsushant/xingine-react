@@ -16,7 +16,7 @@ export const TextRenderer: React.FC<TextRendererProps> = ({
   keyPrefix = 'text' 
 }) => (
   <Text style={styles}>
-    {detail.content || 'Text'}
+    { 'Text'}
   </Text>
 );
 

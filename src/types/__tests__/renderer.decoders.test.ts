@@ -312,7 +312,7 @@ describe('Renderer Decoders', () => {
       expect(result.type).toBe('default');
       expect(result.header?.meta?.meta?.component).toBe('HeaderRenderer');
       // expect(result.header?.meta?.children?.[0].component).toBe('ButtonRenderer');
-      expect(result.content.meta?.meta?.component).toBe('ContentRenderer');
+      expect(result.content.meta[0]?.meta?.component).toBe('ContentRenderer');
       // expect(result.content.meta.children?.[0].component).toBe('FormRenderer');
       // expect(result.content.meta.children?.[0].children?.[0].component).toBe('TextRenderer');
     });
@@ -330,7 +330,7 @@ describe('Renderer Decoders', () => {
 
       const result = decodeLayoutRenderer(simpleLayoutData);
       expect(result.type).toBe('simple');
-      expect(result.content.meta?.meta?.component).toBe('ContentRenderer');
+      expect(result.content.meta[0]?.meta?.component).toBe('ContentRenderer');
     });
   });
 

@@ -708,7 +708,7 @@ export const getRegistryData = (): LayoutComponentDetail[] => {
 
 // Layout Configurations
 export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
-  return {
+  return {}; /*{
     default: {
       type: 'default',
       header: {
@@ -717,11 +717,7 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
       sider: {
 
       },
-      content: {
-        meta: {
-
-        }
-      },
+      content: [],
       footer: {
 
       }
@@ -731,33 +727,21 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
       header: {
 
       },
-      content: {
-        meta: {
-
-        }
-      },
+      content: [],
       footer: {
 
       }
     },
     custom: {
       type: 'custom',
-      content: {
-        meta: {
-
-        }
-      }
+      content: []
     },
     tailwind: {
       type: 'tailwind',
       header: {
 
       },
-      content: {
-        meta: {
-
-        }
-      },
+      content: [],
       sider: {
 
       },
@@ -765,7 +749,7 @@ export const getLayoutConfigurations = (): Record<string, LayoutRenderer> => {
 
       }
     }
-  };
+  }*/;
 };
 
 // Mock data for testing

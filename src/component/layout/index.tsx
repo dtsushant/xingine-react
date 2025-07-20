@@ -102,3 +102,5 @@ export const LayoutRenderer: React.FC = () => {
     </Suspense>
   );
 };
+
+export { DefaultContentRenderer, RenderComponent } from "./DefaultContentRenderer";

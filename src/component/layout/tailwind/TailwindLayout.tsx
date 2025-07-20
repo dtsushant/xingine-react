@@ -63,7 +63,7 @@ export const TailwindLayout: React.FC<TailwindLayoutProps> = ({ layout }) => {
               darkMode ? 'bg-gray-800' : 'bg-white'
             } rounded-lg shadow-sm p-6`}>
               <TailwindContentComponent 
-                renderer={layout.content.meta} 
+                renderer={layout.content.meta[0]}
                 panelControl={panelControl}
               />
             </div>

@@ -38,11 +38,7 @@ export const createDefaultLayoutRenderer = (): LayoutRenderer => ({
     }
   },
   content: {
-    meta: {
-      /*component: "ContentRenderer",
-      content: "Default Content"*/
-
-    }
+    meta: []
   },
   footer: {
     meta: {

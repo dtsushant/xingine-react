@@ -5,9 +5,10 @@ import {
   extrapolate,
   getActionRef,
   getTypedValue,
-  LayoutComponentDetail
+  LayoutComponentDetail, runAction
 } from "xingine";
 import {usePanelControlContext, useXingineContext} from "../../context/XingineContextBureau";
+import {useActionContext, useAllSharedState} from "../../context/ActionContextBureau";
 
 
 export function lazyLoadComponent<K extends keyof ComponentMetaMap>(
@@ -103,11 +104,12 @@ export function toCSSProperties(style?: Record<string, unknown>): CSSProperties 
 }*/
 
 export function toCSSClassName(classes?: string): string {
-  const { headerActionContext } = usePanelControlContext();
+  //const { headerActionContext } = usePanelControlContext();
+  const allSharedState = useAllSharedState();
 
   return useMemo(() => {
-    return classes ? extrapolate(classes, headerActionContext) : '';
-  }, [classes, headerActionContext]);
+    return classes ? extrapolate(classes, allSharedState) : '';
+  }, [classes, allSharedState]);
 }
 
 export function getAllComponentMap():Record<string, ComponentType<any>>{
@@ -120,21 +122,17 @@ export function bindMultipleEvents(
     scope?: Record<string, unknown>
 ): Record<string, (...args: unknown[]) => void> {
   const result: Record<string, (...args: unknown[]) => void> = {};
-  if(!bindings)
-    return result;
-
-  const {headerActionContext} = usePanelControlContext();
-
-  for (const [event, action] of Object.entries(bindings)) {
-    const fn = getActionRef(action, {headerActionContext, ...scope});
-
-    if (typeof fn === 'function') {
-      result[event] = fn;
-    }else {
-      console.warn(`Event binding for "${event}" is not a function:`, action);
+  if (!bindings) return result;
+  const context = useActionContext();
+    if (!context) {
+        console.warn("No ActionContext available for event bindings");
+        return result;
     }
+  for (const [eventName, action] of Object.entries(bindings)) {
+    result[eventName] = (...args: unknown[]) => {
+      runAction(action , context, args[0]);
+    };
   }
-
   return result;
 }
 

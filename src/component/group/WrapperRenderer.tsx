@@ -1,7 +1,8 @@
-import React, {useMemo} from 'react';
-import {extrapolate, getTypedValue, StyleMeta, WrapperMeta} from "xingine";
-import {bindMultipleEvents, getAllComponentMap, toCSSClassName, toCSSProperties} from "../utils/Component.utils";
+import React from 'react';
+import { WrapperMeta} from "xingine";
+import {bindMultipleEvents,  toCSSClassName, toCSSProperties} from "../utils/Component.utils";
 import {DangerousRenderer} from "./index";
+import {RenderComponent} from "../layout/utils/Layout.utils";
 
 
 interface WrapperMetaExtended extends WrapperMeta {
@@ -21,28 +22,19 @@ export const WrapperRenderer: React.FC<WrapperMetaExtended> = (meta) => {
   showMeta,
   ...props
   } = meta;
-  const compMap = getAllComponentMap();
-
- /* const {  headerActionContext} = usePanelControlContext();
-
-  const evaluatedClassName = useMemo(() => {
-    return style?.className ? extrapolate(style.className, headerActionContext) : '';
-  }, [style?.className, headerActionContext]);*/
 
   return (
       <div style={toCSSProperties(style?.style)} className={toCSSClassName(style?.className)} {...bindMultipleEvents(event, scope)} {...props}>
         <ShowMetaContent meta={meta} showMeta={showMeta} />
         {content && <DangerousRenderer content={content}/>}
 
-        {children?.filter((child) => !!child.meta).map((child, index) => {
+        {children?.map((child, index) => {
           if(debug){
             console.info("Rendering child", child.meta?.component, "with properties", child.meta?.properties);
           }
 
-          const Comp = compMap[child.meta!.component];
-          return (
-                <Comp {...child.meta!.properties} key={index}/>
-          );
+          return <RenderComponent {...child} />
+
         })}
 
       </div>

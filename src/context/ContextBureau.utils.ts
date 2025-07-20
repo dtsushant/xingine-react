@@ -1,10 +1,12 @@
 import React from "react";
 import { RouteObject } from "react-router-dom";
-import {getUIComponentDetails, ModuleProperties} from "xingine";
+import {getUIComponentDetails, ModuleProperties, LayoutRenderer as LayoutRendererType} from "xingine";
 import { XingineConfig } from "../configuration/Configuration";
 import { getModuleRegistryService } from "../xingine-react.registry";
 import { LayoutRenderer } from "../component/layout";
 import { ModuleHome } from "../component/layout/panel/ModuleHome";
+import { LayoutWithActionProvider } from "../component/layout/LayoutWithActionProvider";
+import { RenderComponent } from "../component/layout/DefaultContentRenderer";
 
 export function mapDynamicRoutes(
   data: ModuleProperties[],
@@ -55,5 +57,5 @@ export function mapDynamicRoutes(
       };
     },
   );
-  return routes;
+    return routes;
 }

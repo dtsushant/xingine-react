@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect, ReactElement } from "react";
-import { RouteObject } from "react-router-dom";
+import React, {createContext, useState, useContext, useEffect, ReactElement, useRef, useSyncExternalStore} from "react";
+import {RouteObject, useNavigate} from "react-router-dom";
 import {
   get,
   registerModule,
@@ -10,8 +10,9 @@ import {
   initializeLayoutComponentRegistry 
 } from "../xingine-layout-registry";
 import { XingineConfig } from "../configuration/Configuration";
-import { mapXingineRoutes } from "./XingineContextBureau.utils";
+import {getAllMappedComponents, mapXingineRoutes} from "./XingineContextBureau.utils";
 import {
+  ActionContext, ActionContextRegistry, ActionContextSubscribers,
   LayoutComponentDetail,
   LayoutRenderer,
   ModuleProperties,
@@ -22,28 +23,7 @@ import {
 import { getDefaultInternalComponents } from "../component/group";
 import {ColorPalette} from "./ContextBureau";
 
-/*export interface ColorPalette {
-  [key: string]: string;
-}
 
-export interface PartySeal {
-  emblemUrl: string;
-  motto: string;
-  colorPalette: ColorPalette;
-  issuedBy: string;
-}
-
-export interface PanelControlBureau {
-  collapsed: boolean;
-  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
-  darkMode: boolean;
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-  mobileMenuVisible: boolean;
-  setMobileMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  partySeal: PartySeal;
-  layoutLoading: boolean;
-  panelProps: Record<string,unknown>;
-}*/
 
 export type PanelControlBureau = PanelControlContext;
 
@@ -53,6 +33,7 @@ export interface XingineUIMandate {
   routes: RouteObject[];
   layouts: Record<string, LayoutRenderer>;
   menuItems: LayoutComponentDetail[];
+  allMappedComponents:Record<string, React.ComponentType<unknown>>;
   // Helper functions for rendering
   renderLayoutComponent: (component: LayoutComponentDetail, props?: any) => ReactElement | undefined;
   renderComponentTree: (components: LayoutComponentDetail[], props?: any) => ReactElement[];
@@ -96,6 +77,8 @@ export const XingineContextBureau: React.FC<{
   const[headerActionContext,setHeaderActionContext] = useState<Record<string, unknown>>({});
 
 
+
+
   // Register components and routes based on LayoutComponentDetail
   const registerComponentsAndRoutes = (components: any[]): { routes: RouteObject[], menuItems: LayoutComponentDetail[] } => {
     const routesList: RouteObject[] = [];
@@ -110,7 +93,7 @@ export const XingineContextBureau: React.FC<{
           processComponentDetail(layoutRenderer.header.meta);
         }
         if (layoutRenderer.content?.meta) {
-          processComponentDetail(layoutRenderer.content.meta);
+          processComponentDetail(layoutRenderer.content.meta[0]);
         }
         if (layoutRenderer.sider?.meta) {
           processComponentDetail(layoutRenderer.sider.meta);
@@ -127,12 +110,12 @@ export const XingineContextBureau: React.FC<{
     const processComponentDetail = (component: LayoutComponentDetail) => {
       // Register component to layout registry
       const layoutRegistry = getLayoutComponentRegistryService();
-      if (layoutRegistry && component.component) {
+      if (layoutRegistry && component.meta?.component) {
         try {
           layoutRegistry.register(component);
-          console.log(`Registered layout component: ${component.component}`);
+          console.log(`Registered layout component: ${component.meta.component}`);
         } catch (error) {
-          console.warn(`Failed to register layout component ${component.component}:`, error);
+          console.warn(`Failed to register layout component ${component.meta.component}:`, error);
         }
       }
 
@@ -211,7 +194,7 @@ export const XingineContextBureau: React.FC<{
           custom: createCustomLayout(),
         };
 
-        setRoutes(mapXingineRoutes(data, config, allLayouts));
+        setRoutes([...mapXingineRoutes(data, config, allLayouts),...(config.additionalRoutes || [])]);
         setLayouts(allLayouts);
         setMenuItems(allMenuItems);
       } catch (err) {
@@ -275,6 +258,7 @@ export const XingineContextBureau: React.FC<{
     routes: routes,
     layouts: layouts,
     menuItems: menuItems,
+    allMappedComponents: {...getDefaultInternalComponents(),...config.component},
     renderLayoutComponent,
     renderComponentTree,
     getComponentByPath,
@@ -318,50 +302,36 @@ const createDefaultLayout = (): LayoutRenderer => ({
   type: "default",
   header: {
     meta: {
-      component: "HeaderRenderer",
-    },
-  },
-  sider: {
-    meta: {
-      component: "SidebarRenderer",
+
     },
   },
   content: {
-    meta: {
-      component: "ContentRenderer",
-    },
+    meta: [],
   },
-  footer: {
-    meta: {
-      component: "FooterRenderer",
-    },
+  sider:{
+
   },
+  footer:{
+
+  }
 });
 
 const createPublicLayout = (): LayoutRenderer => ({
   type: "public",
   header: {
-    meta: {
-      component: "HeaderRenderer",
-    },
+
   },
   content: {
-    meta: {
-      component: "ContentRenderer",
-    },
+    meta: [],
   },
   footer: {
-    meta: {
-      component: "FooterRenderer",
-    },
+
   },
 });
 
 const createCustomLayout = (): LayoutRenderer => ({
   type: "custom",
   content: {
-    meta: {
-      component: "ContentRenderer",
-    },
+    meta: [],
   },
 });

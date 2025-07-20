@@ -1,44 +1,63 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {ConditionalMeta, evaluateCondition} from "xingine";
-import {usePanelControlContext} from "../../context/XingineContextBureau";
-import {getAllComponentMap} from "../utils/Component.utils";
+import {ConditionalExpression, ConditionalMeta, evaluateCondition} from "xingine";
+import {useSharedState} from "../../context/ActionContextBureau";
+import {RenderComponent} from "../layout/utils/Layout.utils";
 
 
 interface ConditionalMetaExtended extends ConditionalMeta {
-    scope?:Record<string, unknown>
+    scope?: Record<string, unknown>;
 }
-export const ConditionalRenderer: React.FC<ConditionalMetaExtended> = (meta) => {
 
-    const compMap = getAllComponentMap();
-    const {headerActionContext} = usePanelControlContext();
-    const {condition, trueComponent, falseComponent, scope} = meta;
-    const [predicate, setPredicate] = useState(false);
+export function extractFieldsFromCondition(
+    condition?: ConditionalExpression
+): string[] {
+    const fields = new Set<string>();
 
-    /*
-    TODO:- this should refresh the component only for current matching condition not for all the component with condtion
-    const conditionValue = useMemo(() => {
-        const source = scope?.hasOwnProperty(condition.field)
-            ? scope
-            : headerActionContext;
-        return source[condition.field];
-    }, [condition.field, scope[condition.field], headerActionContext[condition.field]]);*/
+    const walk = (cond?: ConditionalExpression) => {
+        if (!cond) return;
 
-    /*const combinedScope = {headerActionContext, ...scope};
-    const predicate = evaluateCondition(condition, combinedScope);*/
-    useEffect(() => {
-        const result = evaluateCondition(condition, {...headerActionContext, ...scope });
-        setPredicate(result);
-    }, [headerActionContext, scope, condition]);
+        if ('field' in cond && typeof cond.field === 'string') {
+            fields.add(cond.field);
+        }
 
-    const Component = predicate
-        ? (trueComponent.meta?.component && compMap[trueComponent.meta.component])
-        : (falseComponent?.meta?.component && compMap[falseComponent.meta.component]);
+        if ('and' in cond && Array.isArray(cond.and)) {
+            cond.and.forEach(walk);
+        }
 
-    const props = predicate
-        ? trueComponent.meta?.properties
-        : falseComponent?.meta?.properties;
+        if ('or' in cond && Array.isArray(cond.or)) {
+            cond.or.forEach(walk);
+        }
+    };
 
-    return (Component && <Component {...props}/>);
-
+    walk(condition);
+    return [...fields];
 }
+
+export function useReactiveCondition(
+    condition: ConditionalExpression,
+    evaluate: (condition: ConditionalExpression, state: Record<string, unknown>) => boolean
+): boolean {
+    const fields = extractFieldsFromCondition(condition);
+
+    const values: Record<string, unknown> = {};
+    for (const field of fields) {
+        values[field] = useSharedState(field);
+    }
+
+    return useMemo(() => {
+        return evaluate(condition, values);
+    }, [condition, ...fields.map(f => values[f])]);
+}
+export const ConditionalRenderer: React.FC<ConditionalMetaExtended> = (
+    meta,
+) => {
+    const { condition, trueComponent, falseComponent, scope } = meta;
+
+    const predicate = useReactiveCondition(condition, evaluateCondition);
+
+    const component = predicate
+        ? trueComponent.meta?.component && trueComponent
+        : falseComponent?.meta?.component && falseComponent;
+    return <RenderComponent {...component} />
+};
 

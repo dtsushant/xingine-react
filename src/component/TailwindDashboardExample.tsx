@@ -302,7 +302,11 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
 
     },
     content: {
-      meta: dashboardContent
+      meta: [
+        {
+          ...dashboardContent,
+          path:'dashboard',
+        }]
     },
     sider:{
 

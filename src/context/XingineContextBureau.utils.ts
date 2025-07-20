@@ -1,6 +1,6 @@
 import React from "react";
 import { RouteObject } from "react-router-dom";
-import {getUIComponentDetails, LayoutRenderer, ModuleProperties} from "xingine";
+import {getUIComponentDetails, LayoutRenderer, ModuleProperties, Commissar, PathProperties} from "xingine";
 import { XingineConfig } from "../configuration/Configuration";
 import { getModuleRegistryService } from "../xingine-react.registry";
 import { ModuleHome } from "../component/layout/panel/ModuleHome";
@@ -111,5 +111,37 @@ export function mapXingineRoutes(
 
 export function getAllMappedComponents(args?:Record<string, React.ComponentType<unknown>>):Record<string, React.ComponentType<unknown>>{
   return getDefaultInternalComponents();
+}
 
+export function getRoutesFromLayout(layout: LayoutRenderer): RouteObject[] {
+    const l = {...layout, content: undefined}
+    return [
+        {
+            path: '/',
+            element: React.createElement(require("../component/layout/LayoutWithContext").LayoutWithContext, l),
+            children: layout.content.meta.map((commissar: Commissar) => {
+                const routePath = typeof commissar.path === 'string' 
+                    ? commissar.path 
+                    : (commissar.path as PathProperties).path;
+                
+                return {
+                    path: routePath,
+                    element: React.createElement(require("../component/layout/DefaultContentRenderer").DefaultContentRenderer, { renderer: commissar }),
+                };
+            }),
+        },
+    ];
+}
+
+export function getCommissarredRoutes(layouts:LayoutRenderer[]): RouteObject[] {
+    const routes: RouteObject[] = [];
+
+    for (const layout of layouts) {
+        const layoutRoutes = getRoutesFromLayout(layout);
+        if (layoutRoutes.length > 0) {
+        routes.push(...layoutRoutes);
+        }
+    }
+
+    return routes;
 }

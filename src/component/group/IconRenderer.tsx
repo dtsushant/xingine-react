@@ -3,12 +3,13 @@ import * as AntIcons from '@ant-design/icons';
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {SvgRenderer} from "./SvgRenderer";
 import {bindMultipleEvents, toCSSClassName, toCSSProperties} from "../utils/Component.utils";
+import React from "react";
 
 interface IconMetaExtended extends IconMeta {
     scope?:Record<string, unknown>
 }
 
-export const IconRenderer = (props: IconMetaExtended) => {
+export const IconRenderer:React.FC<IconMetaExtended> = (props: IconMetaExtended) => {
     const {
         name,
         color,

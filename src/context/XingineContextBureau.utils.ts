@@ -24,6 +24,7 @@ import {
   LayoutComponent,
   SidebarComponent
 } from "../component/layout/exposition";
+import LayoutWithActionProvider from "../component/layout/LayoutWithActionProvider";
 
 export function mapXingineRoutes(
   data: ModuleProperties[],
@@ -118,7 +119,7 @@ export function getRoutesFromLayout(layout: LayoutRenderer): RouteObject[] {
     return [
         {
             path: '/',
-            element: React.createElement(require("../component/layout/LayoutWithContext").LayoutWithContext, l),
+            element: React.createElement(require("../component/layout/LayoutWithActionProvider").LayoutWithActionProvider, l),
             children: layout.content.meta.map((commissar: Commissar) => {
                 const routePath = typeof commissar.path === 'string' 
                     ? commissar.path 

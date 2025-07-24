@@ -29,9 +29,9 @@ export const DEFAULT_TOGGLE_ACTIONS = {
 
 // Function to create setState actions for layout initialization
 export const createLayoutStateActions = (layout: {
-    header?: any;
-    sider?: any;
-    footer?: any;
+    header?: unknown;
+    sider?: unknown;
+    footer?: unknown;
 }): SerializableAction[] => [
     {
         action: 'setState',

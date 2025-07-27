@@ -17,11 +17,19 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc --project tsconfig.json && tsc-alias",
+    "build:dev": "tsc --project tsconfig.dev.json && tsc-alias",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ui": "jest --testPathPattern=component",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:context": "jest --testPathPattern=context",
+    "test:verbose": "jest --verbose",
+    "test:ci": "jest --ci --coverage --watchAll=false",
     "prepare": "npm run build",
     "push": "yalc push --changed",
-    "yalc:dev": "npm run clean && npm run build && npm run push"
+    "yalc:dev": "npm run clean && npm run build && npm run push",
+    "yalc:dev-with-sourcemaps": "npm run clean && npm run build:dev && npm run push"
   },
   "keywords": [
     "typescript",
@@ -56,12 +64,16 @@
   "devDependencies": {
     "@ant-design/icons": "^6.0.0",
     "@hqoss/monads": "^0.5.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.14",
     "@types/react": "^19.0.10",
     "antd": "^5.24.5",
     "axios": "^1.8.4",
     "decoders": "^2.7.0",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.4.0",
@@ -98,8 +110,17 @@
       "<rootDir>/dist/"
     ],
     "coverageDirectory": "coverage",
-    "testEnvironment": "node",
-    "preset": "ts-jest"
+    "testEnvironment": "jsdom",
+    "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/test/setup.ts"
+    ],
+    "moduleNameMapping": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testEnvironmentOptions": {
+      "url": "http://localhost"
+    }
   },
   "engines": {
     "node": ">=14"

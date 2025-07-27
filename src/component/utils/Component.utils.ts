@@ -2,31 +2,11 @@ import React, {ComponentType, CSSProperties, lazy, LazyExoticComponent, useMemo}
 import {
   ComponentMetaMap,
   EventBindings,
-  extrapolate,
-  getActionRef,
-  getTypedValue,
-  LayoutComponentDetail, runAction
+  extrapolate, runAction
 } from "xingine";
-import {usePanelControlContext, useXingineContext} from "../../context/XingineContextBureau";
+import { useXingineContext} from "../../context/XingineContextBureau";
 import {useActionContext, useAllSharedState} from "../../context/ActionContextBureau";
 
-
-export function lazyLoadComponent<K extends keyof ComponentMetaMap>(
-    componentName: string,
-) {
-  return lazy(() =>
-      import(`../group/${componentName}.tsx`).then((module) => {
-        if (!module.default) {
-          throw new Error(
-              `Dynamic import failed: ${componentName} has no default export`,
-          );
-        }
-        return { default: module.default as ComponentType<{
-            meta: ComponentMetaMap[K];
-          }> };
-      }),
-  );
-}
 
 export function getBreadcrumbs(
   path: string,
@@ -93,15 +73,6 @@ export function toCSSProperties(style?: Record<string, unknown>): CSSProperties 
 
   return result;
 }
-
-/*export function toCSSClassName(classes?: string): string {
-  const { panelProps, darkMode } = usePanelControlContext();
-
-  const baseClass = classes ? extrapolate(classes, panelProps) : "";
-
-
-  return baseClass;
-}*/
 
 export function toCSSClassName(classes?: string): string {
   //const { headerActionContext } = usePanelControlContext();

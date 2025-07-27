@@ -19,43 +19,12 @@ import {CardRenderer} from "./CardRenderer";
 import {TextRenderer} from "./TextRenderer";
 import {LinkRenderer} from "./LinkRenderer";
 import {PopupRenderer} from "./PopupRenderer";
-
-// Import module components
-import { UserModule } from "./UserModule";
-import { InventoryModule } from "./InventoryModule";
-import { UserAnalytics } from "./UserAnalytics";
-import { UserDashboard } from "./UserDashboard";
-import { InventoryDashboard } from "./InventoryDashboard";
-
-// Import missing components
-import {
-  AddRole,
-  UserCreate,
-  UserList,
-  UserDetail,
-  NewCategory,
-  CreateInventory,
-  UpdateInventory,
-  StockAdjustment,
-  CreatePurchaseOrder,
-  UpdatePurchaseOrder
-} from "./MissingComponents";
-
-// Import layout components
-import { 
-  LayoutComponent, 
-  HeaderComponent, 
-  SidebarComponent, 
-  ContentComponent, 
-  FooterComponent 
-} from "../layout/exposition";
 import {DangerousRenderer} from "./DangerousContentRenderer";
 import InputRenderer from "./InputRenderer";
 import {SvgRenderer} from "./SvgRenderer";
 import {ConditionalRenderer} from "./ConditionalRenderer";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
-
   return {
       // Form and data components
       DetailRenderer,
@@ -67,7 +36,6 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       FormRenderer,
       WrapperRenderer,
       ConditionalRenderer,
-
       // UI components
       ButtonRenderer,
       InputRenderer,
@@ -83,13 +51,6 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       PopupRenderer,
       FileInput,
       DangerousRenderer,
-
-      // Layout components - using proper names for registry
-      HeaderRenderer: HeaderComponent,
-      SidebarRenderer: SidebarComponent,
-      ContentRenderer: ContentComponent,
-      FooterRenderer: FooterComponent,
-      LayoutRenderer: LayoutComponent,
     };
 }
 
@@ -114,11 +75,6 @@ export * from "./CardRenderer";
 export * from "./TextRenderer";
 export * from "./LinkRenderer";
 export * from "./PopupRenderer";
-export * from "./UserModule";
-export * from "./InventoryModule";
-export * from "./UserAnalytics";
-export * from "./UserDashboard";
-export * from "./InventoryDashboard";
 export * from "./MissingComponents";
 export * from "./DangerousContentRenderer";
 export * from "./InputRenderer"

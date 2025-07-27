@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {extrapolate, StyleMeta} from "xingine";
-import {usePanelControlContext} from "../../context/XingineContextBureau";
+import {useAllSharedState} from "../../context/ActionContextBureau";
 type DangerousRenderProps = {
     content?: string;
     style?: StyleMeta;
@@ -9,11 +9,10 @@ type DangerousRenderProps = {
 export const DangerousRenderer: React.FC<DangerousRenderProps> = ({ content, style }) => {
     if (!content) return null;
 
-    const {headerActionContext} = usePanelControlContext();
-
+    const allSharedState = useAllSharedState();
     const dangerContent = useMemo(() => {
-        return content ? extrapolate(content, headerActionContext) : '';
-    }, [content, headerActionContext]);
+        return content ? extrapolate(content,allSharedState ) : '';
+    }, [content, allSharedState]);
 
     return (
             <div dangerouslySetInnerHTML={{ __html: dangerContent }} />

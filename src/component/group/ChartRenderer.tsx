@@ -19,92 +19,23 @@ import {
   ChartConfig,
   ChartMeta,
 } from "xingine/dist/core/component/component-meta-map";
-import {Renderer} from "xingine";
 
-// Helper function to apply renderer configuration to chart container styles
-const applyRendererStyles = (renderer?: Renderer): React.CSSProperties => {
-  if (!renderer) return {};
-
-  const styles: React.CSSProperties = {};
-
-  // Layout configuration
-  if (renderer.layout) {
-    if (renderer.layout.display) {
-      styles.display = renderer.layout.display;
-    }
-    if (renderer.layout.spacing) {
-      styles.margin = renderer.layout.spacing;
-    }
-    if (renderer.layout.alignment) {
-      styles.textAlign = renderer.layout.alignment as any;
-    }
-  }
-
-  // Display configuration
-  if (renderer.display) {
-    if (renderer.display.showBorder) {
-      styles.border = '1px solid #d9d9d9';
-    }
-    if (renderer.display.showShadow) {
-      styles.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-    }
-    if (renderer.display.backgroundColor) {
-      styles.backgroundColor = renderer.display.backgroundColor;
-    }
-    if (renderer.display.textColor) {
-      styles.color = renderer.display.textColor;
-    }
-    if (renderer.display.borderRadius) {
-      styles.borderRadius = renderer.display.borderRadius;
-    }
-    if (renderer.display.opacity !== undefined) {
-      styles.opacity = renderer.display.opacity;
-    }
-  }
-
-  // Animation configuration
-  if (renderer.animation) {
-    if (renderer.animation.duration) {
-      styles.transition = `all ${renderer.animation.duration}ms ${renderer.animation.easing || 'ease'}`;
-    }
-  }
-
-  // Custom styles (highest priority)
-  if (renderer.customStyles) {
-    Object.assign(styles, renderer.customStyles);
-  }
-
-  return styles;
-};
 
 // Helper function to get chart dimensions based on renderer configuration
-const getChartDimensions = (renderer?: Renderer, defaultWidth = 600, defaultHeight = 300) => {
+const getChartDimensions = (defaultWidth = 600, defaultHeight = 300) => {
   let width = defaultWidth;
   let height = defaultHeight;
   console.debug("rendering the charg with height width", height,width);
-  if (renderer?.customStyles) {
-    if (renderer.customStyles.width) {
-      width = typeof renderer.customStyles.width === 'number' 
-        ? renderer.customStyles.width 
-        : parseInt(renderer.customStyles.width.toString(), 10) || defaultWidth;
-    }
-    if (renderer.customStyles.height) {
-      height = typeof renderer.customStyles.height === 'number' 
-        ? renderer.customStyles.height 
-        : parseInt(renderer.customStyles.height.toString(), 10) || defaultHeight;
-    }
-  }
 
   return { width, height };
 };
 
-const renderChart = (chart: ChartConfig, index: number, globalRenderer?: Renderer) => {
-  const { type,height:h, width:w, title, labels = [], datasets = [], renderer: chartRenderer } = chart;
+const renderChart = (chart: ChartConfig, index: number) => {
+  const { type,height:h, width:w, title, labels = [], datasets = [] } = chart;
   
   // Merge global and chart-specific renderer configurations
   // Chart-specific configuration takes precedence
-  const effectiveRenderer = chartRenderer || globalRenderer;
-  
+
   const data =
     labels.map((label, i) => ({
       name: label,
@@ -121,56 +52,24 @@ const renderChart = (chart: ChartConfig, index: number, globalRenderer?: Rendere
   // Apply renderer styles to container
   const containerStyles: React.CSSProperties = {
     marginBottom: 48,
-    ...applyRendererStyles(effectiveRenderer),
   };
   
   // Get chart dimensions from renderer
-  const { width, height } = getChartDimensions(effectiveRenderer,w,h);
+  const { width, height } = getChartDimensions(w,h);
   
   // Apply interaction styles
   const interactionProps: React.HTMLAttributes<HTMLDivElement> = {};
-  if (effectiveRenderer?.interaction?.clickable) {
-    interactionProps.style = {
-      ...containerStyles,
-      cursor: 'pointer',
-    };
-    interactionProps.onClick = () => {
-      console.log(`Chart ${index} clicked:`, chart.title);
-    };
-  }
-  
-  if (effectiveRenderer?.interaction?.hoverable) {
-    interactionProps.onMouseEnter = () => {
-      console.log(`Chart ${index} hovered:`, chart.title);
-    };
-  }
+
   
   // Apply accessibility attributes
   const accessibilityProps: React.HTMLAttributes<HTMLDivElement> = {};
-  if (effectiveRenderer?.accessibility) {
-    if (effectiveRenderer.accessibility.role) {
-      accessibilityProps.role = effectiveRenderer.accessibility.role;
-    }
-    if (effectiveRenderer.accessibility.ariaLabel) {
-      accessibilityProps['aria-label'] = effectiveRenderer.accessibility.ariaLabel;
-    }
-    if (effectiveRenderer.accessibility.ariaDescription) {
-      accessibilityProps['aria-description'] = effectiveRenderer.accessibility.ariaDescription;
-    }
-    if (effectiveRenderer.accessibility.tabIndex !== undefined) {
-      accessibilityProps.tabIndex = effectiveRenderer.accessibility.tabIndex;
-    }
-  }
+
   
-  // Apply CSS classes
-  const cssClasses = effectiveRenderer?.cssClasses || [];
-  const className = cssClasses.join(' ');
 
   return (
     <div 
       key={index} 
       style={interactionProps.style || containerStyles}
-      className={className}
       {...interactionProps}
       {...accessibilityProps}
     >
@@ -263,46 +162,19 @@ export const ChartRenderer: React.FC<ChartMeta> = (meta) => {
   }, [meta]);
 
   // Apply global renderer configuration to the container
-  const globalRenderer = meta.renderer;
-  const containerStyles = applyRendererStyles(globalRenderer);
-  
+
   // Handle grid layout for multiple charts
-  let gridStyles: React.CSSProperties = {};
-  if (globalRenderer?.layout?.display === 'grid' && globalRenderer?.layout?.columns) {
-    gridStyles = {
-      display: 'grid',
-      gridTemplateColumns: `repeat(${globalRenderer.layout.columns}, 1fr)`,
-      gap: globalRenderer.layout.spacing || '16px',
-    };
-  }
+
   
-  const finalContainerStyles: React.CSSProperties = {
-    ...containerStyles,
-    ...gridStyles,
-  };
-  
+
   // Apply accessibility to container
-  const containerAccessibilityProps: React.HTMLAttributes<HTMLDivElement> = {};
-  if (globalRenderer?.accessibility) {
-    if (globalRenderer.accessibility.role) {
-      containerAccessibilityProps.role = globalRenderer.accessibility.role;
-    }
-    if (globalRenderer.accessibility.ariaLabel) {
-      containerAccessibilityProps['aria-label'] = globalRenderer.accessibility.ariaLabel;
-    }
-  }
+
   
   // Apply CSS classes to container
-  const containerCssClasses = globalRenderer?.cssClasses || [];
-  const containerClassName = containerCssClasses.join(' ');
 
   return (
-    <div 
-      style={finalContainerStyles}
-      className={containerClassName}
-      {...containerAccessibilityProps}
-    >
-      {charts.map((chart, index) => renderChart(chart, index, globalRenderer))}
-    </div>
+    <>
+      {charts.map((chart, index) => renderChart(chart, index))}
+    </>
   );
 };

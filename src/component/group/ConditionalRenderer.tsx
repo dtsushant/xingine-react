@@ -1,30 +1,30 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {ConditionalExpression, ConditionalMeta, evaluateCondition} from "xingine";
 import {useSharedState} from "../../context/ActionContextBureau";
-import {RenderComponent} from "../layout/utils/Layout.utils";
+import {buildExtendedComponentDetail, ComponentScope, RenderComponent} from "../layout/utils/Layout.utils";
 
 
 interface ConditionalMetaExtended extends ConditionalMeta {
-    scope?: Record<string, unknown>;
+    scope: ComponentScope;
 }
 
 export function extractFieldsFromCondition(
-    condition?: ConditionalExpression
+    condition?: ConditionalExpression,
 ): string[] {
     const fields = new Set<string>();
 
     const walk = (cond?: ConditionalExpression) => {
         if (!cond) return;
 
-        if ('field' in cond && typeof cond.field === 'string') {
+        if ("field" in cond && typeof cond.field === "string") {
             fields.add(cond.field);
         }
 
-        if ('and' in cond && Array.isArray(cond.and)) {
+        if ("and" in cond && Array.isArray(cond.and)) {
             cond.and.forEach(walk);
         }
 
-        if ('or' in cond && Array.isArray(cond.or)) {
+        if ("or" in cond && Array.isArray(cond.or)) {
             cond.or.forEach(walk);
         }
     };
@@ -35,7 +35,10 @@ export function extractFieldsFromCondition(
 
 export function useReactiveCondition(
     condition: ConditionalExpression,
-    evaluate: (condition: ConditionalExpression, state: Record<string, unknown>) => boolean
+    evaluate: (
+        condition: ConditionalExpression,
+        state: Record<string, unknown>,
+    ) => boolean,
 ): boolean {
     const fields = extractFieldsFromCondition(condition);
 
@@ -46,7 +49,7 @@ export function useReactiveCondition(
 
     return useMemo(() => {
         return evaluate(condition, values);
-    }, [condition, ...fields.map(f => values[f])]);
+    }, [condition, ...fields.map((f) => values[f])]);
 }
 export const ConditionalRenderer: React.FC<ConditionalMetaExtended> = (
     meta,
@@ -58,6 +61,6 @@ export const ConditionalRenderer: React.FC<ConditionalMetaExtended> = (
     const component = predicate
         ? trueComponent.meta?.component && trueComponent
         : falseComponent?.meta?.component && falseComponent;
-    return <RenderComponent {...component} />
+    return component && <RenderComponent {...buildExtendedComponentDetail(component,scope.parent,scope.current)} />;
 };
 

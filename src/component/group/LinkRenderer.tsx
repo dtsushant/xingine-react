@@ -1,20 +1,38 @@
 import React from 'react';
-import {LayoutComponentDetail} from "xingine";
+import {EventBindings, IconMeta, LayoutComponentDetail, StyleMeta} from "xingine";
+import {bindMultipleEvents, toCSSClassName, toCSSProperties} from "../utils/Component.utils";
+import {IconRenderer} from "./IconRenderer";
+import {Link} from "react-router-dom";
 
-export interface LinkRendererProps {
-  detail: LayoutComponentDetail;
-  styles?: React.CSSProperties;
-  keyPrefix?: string;
+export interface LinkMeta {
+  path: string;
+  event?: EventBindings;
+  style?: StyleMeta;
+  icon?: IconMeta;
+  label?: string;
 }
 
-export const LinkRenderer: React.FC<LinkRendererProps> = ({ 
-  detail, 
-  styles = {}, 
-  keyPrefix = 'link' 
-}) => (
-  <a style={styles} href="#" onClick={(e) => e.preventDefault()}>
-    {'Link'}
-  </a>
-);
+export interface LinkMetaExtended extends LinkMeta {
+  scope?: Record<string, unknown>;
+}
+
+export const LinkRenderer: React.FC<LinkMetaExtended> = (meta) => {
+  return (
+      <Link
+          to={meta.path}
+          style={toCSSProperties(meta.style?.style)}
+          className={toCSSClassName(meta.style?.className)}
+          {...bindMultipleEvents(meta.event, meta.scope)}
+      >
+        {meta.icon && typeof meta.icon === "object" ? (
+            <IconRenderer {...meta.icon} />
+        ) : typeof meta.icon === "string" ? (
+            <span>{meta.icon}</span>
+        ) : null}
+        {meta.label}
+      </Link>
+  );
+};
+
 
 export default LinkRenderer;

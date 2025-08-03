@@ -147,6 +147,89 @@ export const ActionProvider: React.FC<{
                 console.log(`[Dynamic] ${name}`, args, event);
             };
 
+            // localStorage methods
+            const setLocalStorage = (key: string, value: unknown) => {
+                try {
+                    localStorage.setItem(key, String(value));
+                    console.log(`💾 Stored in localStorage: ${key} = ${value}`);
+                } catch (error) {
+                    console.error('Failed to set localStorage:', error);
+                }
+            };
+
+            const getLocalStorage = (key: string): string | null => {
+                try {
+                    const value = localStorage.getItem(key);
+                    console.log(`📖 Retrieved from localStorage: ${key} = ${value}`);
+                    return value;
+                } catch (error) {
+                    console.error('Failed to get localStorage:', error);
+                    return null;
+                }
+            };
+
+            const removeLocalStorage = (key: string) => {
+                try {
+                    localStorage.removeItem(key);
+                    console.log(`🗑️ Removed from localStorage: ${key}`);
+                } catch (error) {
+                    console.error('Failed to remove localStorage:', error);
+                }
+            };
+
+            const clearLocalStorage = ()=>{
+                try {
+                    localStorage.clear();
+                    console.log('🧹 Cleared localStorage');
+                } catch (error) {
+                    console.error('Failed to clear localStorage:', error);
+                }
+            }
+
+            // Toast notification method
+            const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
+                console.log(`🍞 Toast [${type.toUpperCase()}]: ${message}`);
+                // In a real implementation, you would integrate with your toast library
+                // For now, we'll use a simple alert or console log
+                // You can replace this with react-toastify, ant-design notification, etc.
+                if (type === 'error') {
+                    console.error(`Toast Error: ${message}`);
+                } else if (type === 'success') {
+                    console.log(`Toast Success: ${message}`);
+                } else {
+                    console.info(`Toast Info: ${message}`);
+                }
+            };
+
+            // Logout method
+            const logout = async (): Promise<void> => {
+                try {
+                    console.log('🚪 Logging out user...');
+                    // Clear authentication token
+                    removeLocalStorage('authToken');
+                    removeLocalStorage('refreshToken');
+                    // Clear user state
+                    setState('user', null);
+                    setState('isAuthenticated', false);
+                    // Show logout message
+                    showToast('Successfully logged out', 'success');
+                    // Navigate to login page
+                    navigate('/login');
+                    console.log('✅ Logout completed');
+                } catch (error) {
+                    console.error('Failed to logout:', error);
+                    showToast('Logout failed', 'error');
+                }
+            };
+
+            // Error handling method
+            const error = (message: string, details?: unknown) => {
+                console.error('Action error:', message, details);
+                setState('errorMessage', message);
+                setState('hasError', true);
+                showToast(message, 'error');
+            };
+
             const ctx: ActionContext = {
                 navigate: navigateTo,
                 setState,
@@ -154,7 +237,13 @@ export const ActionProvider: React.FC<{
                 getAllState,
                 makeApiCall,
                 dynamic,
-                get __state() { return stateRef.current; }, // Getter for dynamic state access
+                setLocalStorage,
+                getLocalStorage,
+                removeLocalStorage,
+                clearLocalStorage,
+                showToast,
+                logout,
+                error
             };
 
             // Cache and register this context

@@ -1,10 +1,18 @@
 import {useActionContext, useSharedState} from "../../context/ActionContextBureau";
 import React from "react";
-import {LayoutRenderer, runAction, SerializableAction} from "xingine";
+import {LayoutRenderer, runAction, SerializableAction, ActionExecutionContext} from "xingine";
 import {toCSSClassName, toCSSProperties} from "../utils/Component.utils";
-import {RenderComponent, onInitRegister} from "./utils/Layout.utils";
+import {RenderComponent, onInitRegister, initComponentDetailWithScope} from "./utils/Layout.utils";
 import {Outlet} from "react-router-dom";
 import {createLayoutStateActions, DEFAULT_STATE_KEYS, DEFAULT_TOGGLE_ACTIONS} from "./constant";
+
+// Helper function to convert legacy ActionContext to ActionExecutionContext
+const convertToExecutionContext = (actionContext: any): ActionExecutionContext => ({
+    global: actionContext,
+    content: {
+        getComponentStateStore: () => { throw new Error('Component store not available in legacy context'); }
+    }
+});
 
 const useCurrentScreenSize = () => {
     const actionContext = useActionContext();
@@ -25,7 +33,7 @@ const useCurrentScreenSize = () => {
                         value: currentWidth,
                     },
                 };
-                runAction(action, actionContext);
+                runAction(action, convertToExecutionContext(actionContext));
             }
         };
 
@@ -90,13 +98,13 @@ export const DefaultLayoutRenderer: React.FC<LayoutRenderer> = (
                     className={toCSSClassName(layout.header.style?.className)}
                     style={toCSSProperties(layout.header.style?.style)}
                 >
-                    <RenderComponent {...layout.header.meta} />
+                    {layout.header.meta && <RenderComponent {...initComponentDetailWithScope(layout.header.meta,'header')} />}
                 </header>
             )}
 
             <div className={toCSSClassName(`flex #{hasHeader ? "mt-46" : ""}`)}>
                 {/* Sidebar */}
-                {layout.sider && <RenderComponent {...layout.sider.meta} />}
+                {layout.sider?.meta && <RenderComponent {...initComponentDetailWithScope(layout.sider.meta,'sider')} />}
 
                 {/* Main Content Area */}
                 <div
@@ -118,7 +126,7 @@ export const DefaultLayoutRenderer: React.FC<LayoutRenderer> = (
                         <footer
                             className={toCSSClassName(layout.footer.style?.className)}
                         >
-                            <RenderComponent {...layout.footer.meta} />
+                            {layout.footer?.meta && <RenderComponent {...initComponentDetailWithScope(layout.footer.meta,'footer')} />}
                         </footer>
                     )}
                 </div>

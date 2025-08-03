@@ -27,7 +27,7 @@ export const XingineContextBureau: React.FC<{
   config: XingineConfig;
 }> = ({ children, config }) => {
 
-
+console.log("the data here is", config);
   const[layoutRendererList, setLayoutRendererList] = useState<LayoutRenderer[]>([]);
   const [isLoadingLayout, setIsLoadingLayout] = useState(true);
   const [layoutError, setLayoutError] = useState<Error | null>(null);

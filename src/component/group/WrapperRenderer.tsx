@@ -2,13 +2,13 @@ import React from 'react';
 import { WrapperMeta} from "xingine";
 import {bindMultipleEvents,  toCSSClassName, toCSSProperties} from "../utils/Component.utils";
 import {DangerousRenderer} from "./index";
-import {RenderComponent} from "../layout/utils/Layout.utils";
+import {buildExtendedComponentDetail, ComponentScope, RenderComponent} from "../layout/utils/Layout.utils";
 
 
 interface WrapperMetaExtended extends WrapperMeta {
   showMeta?: boolean;
   debug?:boolean;
-  scope?:Record<string, unknown>;
+  scope:ComponentScope;
 }
 
 export const WrapperRenderer: React.FC<WrapperMetaExtended> = (meta) => {
@@ -23,18 +23,14 @@ export const WrapperRenderer: React.FC<WrapperMetaExtended> = (meta) => {
   ...props
   } = meta;
 
+
   return (
       <div style={toCSSProperties(style?.style)} className={toCSSClassName(style?.className)} {...bindMultipleEvents(event, scope)} {...props}>
         <ShowMetaContent meta={meta} showMeta={showMeta} />
         {content && <DangerousRenderer content={content}/>}
 
         {children?.map((child, index) => {
-          if(debug){
-            console.info("Rendering child", child.meta?.component, "with properties", child.meta?.properties);
-          }
-
-          return <RenderComponent {...child} />
-
+          return <RenderComponent {...buildExtendedComponentDetail(child,scope.parent, scope.current)} />
         })}
 
       </div>

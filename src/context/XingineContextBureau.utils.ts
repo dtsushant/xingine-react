@@ -1,6 +1,8 @@
 import React from "react";
 import { RouteObject } from "react-router-dom";
 import { LayoutRenderer,  Commissar, PathProperties} from "xingine";
+import { LayoutWithActionProvider } from "../component/layout/LayoutWithActionProvider";
+import { DefaultContentRenderer } from "../component/layout/DefaultContentRenderer";
 
 
 export function getRoutesFromLayout(layout: LayoutRenderer): RouteObject[] {
@@ -8,7 +10,7 @@ export function getRoutesFromLayout(layout: LayoutRenderer): RouteObject[] {
     return [
         {
             path: '/',
-            element: React.createElement(require("../component/layout/LayoutWithActionProvider").LayoutWithActionProvider, l),
+            element: React.createElement(LayoutWithActionProvider, layout),
             children: layout.content.meta.map((commissar: Commissar) => {
                 const routePath = typeof commissar.path === 'string' 
                     ? commissar.path 
@@ -16,7 +18,7 @@ export function getRoutesFromLayout(layout: LayoutRenderer): RouteObject[] {
                 
                 return {
                     path: routePath,
-                    element: React.createElement(require("../component/layout/DefaultContentRenderer").DefaultContentRenderer, { ...commissar }),
+                    element: React.createElement(DefaultContentRenderer, { ...commissar }),
                 };
             }),
         },

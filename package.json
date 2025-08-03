@@ -18,6 +18,10 @@
     "clean": "rimraf dist",
     "build": "tsc --project tsconfig.json && tsc-alias",
     "build:dev": "tsc --project tsconfig.dev.json && tsc-alias",
+    "build:watch": "tsc --project tsconfig.json --watch",
+    "watch": "concurrently \"npm run build:watch\" \"nodemon --watch dist --exec 'npm run push'\"",
+    "dev:demo": "start-dev.bat",
+    "dev:demo-direct": "start-demo-direct.bat",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -26,8 +30,13 @@
     "test:context": "jest --testPathPattern=context",
     "test:verbose": "jest --verbose",
     "test:ci": "jest --ci --coverage --watchAll=false",
+    "demo:ui": "echo 'Open demo/ui-test.html in your browser for interactive UI demo'",
+    "demo:serve": "npx http-server demo -p 8080 -o",
+    "test:tsx": "echo 'Open src/test/tsx-ui-test.html in your browser for TSX-based UI test'",
+    "test:tsx:serve": "npx http-server src/test -p 3001 -o tsx-ui-test.html",
     "prepare": "npm run build",
-    "push": "yalc push --changed",
+    "push": "yalc push --changed && echo 'Package pushed to linked projects'",
+    "push:force": "yalc push --changed --force && node trigger-reload.js",
     "yalc:dev": "npm run clean && npm run build && npm run push",
     "yalc:dev-with-sourcemaps": "npm run clean && npm run build:dev && npm run push"
   },
@@ -71,9 +80,11 @@
     "@types/react": "^19.0.10",
     "antd": "^5.24.5",
     "axios": "^1.8.4",
+    "concurrently": "^8.2.2",
     "decoders": "^2.7.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.0.5",
+    "nodemon": "^3.1.10",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.4.0",
@@ -115,7 +126,7 @@
     "setupFilesAfterEnv": [
       "<rootDir>/src/test/setup.ts"
     ],
-    "moduleNameMapping": {
+    "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
     "testEnvironmentOptions": {

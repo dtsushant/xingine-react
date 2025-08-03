@@ -23,6 +23,7 @@ import {DangerousRenderer} from "./DangerousContentRenderer";
 import InputRenderer from "./InputRenderer";
 import {SvgRenderer} from "./SvgRenderer";
 import {ConditionalRenderer} from "./ConditionalRenderer";
+import {SiderRenderer} from "./SiderRenderer";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
   return {
@@ -51,7 +52,8 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       PopupRenderer,
       FileInput,
       DangerousRenderer,
-    };
+      SiderRenderer
+  };
 }
 
 export * from "./FormRenderer";

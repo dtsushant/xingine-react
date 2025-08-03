@@ -2,10 +2,18 @@ import React, {ComponentType, CSSProperties, lazy, LazyExoticComponent, useMemo}
 import {
   ComponentMetaMap,
   EventBindings,
-  extrapolate, runAction
+  extrapolate, runAction, ActionExecutionContext
 } from "xingine";
 import { useXingineContext} from "../../context/XingineContextBureau";
 import {useActionContext, useAllSharedState} from "../../context/ActionContextBureau";
+
+// Helper function to convert legacy ActionContext to ActionExecutionContext
+const convertToExecutionContext = (actionContext: any): ActionExecutionContext => ({
+    global: actionContext,
+    content: {
+        getComponentStateStore: () => { throw new Error('Component store not available in legacy context'); }
+    }
+});
 
 
 export function getBreadcrumbs(
@@ -101,7 +109,7 @@ export function bindMultipleEvents(
     }
   for (const [eventName, action] of Object.entries(bindings)) {
     result[eventName] = (...args: unknown[]) => {
-      runAction(action , context, args[0]);
+      runAction(action , convertToExecutionContext(context), args[0]);
     };
   }
   return result;

@@ -6,6 +6,7 @@ import {useActionExecutionContext, ComponentStateProvider} from "../../../contex
 
 export const onInitRegister = (actions: SerializableAction[], actionContext: any) => {
     actions.forEach(action => {
+        console.info("registering the action", action);
         runAction(action, actionContext);
     });
 };
@@ -20,6 +21,11 @@ export interface LayoutComponentDetailExtended extends LayoutComponentDetail {
     scope: ComponentScope;
 }
 
+export interface EmptyLayoutComponentDetail {
+    meta?: undefined;
+    scope: ComponentScope;
+}
+
 /**
  * Initializes a LayoutComponentDetail with scope information
  * 
@@ -28,14 +34,20 @@ export interface LayoutComponentDetailExtended extends LayoutComponentDetail {
  * @returns {LayoutComponentDetailExtended} The extended component detail with scope
  */
 export const initComponentDetailWithScope = (
-    componentDetail: LayoutComponentDetail, 
+    componentDetail: LayoutComponentDetail | undefined, 
     initializer: string
-): LayoutComponentDetailExtended => {
+): LayoutComponentDetailExtended | EmptyLayoutComponentDetail => {
     const scope: ComponentScope = {
         parent: "__",
         current: initializer
     };
     
+    if (!componentDetail) {
+        return {
+            scope
+        };
+    }
+
     return {
         ...componentDetail,
         scope
@@ -76,14 +88,16 @@ export const buildExtendedComponentDetail = (
  * @returns {JSX.Element | null} The rendered component or null if not found.
  */
 
-export const RenderComponent: React.FC<LayoutComponentDetailExtended> = (component) => {
+export const RenderComponent: React.FC<LayoutComponentDetailExtended | EmptyLayoutComponentDetail> = (component) => {
+    // ✅ HOOKS MUST BE CALLED IN THE SAME ORDER EVERY TIME
     const { meta } = component;
     const actionContext = useActionExecutionContext();
     const hasRunInit = useRef<Record<string, boolean>>({});
 
+    // ✅ Always call useEffect - no conditional hook calls
     useEffect(() => {
         if (!meta) return;
-        const compId = meta.component;
+        const compId = meta.component || 'unknown';
         if (hasRunInit.current[compId]) return;
 
         const events = meta.properties?.event as EventBindings;
@@ -94,20 +108,19 @@ export const RenderComponent: React.FC<LayoutComponentDetailExtended> = (compone
         }
     }, [meta, actionContext]);
 
+    // ✅ Always get component map - no conditional calls
     const compMap = getAllComponentMap();
-    if(component.scope){
-    //    console.info("ths properties with scope is", component.scope);
-    }
-    // Check if the component exists in the component map
-    if( !meta || !meta.component || !compMap[meta.component]) {
-        console.warn(`Component "${meta?.component}" not found in component map.`);
+    
+    // ✅ Early return AFTER all hooks are called
+    if (!meta || !meta.component || !compMap[meta.component]) {
+        // console.warn(`Component "${meta?.component}" not found in component map.`);
         return null;
     }
 
-    const Comp = compMap[meta?.component];
+    const Comp = compMap[meta.component];
     
-    // Generate unique component ID for state isolation
-    const componentId = `${meta.component}_${Math.random().toString(36).substr(2, 9)}`;
+    // Use specific componentId from properties if provided, otherwise generate unique ID for state isolation
+    const componentId = (meta?.properties?.componentId as string) || `${meta.component}_${Math.random().toString(36).substr(2, 9)}`;
     return (
         <ComponentStateProvider componentId={componentId}>
             {Comp && <ComponentRenderer Component={Comp} props={meta?.properties} scope={component.scope} />}

@@ -68,7 +68,7 @@
     "react-router-dom": "^7.4.0",
     "recharts": "^2.15.3",
     "use-debounce": "^10.0.4",
-    "xingine": "^1.0.7"
+    "xingine": "file:../xingine"
   },
   "devDependencies": {
     "@ant-design/icons": "^6.0.0",
@@ -94,7 +94,7 @@
     "tsc-alias": "^1.8.2",
     "typescript": "^5.0.0",
     "use-debounce": "^10.0.4",
-    "xingine": "file:.yalc/xingine"
+    "xingine": "file:../xingine"
   },
   "jest": {
     "moduleFileExtensions": [

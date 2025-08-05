@@ -2,12 +2,10 @@ import React from "react";
 import { Commissar } from "xingine";
 import {initComponentDetailWithScope, RenderComponent} from "./utils/Layout.utils";
 import { useGlobalState, useContentState } from "../../context/HierarchicalActionContext";
-import {useAllSharedState} from "../../context/ActionContextBureau";
 
 export const DefaultContentRenderer: React.FC<Commissar> = (commissar) => {
   const globalState = useGlobalState();
   const contentState = useContentState();
-  const allSharedState = useAllSharedState();
 
   return (
     <div>
@@ -20,11 +18,6 @@ export const DefaultContentRenderer: React.FC<Commissar> = (commissar) => {
             <h3>Content State:</h3>
             <pre style={{backgroundColor: '#f5f5f5', padding: '10px', overflow: 'auto'}}>
           {JSON.stringify(contentState.state, null, 2)}
-        </pre>
-
-            <h3>Content State:</h3>
-            <pre style={{backgroundColor: '#f5f5f5', padding: '10px', overflow: 'auto'}}>
-          {JSON.stringify(allSharedState, null, 2)}
         </pre>
         </div>
 

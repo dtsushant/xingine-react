@@ -7,6 +7,7 @@ export const DEFAULT_STATE_KEYS = {
     HAS_FOOTER: 'hasFooter',
     COLLAPSED: 'collapsed',
     DARK_MODE: 'darkMode',
+    USER_DROPDOWN_OPEN: 'userDropdownOpen',
     CURRENT_SCREEN_SIZE: 'currentScreenSize'
 } as const;
 
@@ -23,6 +24,13 @@ export const DEFAULT_TOGGLE_ACTIONS = {
         action: 'toggleState',
         args: {
             key: DEFAULT_STATE_KEYS.DARK_MODE
+        }
+    } as SerializableAction,
+    
+    TOGGLE_USER_DROPDOWN: {
+        action: 'toggleState',
+        args: {
+            key: DEFAULT_STATE_KEYS.USER_DROPDOWN_OPEN
         }
     } as SerializableAction
 } as const;
@@ -65,6 +73,13 @@ export const createLayoutStateActions = (layout: {
         action: 'setState',
         args: {
             key: DEFAULT_STATE_KEYS.DARK_MODE,
+            value: false
+        }
+    },
+    {
+        action: 'setState',
+        args: {
+            key: DEFAULT_STATE_KEYS.USER_DROPDOWN_OPEN,
             value: false
         }
     }

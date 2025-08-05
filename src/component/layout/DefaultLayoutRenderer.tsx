@@ -1,29 +1,22 @@
-import {useActionContext, useSharedState} from "../../context/ActionContextBureau";
 import React from "react";
-import {LayoutRenderer, runAction, SerializableAction, ActionExecutionContext} from "xingine";
+import {LayoutRenderer, runAction, SerializableAction} from "xingine";
 import {toCSSClassName, toCSSProperties} from "../utils/Component.utils";
-import {RenderComponent, onInitRegister, initComponentDetailWithScope} from "./utils/Layout.utils";
+import {RenderComponent, initComponentDetailWithScope} from "./utils/Layout.utils";
 import {Outlet} from "react-router-dom";
 import {createLayoutStateActions, DEFAULT_STATE_KEYS, DEFAULT_TOGGLE_ACTIONS} from "./constant";
-
-// Helper function to convert legacy ActionContext to ActionExecutionContext
-const convertToExecutionContext = (actionContext: any): ActionExecutionContext => ({
-    global: actionContext,
-    content: {
-        getComponentStateStore: () => { throw new Error('Component store not available in legacy context'); }
-    }
-});
+import {useActionExecutionContext, useGlobalState} from "../../context/HierarchicalActionContext";
 
 const useCurrentScreenSize = () => {
-    const actionContext = useActionContext();
-    const current = useSharedState<number>(DEFAULT_STATE_KEYS.CURRENT_SCREEN_SIZE) || undefined;
+    const executionContext = useActionExecutionContext();
+    const globalState = useGlobalState();
+    const current = globalState.getState(DEFAULT_STATE_KEYS.CURRENT_SCREEN_SIZE) as number | undefined;
 
     React.useEffect(() => {
         const checkScreenSize = () => {
-            console.info("how often am i triggered")
+            console.info("Screen size check triggered")
             const currentWidth = window.innerWidth
             // Get fresh value inside effect to avoid re-render-in-render
-            const currentVal = actionContext.getState(DEFAULT_STATE_KEYS.CURRENT_SCREEN_SIZE) as number;
+            const currentVal = globalState.getState(DEFAULT_STATE_KEYS.CURRENT_SCREEN_SIZE) as number;
 
             if (currentWidth !== currentVal) {
                 const action: SerializableAction = {
@@ -33,7 +26,7 @@ const useCurrentScreenSize = () => {
                         value: currentWidth,
                     },
                 };
-                runAction(action, convertToExecutionContext(actionContext));
+                runAction(action, executionContext);
             }
         };
 
@@ -42,7 +35,7 @@ const useCurrentScreenSize = () => {
 
         window.addEventListener('resize', checkScreenSize);
         return () => window.removeEventListener('resize', checkScreenSize);
-    }, [actionContext]);
+    }, [executionContext, globalState]);
 
     return current;
 };
@@ -50,8 +43,13 @@ const useCurrentScreenSize = () => {
 export const DefaultLayoutRenderer: React.FC<LayoutRenderer> = (
     layout,
 ) => {
-    const actionContext = useActionContext();
+    // ✅ HOOKS MUST BE CALLED IN THE SAME ORDER EVERY TIME
+    const executionContext = useActionExecutionContext();
+    const globalState = useGlobalState();
     const hasInitialized = React.useRef(false);
+    
+    // ✅ Always call useCurrentScreenSize hook - no conditional calls
+    const _ = useCurrentScreenSize();
 
     // Initialize default states and actions only on first load
     React.useEffect(() => {
@@ -59,11 +57,20 @@ export const DefaultLayoutRenderer: React.FC<LayoutRenderer> = (
         
         const defaultActions = createLayoutStateActions(layout);
 
-        onInitRegister(defaultActions, actionContext);
+        // Execute each action to initialize the state
+        defaultActions.forEach(action => {
+            runAction(action, executionContext);
+        });
+        
         hasInitialized.current = true;
-    }, [layout, actionContext]);
+    }, [layout, executionContext]);
 
-    const _ = useCurrentScreenSize();
+    // ✅ Always get state values - no conditional hook calls
+    const collapsed = globalState.getState(DEFAULT_STATE_KEYS.COLLAPSED) as boolean;
+    const darkMode = globalState.getState(DEFAULT_STATE_KEYS.DARK_MODE) as boolean;
+    const hasHeader = globalState.getState(DEFAULT_STATE_KEYS.HAS_HEADER) as boolean;
+    const hasSider = globalState.getState(DEFAULT_STATE_KEYS.HAS_SIDER) as boolean;
+    const hasFooter = globalState.getState(DEFAULT_STATE_KEYS.HAS_FOOTER) as boolean;
 
 
     // Default actions available for components to use:
@@ -93,42 +100,44 @@ export const DefaultLayoutRenderer: React.FC<LayoutRenderer> = (
             style={toCSSProperties(layout.style?.style)}
         >
             {/* Header */}
-            {layout.header && (
-                <header
-                    className={toCSSClassName(layout.header.style?.className)}
-                    style={toCSSProperties(layout.header.style?.style)}
-                >
-                    {layout.header.meta && <RenderComponent {...initComponentDetailWithScope(layout.header.meta,'header')} />}
-                </header>
-            )}
+            <header
+                className={toCSSClassName(layout.header?.style?.className)}
+                style={toCSSProperties(layout.header?.style?.style)}
+            >
+                <RenderComponent {...initComponentDetailWithScope(layout.header?.meta, 'header')} />
+            </header>
 
-            <div className={toCSSClassName(`flex #{hasHeader ? "mt-46" : ""}`)}>
+            <div className={toCSSClassName(`flex ${hasHeader ? "mt-16" : ""}`)}>
                 {/* Sidebar */}
-                {layout.sider?.meta && <RenderComponent {...initComponentDetailWithScope(layout.sider.meta,'sider')} />}
+                <aside
+                    className={toCSSClassName(layout.sider?.style?.className)}
+                    style={toCSSProperties(layout.sider?.style?.style)}
+                >
+                    <RenderComponent {...initComponentDetailWithScope(layout.sider?.meta, 'sider')} />
+                </aside>
 
                 {/* Main Content Area */}
                 <div
-                    className={toCSSClassName(`flex-1 transition-all duration-200 #{hasSider && collapsed ? "ml-20" : hasSider && collapsed === false ? "ml-52" : "ml-0"} pt-6`)}
+                    className={toCSSClassName(layout.content?.style?.className || "flex-1 transition-all duration-200 pt-6")}
+                    style={toCSSProperties(layout.content?.style?.style)}
                 >
                     {/* Content */}
                     <main
-                        className={toCSSClassName(`#{darkMode ? "bg-gray-800" : "bg-white"} p-6 min-h-screen #{hasFooter ? "pb-20" : "pb-6"}`)}
+                        className={toCSSClassName(`${darkMode ? "bg-gray-800" : "bg-white"} p-6 min-h-screen ${hasFooter ? "pb-20" : "pb-6"}`)}
                     >
                         <div
-                            className={toCSSClassName(`#{darkMode ? "bg-gray-800" : "bg-white"} rounded-lg shadow-sm p-6`)}
+                            className={toCSSClassName(`${darkMode ? "bg-gray-800" : "bg-white"} rounded-lg shadow-sm p-6`)}
                         >
                             <Outlet />
                         </div>
                     </main>
 
                     {/* Footer */}
-                    {layout.footer && (
-                        <footer
-                            className={toCSSClassName(layout.footer.style?.className)}
-                        >
-                            {layout.footer?.meta && <RenderComponent {...initComponentDetailWithScope(layout.footer.meta,'footer')} />}
-                        </footer>
-                    )}
+                    <footer
+                        className={toCSSClassName(layout.footer?.style?.className)}
+                    >
+                        <RenderComponent {...initComponentDetailWithScope(layout.footer?.meta, 'footer')} />
+                    </footer>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import {
   homeIcon,
   settingsIcon,
   usersIcon,
+  stateManagementIcon,
 } from '../../icons/shared.svg-icons-meta';
 
 const siderLogo = LayoutComponentDetailBuilder.create()
@@ -54,10 +55,22 @@ const menuMeta: MenuMeta = {
       path: '/settings',
     },
     {
+      key: 'state-management',
+      label: 'State Management',
+      icon: stateManagementIcon,
+      path: '/state-management',
+    },
+    {
+      key: 'error-demo',
+      label: 'Error Pages Demo',
+      icon: settingsIcon,
+      path: '/error-demo',
+    },
+    {
       key: 'login',
       label: 'Login',
       icon: settingsIcon,
-      path: '/users/users/login',
+      path: '/login',
     },
   ],
 };

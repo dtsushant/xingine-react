@@ -1,7 +1,12 @@
 import axios from "axios";
-import { Decoder, object } from "decoders";
+import { Decoder, object, record, string, either } from "decoders";
 import { Err, Ok, Result } from "@hqoss/monads";
-import  { GenericErrors,genericErrorsDecoder } from "xingine";
+import  { GenericErrors } from "xingine";
+
+// Local decoder for GenericErrors since it's not exported from main package
+const genericErrorsDecoder: Decoder<GenericErrors> = record(
+  either(string, record(string)),
+);
 
 const token = localStorage.getItem("token");
 

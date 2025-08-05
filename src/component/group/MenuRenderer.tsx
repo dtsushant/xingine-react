@@ -1,7 +1,7 @@
 import React from 'react';
 import {Menu, MenuProps} from 'antd';
 import {IconMeta, LayoutComponentDetail} from "xingine";
-import {useSharedState} from "../../context/ActionContextBureau";
+import {useGlobalState} from "../../context/HierarchicalActionContext";
 import {useLocation, useNavigate} from "react-router-dom";
 import {IconRenderer} from "./IconRenderer";
 
@@ -18,7 +18,8 @@ export interface MenuMeta {
 }
 
 export const MenuRenderer: React.FC<MenuMeta> = (meta) => {
-  const collapsed = useSharedState<boolean>("collapsed");
+  const globalState = useGlobalState();
+  const collapsed = globalState.getState("collapsed") as boolean;
   const navigate = useNavigate();
   const location = useLocation(); // 👈 Detects current path
 

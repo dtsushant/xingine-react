@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useRef, useState, useMemo, ReactNode } from 'react';
 import { ActionExecutionContext, ComponentStateStore } from 'xingine';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../component/group/ToastProvider';
 
 // Custom hook to safely use navigate
 function useSafeNavigate() {
@@ -26,7 +27,7 @@ interface GlobalStateContextType {
     clearLocalStorage: () => void;
     showToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning') => void;
     error: (message: string, details?: unknown) => void;
-    dynamic: (name: string, args: any, event?: any) => void;
+    dynamic: (name: string, args: any, event?: any) => Promise<any>;
     logout: () => Promise<void>;
 }
 
@@ -56,6 +57,7 @@ const ComponentStateContext = createContext<ComponentStateContextType | undefine
 export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [globalState, setGlobalState] = useState<Record<string, unknown>>({});
     const navigate = useSafeNavigate();
+    const { showToast: showToastFromProvider } = useToast();
 
     const globalContext = useMemo(() => ({
         state: globalState,
@@ -82,19 +84,63 @@ export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({ childre
         clearLocalStorage: () => localStorage.clear(),
         showToast: (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
             console.log(`Toast [${type.toUpperCase()}]: ${message}`);
+            showToastFromProvider({ message, type });
         },
         error: (message: string, details?: unknown) => {
             console.error('Action error:', message, details);
         },
-        dynamic: (name: string, args: any, event?: any) => {
+        dynamic: async (name: string, args: any, event?: any) => {
             console.log(`[Dynamic] ${name}`, args, event);
+            
+            // Handle specific actions
+            if (name === 'makeApiCall') {
+                return await globalContext.makeApiCall(args);
+            } else if (name === 'setState') {
+                globalContext.setState(args.key, args.value);
+                return { success: true };
+            } else if (name === 'setLocalStorage' || name === 'setStorage') {
+                globalContext.setLocalStorage(args.key, args.value);
+                return { success: true };
+            } else if (name === 'navigate') {
+                globalContext.navigate(args.path || args);
+                return { success: true };
+            } else if (name === 'makeApiCall') {
+                // Handle API calls with proper structure
+                const { url, method = 'GET', body } = args;
+                
+                console.log('🔥 Making API call:', { url, method, body });
+                
+                try {
+                    // Mock API response for testing
+                    const mockResponse = {
+                        success: true,
+                        token: 'mock-jwt-token-' + Date.now(),
+                        user: {
+                            id: 1,
+                            username: body?.username || 'testuser',
+                            email: `${body?.username || 'testuser'}@example.com`
+                        },
+                        message: 'Login successful'
+                    };
+                    
+                    console.log('✅ API call successful:', mockResponse);
+                    return mockResponse;
+                } catch (error) {
+                    console.error('❌ API call failed:', error);
+                    return { success: false, error: error instanceof Error ? error.message : 'API call failed' };
+                }
+            }
+            
+            // For unknown actions, return undefined
+            console.warn(`Unknown dynamic action: ${name}`);
+            return undefined;
         },
         logout: async () => {
             localStorage.removeItem('authToken');
             setGlobalState(prev => ({ ...prev, user: null, isAuthenticated: false }));
             navigate('/login');
         }
-    }), [globalState, navigate]);
+    }), [globalState, navigate, showToastFromProvider]);
 
     return (
         <GlobalStateContext.Provider value={globalContext}>

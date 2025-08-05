@@ -51,7 +51,7 @@ console.log("the data here is", config);
 
         // Process all module components to extract routes and menu items
         const allRoutes: RouteObject[] = data.reduce<RouteObject[]>((acc: RouteObject[], layoutRenderer: LayoutRenderer) => {
-          return [...acc, ...getRoutesFromLayout(layoutRenderer)];
+          return [...acc, ...getRoutesFromLayout(layoutRenderer, config.layoutMap)];
         }, []);
 
         setRoutes([...allRoutes, ...(config.additionalRoutes || [])]);

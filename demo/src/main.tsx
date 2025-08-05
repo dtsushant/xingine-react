@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import { XingineContextBureau } from "xingine-react";
-import { setupSimpleMockAPI } from './mockAPI';
+import { setupMockAPI } from './mockAPI';
+import ErrorPagesDemo from '@parent/component/demos/ErrorPagesDemo';
+import { LAYOUT_MAP } from './components/layouts/layout.map';
 
 // Setup mock API before initializing the app
-setupSimpleMockAPI();
+setupMockAPI();
 
 const config = {
-    component: {},
+    component: {
+        ErrorPagesDemo: ErrorPagesDemo
+    },
+    layoutMap: LAYOUT_MAP,
     additionalRoutes: []
 };
 

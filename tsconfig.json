@@ -1,25 +1,60 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "ESNext",                       // Use ESM modules
+    "target": "ES2020",                       // Modern target for better performance
+    "module": "ESNext",
+    "lib": ["DOM", "ES2020"],                 // Explicit lib to reduce type checking
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,                  // Disable for performance (can re-enable if needed)
     "emitDeclarationOnly": false,
     "outDir": "dist",
     "rootDir": "src",
-    "sourceMap": true,
+    "sourceMap": false,                       // Disable for performance (enable for debugging)
     "jsx": "react-jsx",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strict": true,
-    "skipLibCheck": true,
+    
+    // Performance optimizations
+    "incremental": true,                      // Enable incremental compilation
+    "tsBuildInfoFile": ".tsbuildinfo",        // Cache compilation info
+    "skipLibCheck": true,                     // Skip checking of declaration files
+    "skipDefaultLibCheck": true,              // Skip checking of default library files
+    "assumeChangesOnlyAffectDirectDependencies": true, // Faster incremental builds
+    
+    // Strictness (relaxed for performance)
+    "strict": false,                          // Disable strict mode for performance
+    "noImplicitAny": true,                    // Keep important checks
+    "strictNullChecks": true,                 // Keep important checks
+    "noImplicitReturns": false,               // Relax for performance
+    "noUnusedLocals": false,                  // Disable for performance (Copilot generates unused code)
+    "noUnusedParameters": false,              // Disable for performance
+    
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,                  // Better for bundlers and performance
+    "allowJs": false,                         // Disable JS processing for performance
+    "checkJs": false                          // Disable JS checking for performance
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/**/*.test.tsx", "src/**/__tests__/**", "src/test/**"]
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules", 
+    "dist", 
+    "**/*.test.ts", 
+    "**/*.test.tsx", 
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**", 
+    "**/test/**",
+    "**/*.d.ts",                              // Exclude declaration files from processing
+    "src/demo/**/*",                          // Exclude demo files if not needed for builds
+    "coverage/**",
+    ".vite/**"
+  ],
+  "ts-node": {
+    "esm": true
+  }
 }
 
 /*

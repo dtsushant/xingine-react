@@ -1,8 +1,9 @@
 import React from "react";
 import { RouteObject } from "react-router-dom";
 import { LayoutRenderer,  Commissar, PathProperties} from "xingine";
-import { LayoutWithActionProvider } from "../component/layout/LayoutWithActionProvider";
+import { DefaultLayoutRenderer } from "../component/layout/DefaultLayoutRenderer";
 import { DefaultContentRenderer } from "../component/layout/DefaultContentRenderer";
+import { StateManagementContentRenderer } from "../component/layout/StateManagementContentRenderer";
 
 
 export function getRoutesFromLayout(layout: LayoutRenderer): RouteObject[] {
@@ -10,15 +11,20 @@ export function getRoutesFromLayout(layout: LayoutRenderer): RouteObject[] {
     return [
         {
             path: '/',
-            element: React.createElement(LayoutWithActionProvider, layout),
+            element: React.createElement(DefaultLayoutRenderer, layout),
             children: layout.content.meta.map((commissar: Commissar) => {
                 const routePath = typeof commissar.path === 'string' 
                     ? commissar.path 
                     : (commissar.path as PathProperties).path;
                 
+                // Use specialized content renderer for state management page
+                const ContentRenderer = routePath === '/state-management' 
+                    ? StateManagementContentRenderer 
+                    : DefaultContentRenderer;
+                
                 return {
                     path: routePath,
-                    element: React.createElement(DefaultContentRenderer, { ...commissar }),
+                    element: React.createElement(ContentRenderer, { ...commissar }),
                 };
             }),
         },

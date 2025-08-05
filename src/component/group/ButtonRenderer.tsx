@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import {ButtonMeta} from "../../../.yalc/xingine";
+import {ButtonMeta} from "xingine";
 import {bindMultipleEvents, toCSSClassName, toCSSProperties} from "../utils/Component.utils";
 import {IconRenderer} from "./IconRenderer";
 import {DangerousRenderer} from "./DangerousContentRenderer";

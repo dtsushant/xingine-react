@@ -5,16 +5,7 @@ import {
   extrapolate, runAction, ActionExecutionContext
 } from "xingine";
 import { useXingineContext} from "../../context/XingineContextBureau";
-import {useActionContext, useAllSharedState} from "../../context/ActionContextBureau";
-
-// Helper function to convert legacy ActionContext to ActionExecutionContext
-const convertToExecutionContext = (actionContext: any): ActionExecutionContext => ({
-    global: actionContext,
-    content: {
-        getComponentStateStore: () => { throw new Error('Component store not available in legacy context'); }
-    }
-});
-
+import { useActionExecutionContext, useGlobalState, useContentState } from "../../context/HierarchicalActionContext";
 
 export function getBreadcrumbs(
   path: string,
@@ -83,12 +74,21 @@ export function toCSSProperties(style?: Record<string, unknown>): CSSProperties 
 }
 
 export function toCSSClassName(classes?: string): string {
-  //const { headerActionContext } = usePanelControlContext();
-  const allSharedState = useAllSharedState();
+  // Use hierarchical state system to get both global and content state
+  const globalState = useGlobalState();
+  const contentState = useContentState();
 
   return useMemo(() => {
-    return classes ? extrapolate(classes, allSharedState) : '';
-  }, [classes, allSharedState]);
+    if (!classes) return '';
+    
+    // Combine global and content state for interpolation
+    const combinedState = {
+      ...globalState.state,
+      ...contentState.state
+    };
+    
+    return extrapolate(classes, combinedState);
+  }, [classes, globalState.state, contentState.state]);
 }
 
 export function getAllComponentMap():Record<string, ComponentType<any>>{
@@ -102,16 +102,17 @@ export function bindMultipleEvents(
 ): Record<string, (...args: unknown[]) => void> {
   const result: Record<string, (...args: unknown[]) => void> = {};
   if (!bindings) return result;
-  const context = useActionContext();
-    if (!context) {
-        console.warn("No ActionContext available for event bindings");
-        return result;
-    }
+  
+  // Use the hierarchical action execution context
+  const executionContext = useActionExecutionContext();
+  
   for (const [eventName, action] of Object.entries(bindings)) {
     result[eventName] = (...args: unknown[]) => {
-      runAction(action , convertToExecutionContext(context), args[0]);
+      console.log(`🔥 Executing action: ${action} for event: ${eventName}`);
+      runAction(action, executionContext, args[0]);
     };
   }
+  
   return result;
 }
 

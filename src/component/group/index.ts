@@ -24,6 +24,8 @@ import InputRenderer from "./InputRenderer";
 import {SvgRenderer} from "./SvgRenderer";
 import {ConditionalRenderer} from "./ConditionalRenderer";
 import {SiderRenderer} from "./SiderRenderer";
+import {StateDebugRenderer} from "./StateDebugRenderer";
+import {FormRendererWithJson} from "../utils/FormRendererWithJsonClean";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
   return {
@@ -35,6 +37,7 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       IconRenderer,
       SvgRenderer,
       FormRenderer,
+      FormRendererWithJson,
       WrapperRenderer,
       ConditionalRenderer,
       // UI components
@@ -52,7 +55,8 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       PopupRenderer,
       FileInput,
       DangerousRenderer,
-      SiderRenderer
+      SiderRenderer,
+      StateDebugRenderer
   };
 }
 
@@ -81,3 +85,8 @@ export * from "./MissingComponents";
 export * from "./DangerousContentRenderer";
 export * from "./InputRenderer"
 export * from "./SvgRenderer"
+export * from "./StateDebugRenderer";
+
+// Error handling exports
+export * from "./ErrorPages";
+export * from "./ErrorBoundary";

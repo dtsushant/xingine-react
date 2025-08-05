@@ -27,14 +27,7 @@ export const SiderRenderer: React.FC<SiderMeta> = (meta) => {
                 {content && <DangerousRenderer content={content} />}
 
                 {children?.map((child, index) => {
-
-                    return <RenderComponent {...buildExtendedComponentDetail(child,scope.parent, scope.current)} />
-
-                    /*return <RenderComponent {...{
-                            ...child,
-                            ...scope
-                        }}
-                    />*/
+                    return <RenderComponent key={index} {...buildExtendedComponentDetail(child, (scope as any)?.parent, (scope as any)?.current)} />
                 })}
             </aside>
         </>

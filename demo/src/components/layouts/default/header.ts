@@ -1,4 +1,5 @@
 import { LayoutComponentDetailBuilder } from 'xingine';
+import { DEFAULT_TOGGLE_ACTIONS } from '../../../../../src/component/layout/constant/DefaultActions';
 import {
   collapseIconMeta,
   darkModeIcon,
@@ -12,12 +13,7 @@ const collapseButton = LayoutComponentDetailBuilder.create()
   .name('collapseButton')
   .icon(collapseIconMeta)
   .event({
-    onClick: {
-      action: 'toggleState',
-      args: {
-        key: 'collapsed',
-      },
-    },
+    onClick: DEFAULT_TOGGLE_ACTIONS.TOGGLE_COLLAPSE,
   })
   .className('p-2 rounded-md hover:bg-gray-100 transition-colors')
   .build();
@@ -57,12 +53,7 @@ const middleSection = LayoutComponentDetailBuilder.create()
 const darkModeButton = LayoutComponentDetailBuilder.create()
   .button()
   .event({
-    onClick: {
-      action: 'toggleState',
-      args: {
-        key: 'darkMode',
-      },
-    },
+    onClick: DEFAULT_TOGGLE_ACTIONS.TOGGLE_DARK_MODE,
   })
   .name('DarkModeButton')
   .icon(darkModeIcon)
@@ -74,12 +65,7 @@ const darkModeButton = LayoutComponentDetailBuilder.create()
 const lightModeButton = LayoutComponentDetailBuilder.create()
   .button()
   .event({
-    onClick: {
-      action: 'toggleState',
-      args: {
-        key: 'darkMode',
-      },
-    },
+    onClick: DEFAULT_TOGGLE_ACTIONS.TOGGLE_DARK_MODE,
   })
   .name('LightModeButton')
   .icon(lightModeIcon)
@@ -114,12 +100,7 @@ const notificationComponent = LayoutComponentDetailBuilder.create()
 const userMenuToggle = LayoutComponentDetailBuilder.create()
   .button()
   .event({
-    onClick: {
-      action: 'toggleState',
-      args: {
-        key: 'userDropdownOpen',
-      },
-    },
+    onClick: DEFAULT_TOGGLE_ACTIONS.TOGGLE_USER_DROPDOWN,
   })
   .name('userDropdown')
   .content(

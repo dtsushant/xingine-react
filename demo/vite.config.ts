@@ -11,7 +11,12 @@ export default defineConfig({
       '@parent': path.resolve(__dirname, '../src'),
       // Direct alias to xingine-react source instead of using yalc
       'xingine-react': path.resolve(__dirname, '../src/index.ts'),
+      'xingine': path.resolve(__dirname, '../../xingine/src/index.ts'),
     },
+  },
+  define: {
+    // Ensure proper NODE_ENV handling
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
   },
   server: {
     port: 3004,
@@ -26,6 +31,18 @@ export default defineConfig({
   optimizeDeps: {
     // Include dependencies that need to be pre-bundled
     include: ['react', 'react-dom', 'axios'],
-    // Don't exclude anything since we're using direct source
+    // Exclude local packages from optimization to allow hot reloading
+    exclude: ['xingine', 'xingine-react']
+  },
+  build: {
+    // Enable source maps for better debugging
+    sourcemap: true,
+    rollupOptions: {
+      // Ensure external dependencies are handled correctly
+      external: (id) => {
+        // Don't externalize our local packages
+        return false;
+      }
+    }
   }
 })

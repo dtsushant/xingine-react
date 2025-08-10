@@ -4,7 +4,7 @@ import { Checkbox, CheckboxChangeEvent, CheckboxRef, Spin } from "antd";
 import {
   CheckboxOption,
   CheckboxTypeProperties,
-} from "xingine/dist/core/component/form-meta-map";
+} from "xingine";
 import { checkboxOptionListDecoder } from "xingine";
 import {get} from "../../../xingine-react.service";
 
@@ -12,6 +12,7 @@ interface CheckboxGroupFieldProps extends CheckboxTypeProperties {
   value: string[];
   onChange?: (val: boolean | string[]) => void;
   isSubmitting?: boolean;
+  name?: string; // Add name prop for proper field identification
 }
 export const CheckboxField: React.FC<Partial<CheckboxGroupFieldProps>> = (props) => {
   console.log("the props here is ", props);
@@ -25,6 +26,7 @@ export const CheckboxField: React.FC<Partial<CheckboxGroupFieldProps>> = (props)
     label,
     checked,
     disabled,
+    name, // Extract name prop
   } = props;
   let direction = 'vertical'
 
@@ -76,6 +78,8 @@ export const CheckboxField: React.FC<Partial<CheckboxGroupFieldProps>> = (props)
 
   return (
     <Checkbox
+      name={name}
+      checked={checked} // ✅ ADD THIS: Pass the checked prop to control the checkbox state
       onChange={(e: CheckboxChangeEvent) => onChange?.(e.target.checked)}
       disabled={disabled || isSubmitting}
     >

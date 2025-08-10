@@ -34,16 +34,17 @@ import {
   SwitchTypeProperties,
   TextareaTypeProperties,
   TreeSelectTypeProperties,
-} from "xingine/dist/core/component/form-meta-map";
+} from "xingine";
 
 export const InputField: React.FC<
   InputTypeProperties & { isSubmitting?: boolean,onChange?:(prop:unknown)=>void }
 > = (props) => {
-  const { onChange, placeholder, maxLength, disabled } = props;
+  const { onChange, placeholder, maxLength, disabled, value } = props;
   const change = () => {};
   console.log("the regex here is", props.validationRegex);
   return (
     <Input
+        value={value}
   placeholder={placeholder}
   maxLength={maxLength}
   disabled={disabled}
@@ -54,9 +55,10 @@ export const InputField: React.FC<
 };
 
 export const PasswordField: React.FC<PasswordTypeProperties & { isSubmitting?: boolean,onChange?:(prop:unknown)=>void}> = (props) => {
-  const { placeholder, disabled, onChange } = props;
+  const { placeholder, disabled, onChange, value } = props;
   return (
     <Input.Password
+      value={value}
       placeholder={placeholder}
       disabled={disabled}
       onChange={onChange}
@@ -65,9 +67,10 @@ export const PasswordField: React.FC<PasswordTypeProperties & { isSubmitting?: b
 };
 
 export const NumberField: React.FC<NumberTypeProperties & { isSubmitting?: boolean,onChange?:(prop:unknown)=>void}> = (props) => {
-  const { min, max, step, precision, disabled, onChange } = props;
+  const { min, max, step, precision, disabled, onChange, value } = props;
   return (
     <InputNumber
+      value={value}
       min={min}
       max={max}
       step={step}
@@ -80,9 +83,10 @@ export const NumberField: React.FC<NumberTypeProperties & { isSubmitting?: boole
 };
 
 export const SelectField: React.FC<SelectTypeProperties & { isSubmitting?: boolean,onChange?:(prop:unknown)=>void}> = (props) => {
-  const { options, multiple, disabled, placeholder, onChange } = props;
+  const { options, multiple, disabled, placeholder, onChange, value } = props;
   return (
     <Select
+      value={value}
       mode={multiple ? "multiple" : undefined}
       options={options}
       disabled={disabled}
@@ -93,9 +97,10 @@ export const SelectField: React.FC<SelectTypeProperties & { isSubmitting?: boole
 };
 
 export const TreeSelectField: React.FC<TreeSelectTypeProperties & { isSubmitting?: boolean,onChange?:(prop:unknown)=>void}> = (props) => {
-  const { treeData, multiple, disabled, placeholder, onChange } = props;
+  const { treeData, multiple, disabled, placeholder, onChange, value } = props;
   return (
     <TreeSelect
+      value={value}
       treeData={treeData}
       multiple={multiple}
       disabled={disabled}
@@ -113,9 +118,11 @@ export const SwitchField: React.FC<SwitchTypeProperties & { isSubmitting?: boole
     defaultChecked,
     disabled,
     onChange,
+    checked,
   } = props;
   return (
     <Switch
+      checked={checked}
       checkedChildren={checkedChildren}
       unCheckedChildren={unCheckedChildren}
       defaultChecked={defaultChecked}
@@ -126,9 +133,10 @@ export const SwitchField: React.FC<SwitchTypeProperties & { isSubmitting?: boole
 };
 
 export const DateField: React.FC<DateTypeProperties & { isSubmitting?: boolean,onChange?:(prop:unknown)=>void}> = (props) => {
-  const { format, showTime, disabled, onChange } = props;
+  const { format, showTime, disabled, onChange, value } = props;
   return (
     <DatePicker
+      value={value}
       format={format}
       showTime={showTime}
       disabled={disabled}
@@ -139,9 +147,10 @@ export const DateField: React.FC<DateTypeProperties & { isSubmitting?: boolean,o
 };
 
 export const TextareaField: React.FC<TextareaTypeProperties & { isSubmitting?: boolean,onChange?:(prop:unknown)=>void} > = (props) => {
-  const { rows, maxLength, placeholder, disabled, onChange } = props;
+  const { rows, maxLength, placeholder, disabled, onChange, value } = props;
   return (
     <Input.TextArea
+      value={value}
       rows={rows}
       maxLength={maxLength}
       placeholder={placeholder}
@@ -275,6 +284,7 @@ export type ExtraProps = {
   parentName?: NamePath;
   label?: string;
   name?: string;
+  value?:string;
   key?: React.Key;
   callingField?:FieldMeta;
 };

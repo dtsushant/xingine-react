@@ -4,12 +4,11 @@ import { DEFAULT_SIDER_COMPONENT } from './default/sider';
 import { DEFAULT_FOOTER_COMPONENT } from './default/footer';
 import { DEFAULT_DASHBOARD_COMMISAR } from './default/dashboard';
 import { STATE_MANAGEMENT_COMMISSAR } from './default/state-management-simple';
-import { GLOBAL_STATE_TEST_COMMISSAR } from './body-only/global-state-test';
 import { CONTENT_STATE_TEST_COMMISSAR } from './body-only/content-state-test-clean';
 import { COMPONENT_STATE_TEST_COMMISSAR } from './body-only/component-state-test';
 import { LOGIN_COMMISSAR } from './default/login';
 import { ERROR_PAGES_COMMISSAR } from './default/error-demo';
-import {USER_ADD_FORM_COMMISSAR} from "./body-only/user-add-form-clean";
+import {USER_ADD_FORM_COMMISSAR} from "./body-only/user-add-form";
 
 const headerClass = `fixed top-0 left-0 right-0 h-16 z-50 shadow-sm #{
                 darkMode
@@ -33,7 +32,6 @@ export const TAILWIND_LAYOUT: LayoutRenderer = LayoutRendererBuilder.create()
   .withContent([
     DEFAULT_DASHBOARD_COMMISAR,
     STATE_MANAGEMENT_COMMISSAR,
-    GLOBAL_STATE_TEST_COMMISSAR,
     CONTENT_STATE_TEST_COMMISSAR,
     COMPONENT_STATE_TEST_COMMISSAR,
     ERROR_PAGES_COMMISSAR,
@@ -50,7 +48,7 @@ export const LOGIN_LAYOUT: LayoutRenderer = LayoutRendererBuilder.create()
   .type('login')
   .className('min-h-screen')
   .withContent([LOGIN_COMMISSAR,USER_ADD_FORM_COMMISSAR], {
-    className: 'flex-1' 
+    className: 'flex-1'
   })
   .build();
 

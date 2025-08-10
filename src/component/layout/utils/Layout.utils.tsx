@@ -21,11 +21,6 @@ export interface LayoutComponentDetailExtended extends LayoutComponentDetail {
     scope: ComponentScope;
 }
 
-export interface EmptyLayoutComponentDetail {
-    meta?: undefined;
-    scope: ComponentScope;
-}
-
 /**
  * Initializes a LayoutComponentDetail with scope information
  * 
@@ -34,20 +29,14 @@ export interface EmptyLayoutComponentDetail {
  * @returns {LayoutComponentDetailExtended} The extended component detail with scope
  */
 export const initComponentDetailWithScope = (
-    componentDetail: LayoutComponentDetail | undefined, 
+    componentDetail: LayoutComponentDetail, 
     initializer: string
-): LayoutComponentDetailExtended | EmptyLayoutComponentDetail => {
+): LayoutComponentDetailExtended => {
     const scope: ComponentScope = {
         parent: "__",
         current: initializer
     };
     
-    if (!componentDetail) {
-        return {
-            scope
-        };
-    }
-
     return {
         ...componentDetail,
         scope
@@ -88,7 +77,7 @@ export const buildExtendedComponentDetail = (
  * @returns {JSX.Element | null} The rendered component or null if not found.
  */
 
-export const RenderComponent: React.FC<LayoutComponentDetailExtended | EmptyLayoutComponentDetail> = (component) => {
+export const RenderComponent: React.FC<LayoutComponentDetailExtended> = (component) => {
     // ✅ HOOKS MUST BE CALLED IN THE SAME ORDER EVERY TIME
     const { meta } = component;
     const actionContext = useActionExecutionContext();
@@ -113,7 +102,7 @@ export const RenderComponent: React.FC<LayoutComponentDetailExtended | EmptyLayo
     
     // ✅ Early return AFTER all hooks are called
     if (!meta || !meta.component || !compMap[meta.component]) {
-        // console.warn(`Component "${meta?.component}" not found in component map.`);
+        console.warn(`Component "${meta?.component}" not found in component map.`);
         return null;
     }
 

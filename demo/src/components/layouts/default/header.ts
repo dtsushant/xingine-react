@@ -20,7 +20,7 @@ const collapseButton = LayoutComponentDetailBuilder.create()
 
 const homeButton = LayoutComponentDetailBuilder.create()
   .dynamic('LinkRenderer')
-  .property('path', '/dashboard')
+  .property('path', '/')
   .property('icon', homeIconMeta)
   .property('style', {
     className: 'p-2 rounded-md hover:bg-gray-100 transition-colors',

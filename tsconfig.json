@@ -35,7 +35,14 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,                  // Better for bundlers and performance
     "allowJs": false,                         // Disable JS processing for performance
-    "checkJs": false                          // Disable JS checking for performance
+    "checkJs": false,                         // Disable JS checking for performance
+
+    // Path mappings for better IDE resolution
+    "baseUrl": ".",
+    "paths": {
+      "xingine": ["../xingine/src/index.ts"],
+      "xingine/*": ["../xingine/src/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": [

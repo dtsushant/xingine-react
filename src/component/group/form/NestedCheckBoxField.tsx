@@ -3,7 +3,7 @@ import { Checkbox, Spin } from "antd";
 import {
   NestedCheckboxOption,
   NestedCheckboxTypeProperties,
-} from "xingine/dist/core/component/form-meta-map";
+} from "xingine";
 import { nestedCheckboxOptionListDecoder } from "xingine";
 import {get} from "../../../xingine-react.service";
 

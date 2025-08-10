@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Upload, message, UploadProps, UploadFile } from "antd";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { NamePath } from "antd/es/form/interface";
-import { FileInputProperties } from "xingine/dist/core/component/form-meta-map";
+import { FileInputProperties } from "xingine";
 
 const { Dragger } = Upload;
 

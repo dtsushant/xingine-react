@@ -11,7 +11,7 @@ import {
   FieldMeta,
   ObjectFieldProperties,
   ObjectListFieldProperties,
-} from "xingine/dist/core/component/form-meta-map";
+} from "xingine";
 
 export function formGroup(
     fields: FieldMeta[],

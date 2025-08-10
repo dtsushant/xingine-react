@@ -15,7 +15,7 @@ const useCurrentScreenSize = () => {
         const checkScreenSize = () => {
             console.info("Screen size check triggered")
             const currentWidth = window.innerWidth
-            // Get fresh value inside effect to avoid re-render-in-render
+            // Get fresh value inside effect to avoid re-ender-in-render
             const currentVal = globalState.getState(DEFAULT_STATE_KEYS.CURRENT_SCREEN_SIZE) as number;
 
             if (currentWidth !== currentVal) {
@@ -99,21 +99,25 @@ export const DefaultLayoutRenderer: React.FC<LayoutRenderer> = (
             className={toCSSClassName(layout.style?.className)}
             style={toCSSProperties(layout.style?.style)}
         >
-            {/* Header */}
+            {/* Header - Always render to maintain hook consistency */}
             <header
                 className={toCSSClassName(layout.header?.style?.className)}
-                style={toCSSProperties(layout.header?.style?.style)}
+                style={{
+                    ...toCSSProperties(layout.header?.style?.style),
+                    display: layout.header ? 'block' : 'none'
+                }}
             >
-                <RenderComponent {...initComponentDetailWithScope(layout.header?.meta, 'header')} />
+                {layout.header?.meta && <RenderComponent {...initComponentDetailWithScope(layout.header.meta,'header')} />}
             </header>
 
             <div className={toCSSClassName(`flex ${hasHeader ? "mt-16" : ""}`)}>
-                {/* Sidebar */}
+                {/* Sidebar - Always render container to maintain hook consistency */}
                 <aside
-                    className={toCSSClassName(layout.sider?.style?.className)}
-                    style={toCSSProperties(layout.sider?.style?.style)}
+                    style={{
+                        display: layout.sider?.meta ? 'block' : 'none'
+                    }}
                 >
-                    <RenderComponent {...initComponentDetailWithScope(layout.sider?.meta, 'sider')} />
+                    {layout.sider?.meta && <RenderComponent {...initComponentDetailWithScope(layout.sider.meta,'sider')} />}
                 </aside>
 
                 {/* Main Content Area */}
@@ -132,11 +136,15 @@ export const DefaultLayoutRenderer: React.FC<LayoutRenderer> = (
                         </div>
                     </main>
 
-                    {/* Footer */}
+                    {/* Footer - Always render to maintain hook consistency */}
                     <footer
                         className={toCSSClassName(layout.footer?.style?.className)}
+                        style={{
+                            ...toCSSProperties(layout.footer?.style?.style),
+                            display: layout.footer ? 'block' : 'none'
+                        }}
                     >
-                        <RenderComponent {...initComponentDetailWithScope(layout.footer?.meta, 'footer')} />
+                        {layout.footer?.meta && <RenderComponent {...initComponentDetailWithScope(layout.footer.meta,'footer')} />}
                     </footer>
                 </div>
             </div>

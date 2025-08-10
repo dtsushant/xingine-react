@@ -24,7 +24,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@parent/*": ["../src/*"]
+      "@parent/*": ["../src/*"],
+      "xingine-react/*": ["../src/*"],
+      "xingine-react": ["../src/index.ts"],
+      "xingine/*": ["../../xingine/src/*"],
+      "xingine": ["../../xingine/src/index.ts"]
     }
   },
   "include": ["src"],

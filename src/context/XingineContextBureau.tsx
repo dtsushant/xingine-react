@@ -27,7 +27,6 @@ export const XingineContextBureau: React.FC<{
   config: XingineConfig;
 }> = ({ children, config }) => {
 
-console.log("the data here is", config);
   const[layoutRendererList, setLayoutRendererList] = useState<LayoutRenderer[]>([]);
   const [isLoadingLayout, setIsLoadingLayout] = useState(true);
   const [layoutError, setLayoutError] = useState<Error | null>(null);
@@ -51,7 +50,7 @@ console.log("the data here is", config);
 
         // Process all module components to extract routes and menu items
         const allRoutes: RouteObject[] = data.reduce<RouteObject[]>((acc: RouteObject[], layoutRenderer: LayoutRenderer) => {
-          return [...acc, ...getRoutesFromLayout(layoutRenderer, config.layoutMap)];
+          return [...acc, ...getRoutesFromLayout(layoutRenderer)];
         }, []);
 
         setRoutes([...allRoutes, ...(config.additionalRoutes || [])]);

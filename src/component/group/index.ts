@@ -26,6 +26,7 @@ import {ConditionalRenderer} from "./ConditionalRenderer";
 import {SiderRenderer} from "./SiderRenderer";
 import {StateDebugRenderer} from "./StateDebugRenderer";
 import {FormRendererWithJson} from "../utils/FormRendererWithJsonClean";
+import {PerformanceDemo} from "./PerformanceDemo";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
   return {
@@ -56,7 +57,8 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       FileInput,
       DangerousRenderer,
       SiderRenderer,
-      StateDebugRenderer
+      StateDebugRenderer,
+      PerformanceDemo
   };
 }
 
@@ -86,6 +88,7 @@ export * from "./DangerousContentRenderer";
 export * from "./InputRenderer"
 export * from "./SvgRenderer"
 export * from "./StateDebugRenderer";
+export * from "./PerformanceDemo";
 
 // Error handling exports
 export * from "./ErrorPages";

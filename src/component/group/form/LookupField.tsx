@@ -4,7 +4,7 @@ import { useDebouncedCallback } from "use-debounce";
 import type { NamePath } from "antd/es/form/interface";
 import type { Decoder } from "decoders";
 import { array, object, string } from "decoders";
-import { LookupTypeProperties } from "xingine/dist/core/component/form-meta-map";
+import { LookupTypeProperties } from "xingine";
 import {get, post} from "../../../xingine-react.service";
 
 type OptionType = { label: string; value: string };

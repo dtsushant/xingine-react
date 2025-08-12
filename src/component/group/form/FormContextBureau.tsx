@@ -18,15 +18,35 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
   executionContext
 }) => {
 
+    // Add state for tracking form update time
+    const [lastFormUpdateTime, setLastFormUpdateTime] = React.useState<number>(0);
+
     const formActionContext = useMemo<Partial<FormActionContext>>(() => ({
-    form:form,
+    form: form,
+
+    // Form update tracking for optimized conditional rendering
+    lastFormUpdateTime,
+    getLastFormUpdateTime: () => lastFormUpdateTime,
+
     // Form data management
     setFormData: (data: Record<string, unknown>) => {
+      console.log('Setting form data:', data);
       form.setFieldsValue(data);
+
+      // Force an immediate form update
+      form.validateFields().catch(() => {
+        // Ignore validation errors, we just want to trigger form update
+      });
+        // Update the timestamp when form data is set
+
+        const newTimestamp = Date.now();
+        setLastFormUpdateTime(newTimestamp);
     },
 
     getFormData: () => {
-      return form.getFieldsValue();
+      const data = form.getFieldsValue();
+      console.log('Getting form data:', data);
+      return data;
     },
 
     // Field management
@@ -113,7 +133,7 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
       }
     }
 
-  }), [form, onSubmit, executionContext]);
+  }), [form, onSubmit, executionContext, lastFormUpdateTime]); // Added lastFormUpdateTime to dependency array
 
   return (
     <FormContextBureauContext.Provider value={formActionContext as FormActionContext}>

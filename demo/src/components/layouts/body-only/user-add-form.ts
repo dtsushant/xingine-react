@@ -1,4 +1,5 @@
 import {
+    Actions,
     CommissarBuilder, ConditionBuilder, FieldMetaBuilder,
     LayoutComponentDetailBuilder,
 } from 'xingine';
@@ -67,7 +68,7 @@ export const USER_ADD_FORM_COMMISSAR = CommissarBuilder.create()
                     order: 5
                 },
                 FieldMetaBuilder.create()
-                .name('companyName')
+                .name('company')
                 .label('Company Name')
                 .inputType('object')
                 .order(6)
@@ -129,19 +130,16 @@ export const USER_ADD_FORM_COMMISSAR = CommissarBuilder.create()
                 .order(5)
                 .showWhen('accountType', 'eq', 'admin')
                 .build()
-
         ])
         .action('createUserProfile')
         .onLoad([
-            { action: 'setFormData', args: { firstName: 'Value from setter' }}
+            Actions.apiCall('/api/fetch-user/:userId','GET',{userId:1})
+                .then(
+                    Actions.setFormData({setFromResult:true}).build(),
+                )
+                .build(),
         ])
         .showJsonEditor(true)
-        .build()
-    ,
-
-    // User Registration Form using proper xingine FormRenderer structure
-
-
-
+        .build(),
   ])
   .build();

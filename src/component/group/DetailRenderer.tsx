@@ -3,8 +3,8 @@ import { Card } from "antd";
 import React, { useEffect, useState } from "react";
 import { renderDetailFields } from "./detail/DetailGroup";
 import { useParams } from "react-router-dom";
-import { DetailMeta } from "xingine/dist/core/component/component-meta-map";
-import { dynamicShapeDecoder, resolveDynamicPath } from "xingine";
+import { DetailMeta } from "xingine";
+import {dynamicShapeDecoder, resolveSluggedPath} from "xingine";
 import {get} from "../../xingine-react.service";
 
 export const DetailRenderer: React.FC<DetailMeta> = (meta) => {
@@ -14,7 +14,7 @@ export const DetailRenderer: React.FC<DetailMeta> = (meta) => {
 
   const fetchDetail = async (): Promise<unknown> => {
     try {
-      const url = resolveDynamicPath(meta.action, slug);
+      const url = resolveSluggedPath(meta.action, slug);
       const res = await get<unknown>(dynamicShapeDecoder, url);
       setDetailValue(res);
     } catch (error) {

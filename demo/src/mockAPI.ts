@@ -87,6 +87,17 @@ export function setupMockAPI() {
         });
       }
     }
+
+      if (url.includes('fetch-user/1') || url.endsWith('/api/fetch-user/1')) {
+          const mockUserData = { firstName: 'Value from setter',accountType:'business',hasCompanyInfo:true,company:{name:'ABC COMPANY'} };
+          return new Response(JSON.stringify(mockUserData), {
+              status: 200,
+              statusText: 'OK',
+              headers: { 'Content-Type': 'application/json' }
+          });
+      }
+
+
     
     // For all other requests, use the original fetch
     console.log('🌐 Passing through to real fetch:', url);

@@ -4,23 +4,43 @@ import { ExtraProps, renderField } from "./FormGroup.map";
 import { NamePath } from "antd/es/form/interface";
 import { formGroup } from "./FormGroup";
 import { useNavigate } from "react-router-dom";
-import {FormMeta, FieldMeta, ButtonTypeProperties, runAction, ActionExecutionContext, Actions} from "xingine";
-import { dynamicShapeDecoder, resolveDynamicPath } from "xingine";
+import {
+    FormMeta,
+    FieldMeta,
+    ButtonTypeProperties,
+    runAction,
+    ActionExecutionContext,
+    Actions,
+    resolveSluggedPath
+} from "xingine";
+import { dynamicShapeDecoder } from "xingine";
 import { post } from "../../../xingine-react.service";
 import {useActionExecutionContext} from "../../../context/HierarchicalActionContext";
 import {JsonViewerRenderer} from "../JsonViewerRenderer";
 import {useFormContext} from "./FormContextBureau";
 
-const shouldRenderField = async (field: FieldMeta, formData: Record<string, unknown>, ctx:ActionExecutionContext): Promise<boolean> => {
+const shouldRenderField = async (field: FieldMeta, formData: Record<string, unknown>, ctx: ActionExecutionContext): Promise<boolean> => {
     // If no conditional render config, always show
     if (!field.conditionalRender?.condition) return true;
 
     // Implement basic conditional logic for the specific conditions we're using
     const condition = field.conditionalRender.condition;
 
-    // Handle simple field equality conditions
-    const sh = await runAction(Actions.showHide(formData,condition).build(), ctx)
-    return !!sh && sh.success && Boolean(sh.result);
+    try {
+        // Use the showHide action with comprehensive logging for debugging
+        console.log(`🔍 Evaluating condition for field '${field.name}':`, condition);
+        console.log(`📊 Form data for evaluation:`, formData);
+
+        const sh = await runAction(Actions.showHide(formData, condition).build(), ctx);
+        const result = !!sh && sh.success && Boolean(sh.result);
+
+        console.log(`✅ Field '${field.name}' visibility result:`, result);
+        return result;
+    } catch (error) {
+        console.error(`❌ Error evaluating condition for field '${field.name}':`, error);
+        // Default to visible on error to prevent fields from disappearing unexpectedly
+        return true;
+    }
 }
 
 
@@ -46,6 +66,8 @@ export const FormSetup: React.FC<
     const formContext = useFormContext();
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [renderConditionChanged, setRenderConditionChanged] = useState(false);
+    const [fieldsWithCondition, setFieldsWithCondition] = useState<string[]>([]);
     const [jsonData, setJsonData] = useState<Record<string, unknown>>({});
     const [renderedFields, setRenderedFields] = useState<React.ReactNode>(null);
     const formSubmissionSuccessRedirectionPath = '';
@@ -53,6 +75,7 @@ export const FormSetup: React.FC<
     const isUpdatingFromJson = useRef(false);  // prevent recursion
     const isUpdatingFromForm = useRef(false);  // prevent recursion
 
+    const {lastFormUpdateTime} = formContext;
 
     const executionContext = useActionExecutionContext();
     // Memoize sorted fields to avoid sorting on every change
@@ -61,39 +84,207 @@ export const FormSetup: React.FC<
         [meta.fields]
     );
 
+    // Identify fields with conditional rendering on component mount
+    useEffect(() => {
+        const fieldsWithConditions = sortedFields
+            .filter(field => field.conditionalRender?.condition)
+            .map(field => field.name);
+
+        // Also identify fields that other fields depend on (dependency fields)
+        const dependencyFields = sortedFields
+            .filter(field => field.conditionalRender?.condition)
+            .map(field => {
+                const condition = field.conditionalRender?.condition;
+                if (condition && typeof condition === 'object' && 'field' in condition) {
+                    return (condition as any).field;
+                }
+                return null;
+            })
+            .filter(Boolean);
+
+        // Combine both types of fields for tracking
+        const allRelevantFields = [...new Set([...fieldsWithConditions, ...dependencyFields])];
+
+        console.log("Fields with conditional rendering:", fieldsWithConditions);
+        console.log("Dependency fields (that affect conditions):", dependencyFields);
+        console.log("All fields to track for conditional rendering:", allRelevantFields);
+        setFieldsWithCondition(allRelevantFields);
+    }, [sortedFields]);
+
+    // Helper function to check if any conditional field changed
+    const hasConditionalFieldChanged = useCallback((changedFields: Record<string, unknown>): boolean => {
+        const changedFieldNames = Object.keys(changedFields);
+        const hasConditionalChange = changedFieldNames.some(fieldName =>
+            fieldsWithCondition.includes(fieldName)
+        );
+
+        console.log("Changed fields:", changedFieldNames);
+        console.log("Fields with conditions:", fieldsWithCondition);
+        console.log("Has conditional field changed:", hasConditionalChange);
+
+        return hasConditionalChange;
+    }, [fieldsWithCondition]);
+
+    // Track previous form data to optimize conditional rendering
+    const previousFormDataRef = useRef<Record<string, unknown>>({});
+    const lastConditionalRenderTimeRef = useRef<number>(0);
+
+    // Helper function to check if conditional fields actually changed values
+    const hasConditionalFieldsChanged = useCallback((currentData: Record<string, unknown>): boolean => {
+        const previous = previousFormDataRef.current;
+
+        // For the first time (initial load), always consider it changed if we have meaningful data
+        if (Object.keys(previous).length === 0 && Object.keys(currentData).length > 0) {
+            console.log("🚀 Initial form data detected, triggering conditional rendering");
+            previousFormDataRef.current = { ...currentData };
+            return true;
+        }
+
+        // Check if any conditional or dependency fields have different values
+        const hasChanges = fieldsWithCondition.some(fieldName => {
+            const currentValue = currentData[fieldName];
+            const previousValue = previous[fieldName];
+            const changed = currentValue !== previousValue;
+
+            if (changed) {
+                console.log(`🔄 Conditional field '${fieldName}' changed:`, previousValue, "->", currentValue);
+            }
+
+            return changed;
+        });
+
+        if (hasChanges) {
+            // Update the reference for next comparison
+            previousFormDataRef.current = { ...currentData };
+        }
+
+        return hasChanges;
+    }, [fieldsWithCondition]);
+
+    // Function to re-render conditional fields
+    const updateConditionalRendering = useCallback(async (formData: Record<string, unknown>) => {
+        console.log("🎯 Updating conditional rendering with data:", formData);
+
+        // Always sync JSON viewer FIRST
+        setJsonData(formData);
+
+        const conditionalFormGroupWithDefaults = createConditionalFormGroup(formData, executionContext);
+        const fields = await conditionalFormGroupWithDefaults(sortedFields, isSubmitting);
+        setRenderedFields(fields);
+        setRenderConditionChanged(false);
+
+        lastConditionalRenderTimeRef.current = Date.now();
+    }, [executionContext, sortedFields, isSubmitting]);
+
     useEffect(() => {
         let mounted = true;
-        (async () => {
-            if (mounted) {
 
-                const onLoad = meta.event?.onInit;
-                if(onLoad){
-                    try {
-                        const results = await runAction(onLoad,{...executionContext, formActionContext: formContext});
-                        console.log("onLoad results:", results);
-                    } catch (error) {
-                        console.error("Error during onLoad actions:", error);
-                    }
+        const initializeForm = async () => {
+            if (!mounted) return;
+
+            const onLoad = meta.event?.onInit;
+
+            if (onLoad) {
+                try {
+                    // Execute onLoad action and wait for completion
+                    const results = await runAction(onLoad, {...executionContext, formActionContext: formContext});
+                    console.log("🚀 onLoad results:", results);
+
+                    if (!mounted) return;
+
+                    // Wait longer for form state to synchronize after API call
+                    await new Promise(resolve => {
+                        requestAnimationFrame(() => {
+                            setTimeout(resolve, 500); // Increased delay for API call completion
+                        });
+                    });
+
+                    // Force a render condition change after onLoad completes
+                    console.info("🔄 Triggering conditional rendering after onLoad completion");
+                    setRenderConditionChanged(true);
+
+                } catch (error) {
+                    console.error("Error during onLoad actions:", error);
                 }
-
-                const conditionalFormGroupWithDefaults = createConditionalFormGroup(formContext.getFormData(), executionContext);
-                const fields = await conditionalFormGroupWithDefaults(
-                    sortedFields,
-                    isSubmitting
-                );
-                setRenderedFields(fields);
-
-
-                console.warn("Default values set successfully");
+            } else {
+                // If no onLoad, still trigger initial rendering
+                setRenderConditionChanged(true);
             }
-        })();
+        };
+
+        initializeForm();
+
         return () => { mounted = false; };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(()=>{
+        console.info("i am triggered on every form update time change",renderConditionChanged, lastFormUpdateTime,formContext.getFormData());
 
+    },[lastFormUpdateTime,renderConditionChanged])
 
+    // Optimized effect: Only trigger conditional rendering when conditional fields actually change values
+    useEffect(() => {
+        const currentFormData = formContext.getFormData();
 
+        // Skip if form data is empty (initial state)
+        if (!currentFormData || Object.keys(currentFormData).length === 0) {
+            return;
+        }
+
+        // Check if conditional fields actually changed values (not just timestamp)
+        const shouldRender = hasConditionalFieldsChanged(currentFormData);
+
+        if (shouldRender) {
+            console.log("🎯 Conditional fields changed, updating conditional rendering");
+
+            // Ensure hasCompanyInfo is properly set for business accounts
+            if (currentFormData.accountType === 'business' && !('hasCompanyInfo' in currentFormData)) {
+                console.log("⚠️ Auto-setting hasCompanyInfo for business account");
+                currentFormData.hasCompanyInfo = true;
+                formContext.setFormData(currentFormData);
+                return; // This will trigger another update cycle
+            }
+
+            updateConditionalRendering(currentFormData);
+        } else {
+            // Even if conditional rendering doesn't change, still sync JSON viewer
+            setJsonData(currentFormData);
+            console.log("📊 JSON viewer synced without conditional re-render");
+        }
+    }, [lastFormUpdateTime, hasConditionalFieldsChanged, formContext, updateConditionalRendering]);
+
+    // Trigger conditional rendering when renderConditionChanged flag is set (for initial load)
+    useEffect(() => {
+        if (renderConditionChanged) {
+            const currentFormData = formContext.getFormData();
+            console.log("🔄 Render condition flag triggered, updating conditional rendering");
+            updateConditionalRendering(currentFormData);
+        }
+    }, [renderConditionChanged, formContext, updateConditionalRendering]);
+
+    // Additional effect: Handle interactive form changes that may need conditional re-rendering
+    useEffect(() => {
+        // When form values change interactively, we need to ensure conditional rendering stays consistent
+        const currentFormData = formContext.getFormData();
+
+        if (currentFormData && Object.keys(currentFormData).length > 0) {
+            // Force conditional rendering update for interactive changes to ensure consistency
+            const isBusinessAccount = currentFormData.accountType === 'business';
+
+            // Ensure hasCompanyInfo is correctly set based on account type
+            if (isBusinessAccount && !currentFormData.hasCompanyInfo) {
+                console.log("🔄 Interactive change detected: setting hasCompanyInfo for business account");
+                const updatedData = { ...currentFormData, hasCompanyInfo: true };
+                formContext.setFormData(updatedData);
+            } else if (!isBusinessAccount && currentFormData.hasCompanyInfo) {
+                console.log("🔄 Interactive change detected: clearing hasCompanyInfo for non-business account");
+                const updatedData = { ...currentFormData };
+                delete updatedData.hasCompanyInfo;
+                formContext.setFormData(updatedData);
+            }
+        }
+    }, [formContext]);
 
     // Handle form data changes for conditional rendering and JSON viewer
     const handleValuesChange = useCallback(
@@ -110,21 +301,66 @@ export const FormSetup: React.FC<
             isUpdatingFromForm.current = true;
 
             try {
-                // Only create the conditional form group once per value change
-                const cfg = createConditionalFormGroup(all, executionContext);
-                const fields = await cfg(sortedFields, isSubmitting);
-                setRenderedFields(fields);
-
-                // Update JSON data to reflect form changes
+                // Always update JSON data to reflect form changes FIRST
                 setJsonData(all);
 
-                //  meta.onValuesChange?.(changed, all);
+                // Check if any conditional field changed - optimize rendering
+                const shouldUpdateConditionalRendering = hasConditionalFieldChanged(changed);
+
+                if (shouldUpdateConditionalRendering) {
+                    console.log("🎯 Interactive conditional field changed, forcing consistent re-render");
+
+                    // Handle accountType changes with proper field consistency
+                    if ('accountType' in changed) {
+                        console.log("🔄 AccountType changed to:", all.accountType);
+
+                        // Create updated form data with proper hasCompanyInfo field
+                        let updatedFormData = { ...all };
+
+                        if (updatedFormData.accountType === 'business') {
+                            updatedFormData.hasCompanyInfo = true;
+                            console.log("🔄 Setting hasCompanyInfo=true for business account");
+                        } else {
+                            // Remove hasCompanyInfo for non-business accounts
+                            if ('hasCompanyInfo' in updatedFormData) {
+                                delete updatedFormData.hasCompanyInfo;
+                                console.log("🔄 Removing hasCompanyInfo for non-business account");
+                            }
+                        }
+
+                        // Set flag to prevent recursive updates during this operation
+                        const wasUpdatingFromForm = isUpdatingFromForm.current;
+
+                        // Update form data and trigger conditional rendering without recursion
+                        console.log("🔄 Updating form with consistent data:", updatedFormData);
+
+                        // Force update the form data and JSON viewer synchronously
+                        formContext.setFormData(updatedFormData);
+                        setJsonData(updatedFormData);
+
+                        // Trigger conditional rendering directly without waiting for timestamp
+                        setTimeout(async () => {
+                            if (wasUpdatingFromForm) {
+                                await updateConditionalRendering(updatedFormData);
+                            }
+                        }, 50);
+
+                    } else {
+                        // For other conditional field changes, trigger immediate re-render
+                        await updateConditionalRendering(all);
+                    }
+                } else {
+                    console.log("No conditional fields changed, skipping conditional re-render");
+                }
+
             } finally {
                 // Reset flag after update is complete
-                isUpdatingFromForm.current = false;
+                setTimeout(() => {
+                    isUpdatingFromForm.current = false;
+                }, 100);
             }
         },
-        [executionContext, isSubmitting, meta.onValuesChange, sortedFields]
+        [hasConditionalFieldChanged, formContext, updateConditionalRendering]
     );
 
     // Handle JSON data changes - Bidirectional binding with recursion prevention
@@ -186,7 +422,7 @@ export const FormSetup: React.FC<
                 console.log("the res", res);
                 if (dispatch && formSubmissionSuccessRedirectionPath) {
                     navigate(
-                        resolveDynamicPath(
+                        resolveSluggedPath(
                             formSubmissionSuccessRedirectionPath,
                             res,
                             namedPathPayload,

@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {ConditionalExpression, ConditionalMeta, evaluateCondition} from "xingine";
-import {useSharedState} from "../../context/ActionContextBureau";
+import {useGlobalState, useContentState, useComponentState} from "../../context/HierarchicalActionContext";
 import {buildExtendedComponentDetail, ComponentScope, RenderComponent} from "../layout/utils/Layout.utils";
 
 
@@ -41,10 +41,22 @@ export function useReactiveCondition(
     ) => boolean,
 ): boolean {
     const fields = extractFieldsFromCondition(condition);
+    const globalState = useGlobalState();
+    const contentState = useContentState();
+
+    // Helper function to get state value from appropriate scope
+    const getStateValue = (field: string) => {
+        // Try global state first, then content state
+        const globalValue = globalState.getState(field);
+        if (globalValue !== undefined) {
+            return globalValue;
+        }
+        return contentState.getState(field);
+    };
 
     const values: Record<string, unknown> = {};
     for (const field of fields) {
-        values[field] = useSharedState(field);
+        values[field] = getStateValue(field);
     }
 
     return useMemo(() => {

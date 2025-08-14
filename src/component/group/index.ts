@@ -25,7 +25,6 @@ import {SvgRenderer} from "./SvgRenderer";
 import {ConditionalRenderer} from "./ConditionalRenderer";
 import {SiderRenderer} from "./SiderRenderer";
 import {StateDebugRenderer} from "./StateDebugRenderer";
-import {FormRendererWithJson} from "../utils/FormRendererWithJsonClean";
 import {PerformanceDemo} from "./PerformanceDemo";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
@@ -38,7 +37,6 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       IconRenderer,
       SvgRenderer,
       FormRenderer,
-      FormRendererWithJson,
       WrapperRenderer,
       ConditionalRenderer,
       // UI components

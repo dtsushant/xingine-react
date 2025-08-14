@@ -13,8 +13,13 @@ import {
   SwitchTypeProperties,
   TextareaTypeProperties,
   TreeSelectTypeProperties,
-} from "xingine/dist/core/component/form-meta-map";
+} from "xingine";
 import { Rule } from "antd/es/form";
+import {
+  runAction,
+  ActionExecutionContext,
+  Actions,
+} from "xingine";
 
 export function generateRules(
   field: FieldMeta,
@@ -137,4 +142,25 @@ export const resolveComponentProps = (
     default:
       return {};
   }
+};
+
+export const shouldRenderField = async (field: FieldMeta, formData: Record<string, unknown>, ctx: ActionExecutionContext): Promise<boolean> => {
+    // If no conditional render config, always show
+    if (!field.conditionalRender?.condition) return true;
+
+    // Implement basic conditional logic for the specific conditions we're using
+    const condition = field.conditionalRender.condition;
+
+    try {
+        // Use the showHide action with comprehensive logging for debugging
+
+        const sh = await runAction(Actions.showHide(formData, condition).build(), ctx);
+        const result = !!sh && sh.success && Boolean(sh.result);
+
+        return result;
+    } catch (error) {
+        console.error(`❌ Error evaluating condition for field '${field.name}':`, error);
+        // Default to visible on error to prevent fields from disappearing unexpectedly
+        return true;
+    }
 };

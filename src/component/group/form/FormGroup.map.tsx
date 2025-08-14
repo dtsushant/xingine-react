@@ -296,6 +296,5 @@ export function renderField<K extends keyof FieldInputTypeProperties>(
   const Component = fieldTypeRenderMap[inputType] as React.ComponentType<
       FieldInputTypeProperties[K] & ExtraProps
   >;
-
   return <Component {...props} />;
 }

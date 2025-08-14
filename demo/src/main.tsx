@@ -4,14 +4,12 @@ import App from './App'
 import './index.css'
 import { XingineContextBureau } from "xingine-react";
 import { setupMockAPI } from './mockAPI';
-import ErrorPagesDemo from '@parent/component/demos/ErrorPagesDemo';
 
 // Setup mock API before initializing the app
 setupMockAPI();
 
 const config = {
     component: {
-        ErrorPagesDemo: ErrorPagesDemo
     },
     additionalRoutes: []
 };

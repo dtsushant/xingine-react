@@ -93,6 +93,40 @@ export const USER_ADD_FORM_COMMISSAR = CommissarBuilder.create()
                             .inputType('input')
                             .properties({ placeholder: 'New York' })
                             .build(),
+                        {
+                            name: 'providePhoneNo',
+                            label: 'Provide Phone Information',
+                            inputType: 'checkbox',
+                            required: false,
+                        },
+                        FieldMetaBuilder.create()
+                            .name('phones')
+                            .label('phone No')
+                            .inputType('object[]')
+                            .properties({
+                                itemFields: [
+                                    FieldMetaBuilder.create()
+                                        .name('phoneNumber')
+                                        .label('Phone Number *')
+                                        .inputType('input')
+                                        .required(true)
+                                        .properties({ placeholder: 'Enter phone number' })
+                                        .build(),
+                                    FieldMetaBuilder.create()
+                                        .name('phoneType')
+                                        .label('Type')
+                                        .inputType('select')
+                                        .properties({
+                                            options: [
+                                                { value: 'mobile', label: '📱 Mobile' },
+                                                { value: 'landline', label: '☎️ Landline' }
+                                            ]
+                                        })
+                                        .build()
+                                ]
+                            })
+                            .withCondition(ConditionBuilder.field('company.providePhoneNo').isTrue().build())
+                            .build()
                     ],
 
                 })

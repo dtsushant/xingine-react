@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {FormActionContext} from "xingine";
 
 interface JsonViewerProps {
     data: any;
@@ -6,6 +7,7 @@ interface JsonViewerProps {
     editable?: boolean;
     onChange?: (newData: any) => void;
     className?: string;
+    formContext?:FormActionContext;
 }
 
 export const JsonViewerRenderer: React.FC<JsonViewerProps> = ({
@@ -13,7 +15,8 @@ export const JsonViewerRenderer: React.FC<JsonViewerProps> = ({
                                                           title = 'JSON Data',
                                                           editable = false,
                                                           onChange,
-                                                          className = ''
+                                                          className = '',
+                                                                  formContext
                                                       }) => {
     const [jsonString, setJsonString] = useState('');
     const [isValid, setIsValid] = useState(true);

@@ -6,10 +6,15 @@ interface FormContextBureauProps {
   form: FormInstance;
   children: React.ReactNode;
   onSubmit?: (data: Record<string, unknown>) => Promise<ActionResult>;
-  executionContext?: ActionExecutionContext;
+  executionContext: ActionExecutionContext;
 }
 
-const FormContextBureauContext = createContext<FormActionContext | null>(null);
+interface FormActionContextExtended extends FormActionContext {
+    executionContext: ActionExecutionContext;
+    setLastFormUpdateTime: () => void;
+}
+
+const FormContextBureauContext = createContext<FormActionContextExtended | null>(null);
 
 export const FormContextBureau: React.FC<FormContextBureauProps> = ({
   form,
@@ -20,13 +25,17 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
 
     // Add state for tracking form update time
     const [lastFormUpdateTime, setLastFormUpdateTime] = React.useState<number>(0);
+    const [initialFormData, setInitialFormData] = React.useState<Record<string,unknown>>({});
 
-    const formActionContext = useMemo<Partial<FormActionContext>>(() => ({
+    const formActionContext = useMemo<Partial<FormActionContextExtended>>(() => ({
+    executionContext: executionContext,
     form: form,
 
     // Form update tracking for optimized conditional rendering
     lastFormUpdateTime,
     getLastFormUpdateTime: () => lastFormUpdateTime,
+
+    setLastFormUpdateTime: ()=> setLastFormUpdateTime(Date.now()),
 
     // Form data management
     setFormData: (data: Record<string, unknown>) => {
@@ -43,9 +52,14 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
         setLastFormUpdateTime(newTimestamp);
     },
 
+    setInitialFormData: (data: Record<string, unknown>) => {
+        console.info("settingInitialForm data", data)
+        setInitialFormData(data);
+    },
+
+    getInitialFormData: initialFormData,
     getFormData: () => {
       const data = form.getFieldsValue();
-      console.log('Getting form data:', data);
       return data;
     },
 
@@ -136,13 +150,13 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
   }), [form, onSubmit, executionContext, lastFormUpdateTime]); // Added lastFormUpdateTime to dependency array
 
   return (
-    <FormContextBureauContext.Provider value={formActionContext as FormActionContext}>
+    <FormContextBureauContext.Provider value={formActionContext as FormActionContextExtended}>
         {children}
     </FormContextBureauContext.Provider>
   );
 };
 
-export const useFormContext = (): FormActionContext => {
+export const useFormContext = (): FormActionContextExtended => {
   const context = useContext(FormContextBureauContext);
 
   if (!context) {

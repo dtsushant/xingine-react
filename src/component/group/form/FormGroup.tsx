@@ -27,33 +27,12 @@ export const FormGroup: React.FC<FormGroupProps> = ({
   isSubmitting,
   parentName = [],
 }) => {
-  const antdFormInstance = Form.useFormInstance();
   const formContext = useFormContext();
-  const [filteredFields, setFilteredFields] = useState<FieldMeta[]>(fields);
-
-  // Filter fields based on conditional rendering - triggered externally from FormSetup
-  useEffect(() => {
-
-    const filterFields = async () => {
-      const formData = formContext.getFormData();
-      const executionContext = formContext.executionContext;
-
-      // Evaluate each field's visibility
-      const shouldRenderResults = await Promise.all(
-        fields.map(field => shouldRenderField(field, formData, executionContext))
-      );
-
-      // Filter out fields that should not be rendered
-      const visibleFields = fields.filter((_, index) => shouldRenderResults[index]);
-      setFilteredFields(visibleFields);
-    };
-
-    filterFields();
-  }, [fields, formContext.lastFormUpdateTime]); // Now triggered by external prop
 
   return (
     <>
-      {filteredFields.map((field) => {
+      {fields.map((field) => {
+
         const fullFieldName: NamePath = [...parentName, field.name];
         const combinedProps = {
           ...field.properties,
@@ -63,7 +42,7 @@ export const FormGroup: React.FC<FormGroupProps> = ({
           name: fullFieldName,
         };
 
-        // Object (Nested Form Group)
+          // Object (Nested Form Group)
         if (field.inputType === "object") {
           return renderField("object", {
             ...combinedProps,

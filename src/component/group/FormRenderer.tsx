@@ -12,7 +12,7 @@ export const FormRenderer: React.FC<
     const executionContext = useActionExecutionContext();
 
 
-    return <FormContextBureau form={form} executionContext={executionContext}>
-        <FormSetup {...meta}/>
+    return <FormContextBureau form={form} formMeta={meta} executionContext={executionContext}>
+        <FormSetup />
     </FormContextBureau>
 };

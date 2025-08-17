@@ -165,7 +165,7 @@ export const USER_ADD_FORM_COMMISSAR = CommissarBuilder.create()
                 .showWhen('accountType', 'eq', 'admin')
                 .build()
         ])
-        .action('createUserProfile')
+        .action('/api/user/save')
         .onLoad([
             Actions.apiCall('/api/fetch-user/:userId','GET',{userId:1})
                 .then(
@@ -173,6 +173,18 @@ export const USER_ADD_FORM_COMMISSAR = CommissarBuilder.create()
                 )
                 .build(),
         ])
+        .onSubmitSuccess({
+            actionsToExecute:[
+                Actions.navigate('/user/:userId').build(),
+            ]
+        })
+        .onSubmitFailure(
+            {
+                actionsToExecute:[
+                    Actions.showToast('Error message needs result handling','error').build(),
+                ]
+            }
+        )
         .showJsonEditor(true)
         .build(),
   ])

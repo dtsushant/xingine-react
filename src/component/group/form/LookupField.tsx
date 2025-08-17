@@ -136,7 +136,7 @@ export const LookupField: React.FC<LookupFieldProps> = (props) => {
       const newItem = resolveMappedOption(val, resultMap);
       setOptions((prev) => [...prev, newItem]);
       onChange?.(
-        multiple ? [...(value as string[]), newItem.value] : newItem.value,
+        multiple ? [...(Array.isArray(value) ? value : []), newItem.value] : newItem.value,
       );
     } else {
       console.error("Failed to create lookup item:", result.err().unwrap());

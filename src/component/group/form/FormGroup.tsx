@@ -33,6 +33,7 @@ export const FormGroup: React.FC<FormGroupProps> = ({
     <>
       {fields.map((field) => {
 
+
         const fullFieldName: NamePath = [...parentName, field.name];
         const combinedProps = {
           ...field.properties,

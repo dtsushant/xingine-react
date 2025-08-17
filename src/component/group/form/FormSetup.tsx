@@ -3,13 +3,9 @@ import React, { useState, useCallback,useRef,useEffect } from "react";
 import { ExtraProps, renderField } from "./FormGroup.map";
 import { NamePath } from "antd/es/form/interface";
 import { formGroup } from "./FormGroup";
-import { shouldRenderField } from "./FormGroup.utils";
 import { useNavigate } from "react-router-dom";
 import {
-    FormMeta,
-    FieldMeta,
     ButtonTypeProperties,
-    runAction,
     resolveSluggedPath
 } from "xingine";
 import { dynamicShapeDecoder } from "xingine";
@@ -31,41 +27,6 @@ export const FormSetup: React.FC = () => {
     const isUpdatingFromJson = useRef(false);  // prevent recursion
     const isUpdatingFromForm = useRef(false);  // prevent recursion
 
-
-    const executionContext = formContext.executionContext;
-    // Memoize sorted fields to avoid sorting on every change
-    const sortedFields = React.useMemo(
-        () => meta.fields.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
-        [meta.fields]
-    );
-
-    // Track previous form data to optimize conditional renderi
-    // Helper function to check if conditional fields actually changed values
-    /*useEffect(() => {
-        let mounted = true;
-
-        const initializeForm = async () => {
-            if (!mounted) return;
-
-            const onLoad = meta.event?.onInit;
-
-            if (onLoad) {
-                try {
-                    // Execute onLoad action and wait for completion
-                    await runAction(onLoad, {...executionContext, formActionContext: formContext});
-
-
-                } catch (error) {
-                    console.error("Error during onLoad actions:", error);
-                }
-            }
-        };
-
-        initializeForm();
-
-        return () => { mounted = false; };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);*/
 
 
     // Handle JSON data changes - Bidirectional binding with recursion prevention
@@ -150,7 +111,7 @@ export const FormSetup: React.FC = () => {
         <Form
             form={formContext.form as FormInstance}
             layout="vertical"
-            onFinish={onFinish}
+            onFinish={formContext.onFinish}
             onValuesChange={formContext.handleValuesChange}
         >
             {/* Use filteredFields instead of sortedFields for conditional rendering */}
@@ -184,7 +145,7 @@ export const FormSetup: React.FC = () => {
                 </div>
                 <div className="flex-1">
                     <JsonViewerRenderer
-                        data={jsonData}
+                        data={formContext.getFormData()}
                         title="Form Data (Live Preview)"
                         onChange={handleJsonChange}
                         editable={true}

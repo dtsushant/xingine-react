@@ -171,13 +171,14 @@ export const ObjectField: React.FC<ObjectFieldProperties & ExtraProps> = (props)
   const {
     fields,
     isSubmitting,
-    parentName = [],
+    parentName=[],
     label = "",
     name,
     callingField,
   } = props;
-  const newParentName = [...parentName, name];
-
+    const newParentName = parentName && parentName.length > 0
+        ? [...parentName, ...name]
+        : [...name];
   return (
     <Card title={label} style={{ marginBottom: 16, background: "#fafafa" }}>
       {formGroup(fields, isSubmitting ?? false, newParentName, callingField)}
@@ -199,10 +200,12 @@ export const ObjectArrayField: React.FC<ObjectListFieldProperties & ExtraProps> 
   parentName = [],
   label = "",
   callingField,
+    name,
 }) => {
-  return (
+    console.warn("the field name is", name);
+    return (
     <Card title={label} style={{ marginBottom: 16 }}>
-      <Form.List name={parentName}>
+      <Form.List name={name}>
         {(fields, { add, remove }) => (
           <>
             {fields.map((fieldMeta, index) => (
@@ -224,7 +227,7 @@ export const ObjectArrayField: React.FC<ObjectListFieldProperties & ExtraProps> 
                 {formGroup(
                   itemFields,
                   isSubmitting!,
-                  [...parentName, index],
+                  [index],
                   callingField,
                 )}
               </Card>
@@ -243,7 +246,6 @@ export const ObjectArrayField: React.FC<ObjectListFieldProperties & ExtraProps> 
 export const ButtonField = (
   props: ButtonTypeProperties & ExtraProps,
 ) => {
-  console.log("rendering button", props.isSubmitting);
 
   return (
     <Button
@@ -296,5 +298,5 @@ export function renderField<K extends keyof FieldInputTypeProperties>(
   const Component = fieldTypeRenderMap[inputType] as React.ComponentType<
       FieldInputTypeProperties[K] & ExtraProps
   >;
-  return <Component {...props} />;
+    return <Component {...props} key={props.key} />;
 }

@@ -2,30 +2,13 @@ import React, {createContext, useContext, useMemo, useCallback, useEffect, useRe
 import { FormInstance} from 'antd';
 import {
     FormActionContext, FormFieldSetterMeta, ActionResult, SerializableAction, runAction, ActionExecutionContext,
-    FormMeta, FieldMeta
+    FormMeta, FieldMeta, isObjectField, isObjectArrayField, FormActionEventMeta, Actions, ActionBuilder, ChainBuilder,
+    ConditionBuilder, fetchFromActionArgs, formActionEventMetaDecoder
 } from 'xingine';
 import {shouldRenderField} from "./FormGroup.utils";
 
 // Type guards for field type checking
-const isObjectField = (field: FieldMeta): field is FieldMeta & {
-    inputType: 'object';
-    properties: { fields: FieldMeta[] }
-} => {
-    return field.inputType === 'object' &&
-           field.properties !== undefined &&
-           'fields' in field.properties &&
-           Array.isArray(field.properties.fields);
-};
 
-const isObjectArrayField = (field: FieldMeta): field is FieldMeta & {
-    inputType: 'object[]';
-    properties: { itemFields: FieldMeta[] }
-} => {
-    return field.inputType === 'object[]' &&
-           field.properties !== undefined &&
-           'itemFields' in field.properties &&
-           Array.isArray(field.properties.itemFields);
-};
 
 const hasNestedFields = (field: FieldMeta): boolean => {
     return isObjectField(field) || isObjectArrayField(field);
@@ -63,6 +46,10 @@ const createFieldWithUpdatedNestedFields = (field: FieldMeta, visibleNestedField
     return field;
 };
 
+
+
+
+
 interface FormContextBureauProps {
   form: FormInstance;
   children: React.ReactNode;
@@ -79,6 +66,7 @@ interface FormActionContextExtended extends FormActionContext {
     setFilteredFields: (fields: FieldMeta[]) => void;
     handleValuesChange:(changed: Record<string, unknown>,
                         all: Record<string, unknown>)=>void;
+    onFinish:(all: Record<string, unknown>)=>void
 }
 
 const FormContextBureauContext = createContext<FormActionContextExtended | null>(null);
@@ -95,6 +83,7 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
     const [lastFormUpdateTime, setLastFormUpdateTime] = React.useState<number>(0);
     const [initialFormData, setInitialFormData] = React.useState<Record<string,unknown>>({});
     const [filteredFields, setFilteredFields] = React.useState<FieldMeta[]>([]);
+    const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
     const previousFormValue=useRef<Record<string, unknown>>({});
 
 
@@ -210,7 +199,7 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
                 form.resetFields();
             },
 
-            submitForm: async (): Promise<ActionResult> => {
+            submitForm: async (arg:FormActionEventMeta): Promise<ActionResult> => {
                 try {
                     const values = await form.validateFields();
 
@@ -226,7 +215,8 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
                     };
                 }
             },
-            handleValuesChange:handleFormValueChanged()
+            handleValuesChange:handleFormValueChanged(),
+            onFinish:onFinish()
 
 
         };
@@ -340,6 +330,8 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
             all: Record<string, unknown>
         ) => void = (changed, all) => {
             void (async () => {
+                console.warn(" is the change taking place ", all ,changed)
+                console.warn(JSON.stringify(changed, null, 2));
                 //NOTE:- this is done because on showhide the data for hidden form value is preserved first time even though the form field itself is hidden
                 const formData = { ...previousFormValue.current, ...all };
                 showHide(formData);
@@ -347,6 +339,79 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
             })();
         }
         return handleValuesChange;
+    }
+
+
+
+    function onFinish(){
+        const handleFormSubmit = async (values: Record<string, unknown>): Promise<void> => {
+            setIsSubmitting(true);
+            try {
+                console.warn("Need to fetch submittion action and execute it with values", values);
+                const submitActionBuilder = Actions.apiCall(formMeta.action,"POST", values);
+                const successAction = formMeta.event?.onSubmit && fetchFromActionArgs(formMeta.event?.onSubmit,'onSubmitSuccess') || {} ;
+                const failureAction = formMeta.event?.onSubmit && fetchFromActionArgs(formMeta.event?.onSubmit,'onSubmitFailure') || {} ;
+                let onSuccess: SerializableAction[];
+                let onFailure: SerializableAction[];
+                try {
+                    onSuccess = formActionEventMetaDecoder.verify(successAction).actionsToExecute || [];
+                } catch (error) {
+                    onSuccess = [];
+                }
+
+                try {
+                    onFailure = formActionEventMetaDecoder.verify(failureAction).actionsToExecute || [];
+                } catch (error) {
+                    onFailure = [];
+                }
+                submitActionBuilder.withChains(
+                    ChainBuilder.create()
+                        .whenCondition(ConditionBuilder
+                            .field('__result.success')
+                            .equals(true)
+                        )
+                        .thenSerializableActions(
+                        ...onSuccess
+                        )
+                        .build(),
+                    ChainBuilder.create()
+                        .whenCondition(ConditionBuilder
+                            .field('__result.success')
+                            .equals(false)
+                        )
+                        .thenSerializableActions(
+                            ...onFailure,
+                        )
+                        .build()
+                )
+
+                ActionBuilder.create('makeApiCall')
+                    .withArgs({ url: '/api/user', method: 'GET' })
+                    .withChains(ChainBuilder.create()
+                        .whenCondition(ConditionBuilder
+                            .field('__result.success')
+                            .equals(true)
+                        )
+                        .thenActionBuilders(
+                            Actions.setStorage('token','__result.token'),
+                            Actions.navigate('/'),
+
+                        )
+                        .build())
+                    .build();
+
+                console.warn("the submit action is ", submitActionBuilder.build());
+                const result =await runAction(
+                    submitActionBuilder.build(),
+                    mainContext
+                );
+
+                console.warn("the result here is ", result);
+            } finally {
+                setIsSubmitting(false);
+            }
+        };
+        return handleFormSubmit;
     }
 
   return (

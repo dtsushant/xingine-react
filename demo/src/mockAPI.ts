@@ -97,6 +97,15 @@ export function setupMockAPI() {
           });
       }
 
+      if (url.includes('user/save') || url.endsWith('/api/user/save')) {
+          const mockUserResponse = { success:true, message: 'User saved successfully', user: { firstName: 'Value from setter', accountType: 'business', hasCompanyInfo: true, company: { name: 'ABC COMPANY' } } };
+          return new Response(JSON.stringify(mockUserResponse), {
+              status: 200,
+              statusText: 'OK',
+              headers: { 'Content-Type': 'application/json' }
+          });
+      }
+
 
     
     // For all other requests, use the original fetch

@@ -228,14 +228,14 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
     // Call initializeForm on component mount
     useEffect(() => {
         const initialize = async () => {
-            const onLoad = formMeta.event?.onInit;
 
+            const onLoad = formMeta.event?.onInit;
             if (onLoad) {
                 try {
                     // Execute onLoad action and wait for completion
-                    await runAction(onLoad, mainContext);
+                    const result = await runAction(onLoad, mainContext);
                 } catch (error) {
-                    console.error("Error during onLoad actions:", error);
+                    console.warn("Error during onLoad actions:", error);
                 }
             }
         };
@@ -330,8 +330,6 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
             all: Record<string, unknown>
         ) => void = (changed, all) => {
             void (async () => {
-                console.warn(" is the change taking place ", all ,changed)
-                console.warn(JSON.stringify(changed, null, 2));
                 //NOTE:- this is done because on showhide the data for hidden form value is preserved first time even though the form field itself is hidden
                 const formData = { ...previousFormValue.current, ...all };
                 showHide(formData);
@@ -347,7 +345,6 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
         const handleFormSubmit = async (values: Record<string, unknown>): Promise<void> => {
             setIsSubmitting(true);
             try {
-                console.warn("Need to fetch submittion action and execute it with values", values);
                 const submitActionBuilder = Actions.apiCall(formMeta.action,"POST", values);
                 const successAction = formMeta.event?.onSubmit && fetchFromActionArgs(formMeta.event?.onSubmit,'onSubmitSuccess') || {} ;
                 const failureAction = formMeta.event?.onSubmit && fetchFromActionArgs(formMeta.event?.onSubmit,'onSubmitFailure') || {} ;
@@ -359,7 +356,6 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
                     onSuccess = [];
                 }
 
-                console.warn("the success action is ", formMeta.event?.onSubmit);
 
                 try {
                     onFailure = formActionEventMetaDecoder.verify(failureAction).actionsToExecute || [];

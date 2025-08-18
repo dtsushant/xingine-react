@@ -67,11 +67,14 @@ export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({ childre
     const stableGetState = useCallback((key: string) => globalState[key], [globalState]);
     
     const stableMakeApiCall = useCallback(async ({ url, method = 'GET', body }: any) => {
+        const methodsWithBody = ['POST', 'PUT', 'PATCH', 'DELETE'];
+        const shouldIncludeBody = body && methodsWithBody.includes(method.toUpperCase());
+
         const res = await fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json' },
-            ...(body ? { body: JSON.stringify(body) } : {}),
-        });
+            ...(shouldIncludeBody ? { body: JSON.stringify(body) } : {}),
+        }).catch(err=> {console.warn("Fetch error: ", err); throw err; });
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         return res.json();
     }, []);
@@ -85,7 +88,7 @@ export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({ childre
     const stableClearLocalStorage = useCallback(() => localStorage.clear(), []);
     
     const stableShowToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
-        console.log(`Toast [${type.toUpperCase()}]: ${message}`);
+        console.warn(`Toast [${type.toUpperCase()}]: ${message}`);
         showToastFromProvider({ message, type });
     }, [showToastFromProvider]);
     

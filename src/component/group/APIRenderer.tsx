@@ -29,7 +29,7 @@ export const APIRenderer: React.FC<ApiMetaMap> = (meta)=>{
             try {
                 setComponentState(prev => ({ ...prev, isLoading: true, error: null }));
 
-                const componentResult = await runAction(Actions.apiCall(meta.actionUrl,'POST',params).build(), ctx);
+                const componentResult = await runAction(Actions.apiCall(meta.actionUrl,'GET',params).build(), ctx);
 
                 if (componentResult && componentResult.success) {
                     try {

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import { XingineContextBureau } from "xingine-react";
-//import { setupMockAPI } from './mockAPI';
+import { setupMockAPI } from './mockAPI';
 
 // Setup mock API before initializing the app
 //setupMockAPI();

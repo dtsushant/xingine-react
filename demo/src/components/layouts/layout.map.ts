@@ -8,7 +8,7 @@ import { CONTENT_STATE_TEST_COMMISSAR } from './body-only/content-state-test-cle
 import { COMPONENT_STATE_TEST_COMMISSAR } from './body-only/component-state-test';
 import { LOGIN_COMMISSAR } from './default/login';
 import { ERROR_PAGES_COMMISSAR } from './default/error-demo';
-import {USER_ADD_FORM_COMMISSAR} from "./body-only/user-add-form";
+import {USER_ADD_FORM_COMMISSAR, USER_DETAIL_COMMISSAR} from "./body-only/user-add-form";
 
 const headerClass = `fixed top-0 left-0 right-0 h-16 z-50 shadow-sm #{
                 darkMode
@@ -47,7 +47,7 @@ export const TAILWIND_LAYOUT: LayoutRenderer = LayoutRendererBuilder.create()
 export const LOGIN_LAYOUT: LayoutRenderer = LayoutRendererBuilder.create()
   .type('login')
   .className('min-h-screen')
-  .withContent([LOGIN_COMMISSAR,USER_ADD_FORM_COMMISSAR], {
+  .withContent([LOGIN_COMMISSAR,USER_ADD_FORM_COMMISSAR,USER_DETAIL_COMMISSAR], {
     className: 'flex-1'
   })
   .build();

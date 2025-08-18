@@ -18,16 +18,31 @@ export default defineConfig({
     // Ensure proper NODE_ENV handling
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
   },
-  server: {
-    port: 3004,
-    host: '0.0.0.0',
-    open: true,
-    strictPort: true,
-    watch: {
-      // Watch the parent src directory for changes
-      ignored: ['!**/node_modules/**', '!**/.yalc/**']
-    }
-  },
+    server: {
+        proxy: {
+            "/api": {
+                target: "http://localhost:3001",
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, ""),
+                configure(proxy) {
+                    console.log("configuring the proxy");
+                    proxy.on("proxyReq", (proxyReq, req) => {
+                        console.log(
+                            `[vite-proxy] ${req.method} ${req.url} → ${proxyReq.path}, original path -> ${path}`,
+                        );
+                    });
+
+                    proxy.on("error", (err, req, res) => {
+                        console.error("[vite-proxy] Proxy error:", err.message);
+                        res.writeHead(502, { "Content-Type": "application/json" });
+                        res.end(
+                            JSON.stringify({ error: "Backend unavailable (proxy error)" }),
+                        );
+                    });
+                },
+            },
+        },
+    },
   optimizeDeps: {
     // Include dependencies that need to be pre-bundled
     include: ['react', 'react-dom', 'axios'],

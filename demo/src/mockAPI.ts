@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { mockCommissarsData } from './mockData';
+import { USER_DETAIL_COMPONENT} from "@/components/layouts/body-only/user-add-form.ts";
 
 // Mock login data
 const mockLoginData = {
@@ -100,6 +101,16 @@ export function setupMockAPI() {
       if (url.includes('user/save') || url.endsWith('/api/user/save')) {
           const mockUserResponse = { success:true, message: 'User saved successfully', user: { firstName: 'Value from setter', accountType: 'business', hasCompanyInfo: true, company: { name: 'ABC COMPANY' } } };
           return new Response(JSON.stringify(mockUserResponse), {
+              status: 200,
+              statusText: 'OK',
+              headers: { 'Content-Type': 'application/json' }
+          });
+      }
+
+      if (url.includes('dynamic') || url.endsWith('/api/dynamic')) {
+         const componentResponse = USER_DETAIL_COMPONENT;
+
+          return new Response(JSON.stringify(componentResponse), {
               status: 200,
               statusText: 'OK',
               headers: { 'Content-Type': 'application/json' }

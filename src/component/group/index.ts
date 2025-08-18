@@ -26,6 +26,7 @@ import {ConditionalRenderer} from "./ConditionalRenderer";
 import {SiderRenderer} from "./SiderRenderer";
 import {StateDebugRenderer} from "./StateDebugRenderer";
 import {PerformanceDemo} from "./PerformanceDemo";
+import {APIRenderer} from "./APIRenderer";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
   return {
@@ -39,6 +40,7 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       FormRenderer,
       WrapperRenderer,
       ConditionalRenderer,
+      APIRenderer,
       // UI components
       ButtonRenderer,
       InputRenderer,

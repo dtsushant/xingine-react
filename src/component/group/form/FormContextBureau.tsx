@@ -359,6 +359,8 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
                     onSuccess = [];
                 }
 
+                console.warn("the success action is ", formMeta.event?.onSubmit);
+
                 try {
                     onFailure = formActionEventMetaDecoder.verify(failureAction).actionsToExecute || [];
                 } catch (error) {
@@ -384,21 +386,6 @@ export const FormContextBureau: React.FC<FormContextBureauProps> = ({
                         )
                         .build()
                 )
-
-                ActionBuilder.create('makeApiCall')
-                    .withArgs({ url: '/api/user', method: 'GET' })
-                    .withChains(ChainBuilder.create()
-                        .whenCondition(ConditionBuilder
-                            .field('__result.success')
-                            .equals(true)
-                        )
-                        .thenActionBuilders(
-                            Actions.setStorage('token','__result.token'),
-                            Actions.navigate('/'),
-
-                        )
-                        .build())
-                    .build();
 
                 console.warn("the submit action is ", submitActionBuilder.build());
                 const result =await runAction(

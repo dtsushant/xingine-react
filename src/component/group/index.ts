@@ -27,6 +27,7 @@ import {SiderRenderer} from "./SiderRenderer";
 import {StateDebugRenderer} from "./StateDebugRenderer";
 import {PerformanceDemo} from "./PerformanceDemo";
 import {APIRenderer} from "./APIRenderer";
+import {MetaBuilderRenderer} from "./MetaBuilderRenderer";
 
 export function getDefaultInternalComponents(): Record<string, React.ComponentType<any>> {
   return {
@@ -41,6 +42,7 @@ export function getDefaultInternalComponents(): Record<string, React.ComponentTy
       WrapperRenderer,
       ConditionalRenderer,
       APIRenderer,
+      MetaBuilderRenderer,
       // UI components
       ButtonRenderer,
       InputRenderer,
@@ -89,6 +91,7 @@ export * from "./InputRenderer"
 export * from "./SvgRenderer"
 export * from "./StateDebugRenderer";
 export * from "./PerformanceDemo";
+export * from "./MetaBuilderRenderer";
 
 // Error handling exports
 export * from "./ErrorPages";

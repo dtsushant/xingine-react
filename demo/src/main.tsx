@@ -4,6 +4,7 @@ import App from './App'
 import './index.css'
 import { XingineContextBureau } from "xingine-react";
 import { setupMockAPI } from './mockAPI';
+import {MetaBuilderDemo} from "@/MetaBuilderDemo.tsx";
 
 // Setup mock API before initializing the app
 //setupMockAPI();
@@ -11,7 +12,15 @@ import { setupMockAPI } from './mockAPI';
 const config = {
     component: {
     },
-    additionalRoutes: []
+    additionalRoutes: [
+        {
+            path: "/sample",
+            index: true,
+            element: (
+                <MetaBuilderDemo />
+            ),
+        } as RouteObject,
+    ]
 };
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

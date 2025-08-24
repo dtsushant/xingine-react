@@ -6,7 +6,6 @@ import { formGroup } from "./form/FormGroup";
 import { useNavigate } from "react-router-dom";
 import { FormMeta } from "xingine/dist/core/component/component-meta-map";
 import { dynamicShapeDecoder, resolveDynamicPath } from "xingine";
-import {getModuleRegistryService} from "../../xingine-react.registry";
 import {post} from "../../xingine-react.service";
 import {ButtonTypeProperties} from "xingine/dist/core/component/form-meta-map";
 
@@ -23,10 +22,7 @@ export const FormRenderer: React.FC<
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const formSubmissionSuccessRedirectionPath =
-    getModuleRegistryService()?.getComponentPath(
-      dispatch?.onSuccessRedirectTo!.component ?? "",
-    );
+  const formSubmissionSuccessRedirectionPath = '';
   const namedPathPayload = dispatch?.onSuccessRedirectTo?.payloadNamePath;
 
   const defaultFinish = async (

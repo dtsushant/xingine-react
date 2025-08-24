@@ -1,14 +1,7 @@
-import { FC } from "react";
-import {
-  getModuleRegistryService,
-  initializeModuleRegistry,
-} from "./xingine-react.registry";
-import { XingineConfig } from "./configuration/Configuration";
 import axios from "axios";
 import { Decoder, object } from "decoders";
 import { Err, Ok, Result } from "@hqoss/monads";
-import  { GenericErrors,ModuleProperties,genericErrorsDecoder } from "xingine";
-import {getDefaultInternalComponents} from "./component/group";
+import  { GenericErrors,genericErrorsDecoder } from "xingine";
 
 const token = localStorage.getItem("token");
 
@@ -18,19 +11,6 @@ if (token) {
 
 axios.defaults.baseURL = "/api";
 
-export function registerModule(
-  config: XingineConfig,
-  modules: ModuleProperties[],
-) {
-  const combinedComponentRegistry = {
-    ...(getDefaultInternalComponents() as Record<string, FC<unknown>>),
-    ...(config.component || {}),
-  };
-  initializeModuleRegistry(combinedComponentRegistry);
-  modules.forEach((def) => {
-    getModuleRegistryService()!.register(def);
-  });
-}
 
 export async function post<T, U>(
   form: T,
